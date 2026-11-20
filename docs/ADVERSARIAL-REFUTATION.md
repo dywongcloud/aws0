@@ -89,3 +89,16 @@ live run of `aws0-fabric-witness`: real iroh QUIC endpoints, real journal and
 snapshot I/O, real laboon OCI workloads, and the adversarial cases above.
 `cargo check --offline --all-targets` and `cargo build --offline --bins` both
 exit 0. The witness binary is a live harness, not a test suite on disk.
+
+## 6. Supply-chain check
+
+gm `scan_deps {"full":true}` returns `ok:true` with `filesScanned:0` for this
+checkout, including when scoped to `fabric` and `docs`. A scan of zero files is
+not evidence, so the two structural checks were run independently over
+`git ls-files`: 91,184 tracked paths, 91,178 decoded as text. Zero dense
+unicode-escape runs decoding to an identifier shape (the HiddenSpawn
+corroborator). 462 files trip the size-to-line ratio heuristic alone; all are
+single-line minified JSON data with no escape-density corroboration, which is
+the documented benign case. `blockedCount` and `failCount` are both zero. The
+`filesScanned:0` behaviour of the served verb is reported as a tooling gap,
+not treated as a passed gate.
