@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: CC0-1.0
 
-//! SWIM-style membership: majority quorum, failure signals, anti-entropy
-//! gossip, and a bounded Phi-accrual detector. Every function is a pure
-//! morphism over an explicit `(state, now_ms)` pair; clocks, sockets and
-//! secrets are caller-owned parameters, never ambient state in this module.
+//! Capacity health: majority quorum, failure signals and a bounded
+//! phi-accrual detector. Every function is a pure morphism over an explicit
+//! `(state, now_ms)` pair; clocks and secrets are caller-owned parameters,
+//! never ambient state in this module.
 
 use crate::crdt::{AppliedRecord, ClusterState, GCounter, Lww, MemberRecord, OrSet, VersionVector};
 use crate::state::Event;
@@ -50,7 +50,7 @@ pub fn has_fresh_heartbeat(member: &MemberRecord, now_ms: u64) -> bool {
 
 /// Compacted live voting set: one vote per distinct node identity among live
 /// records. Tombstoned keys and adds without a record carry no vote, so a
-/// death or a re-join cannot inflate the denominator and an authenticated peer
+/// death or a re-join cannot inflate the denominator and an authenticated instance
 /// cannot buy votes with fabricated keys. Derived, never stored, so compaction
 /// cannot leave a dangling voter behind. All membership reads go through the
 /// canonical [`ClusterState::live_members`] accessor rather than a second,
@@ -64,7 +64,7 @@ fn compacted_voters(records: &[MemberRecord]) -> BTreeSet<NodeId> {
 /// live-member count, with no heartbeat-freshness filter; `need` is the strict
 /// majority of the compacted live voting set. Every voter is by construction a
 /// live record, so `have >= need` holds for every document admitted by
-/// [`merge_gossip`]; documents with phantom adds or conflicting duplicate
+/// the state-exchange merge; documents with phantom adds or conflicting duplicate
 /// identities are rejected there instead of silently lowering the bar.
 /// `now_ms` is retained for call-site compatibility and is intentionally not
 /// part of the decision: freshness is [`has_fresh_heartbeat`].
@@ -106,7 +106,7 @@ pub fn tick(state: &ClusterState, now_ms: u64) -> Vec<Event> {
     events
 }
 
-/// Canonical bytes of the full CRDT document. Plain `ClusterState` JSON is
+/// Canonical bytes of the full state document. Plain `ClusterState` JSON is
 /// used whenever its map keys are JSON strings; otherwise the pair-list frame
 /// below carries the same seven fields without losing a join operand.
 pub fn gossip_payload(state: &ClusterState) -> Result<Vec<u8>> {
@@ -230,11 +230,11 @@ impl PhiAccrual {
 
     /// Live members whose accrued suspicion is at most `threshold`, in the
     /// same milli-phi units as `phi`. The detector has exactly one evidence
-    /// function: `self.phi(member.node, now_ms)`. The CRDT heartbeat is never
+    /// function: `self.phi(member.node, now_ms)`. The liveness heartbeat is never
     /// blended into a silence estimate, so `phi` and this predicate cannot
     /// disagree about the same node. The unconditional `DEAD_AFTER_MS`
     /// fail-closed bound belongs to [`tick`], which emits `ConfirmDead` from
-    /// CRDT-heartbeat silence; it is not a second detector here.
+    /// liveness-heartbeat silence; it is not a second detector here.
     #[must_use]
     pub fn alive_nodes(&self, state: &ClusterState, now_ms: u64, threshold: u64) -> Vec<NodeId> {
         state

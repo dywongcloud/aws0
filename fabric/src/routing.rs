@@ -6,7 +6,7 @@
 //! no IO, no ambient clock, no state mutation. The zero-trust order is fixed:
 //! verify the capability MAC and expiry, authorize the partition through
 //! `crate::state::authorize_partition`, validate the request lexically, then
-//! resolve an owner. Ownership is rendezvous hashing over the live membership set
+//! resolve an owner. Ownership is deterministic hashing over the live membership set
 //! restricted to the partition's region; a region with no live owner is rejected
 //! with `Error::RegionUnavailable`, never spread to a foreign region.
 
@@ -21,10 +21,10 @@ use std::collections::{BTreeMap, BTreeSet};
 const MAX_PAYLOAD: usize = 1 << 20;
 
 /// Maximum length of a service or operation label, in bytes. Bounding both
-/// labels keeps the rendezvous key and every score computation bounded.
+/// labels keeps the routing key and every score computation bounded.
 const MAX_LABEL_BYTES: usize = 128;
 
-/// Domain separator for the injective, length-prefixed rendezvous key.
+/// Domain separator for the injective, length-prefixed routing key.
 const ROUTING_KEY_DOMAIN: &[u8] = b"aws0/routing-key/v1\0";
 
 /// A signed, partition-scoped API request. `service` and `operation` are data
@@ -89,9 +89,9 @@ fn append_field(key: &mut Vec<u8>, field: &[u8]) {
     key.extend_from_slice(field);
 }
 
-/// The rendezvous key: a fixed domain separator followed by three
+/// The routing key: a fixed domain separator followed by three
 /// length-prefixed fields (partition bytes, service, operation). The encoding is
-/// injective, so distinct requests cannot steer the same rendezvous owner.
+/// injective, so distinct requests cannot steer the same hash-selected owner.
 #[must_use]
 fn routing_key(req: &RouteRequest) -> Vec<u8> {
     let partition = req.partition.bytes();
@@ -121,7 +121,7 @@ fn member_regions(state: &ClusterState) -> BTreeMap<NodeId, BTreeSet<Region>> {
 }
 
 /// Live membership indexed by node. Conflicting live regions for one NodeId are
-/// Byzantine peer state; reject the whole index instead of choosing a region by
+/// untrusted instance state; reject the whole index instead of choosing a region by
 /// iteration order.
 fn members_by_node(state: &ClusterState) -> Result<BTreeMap<NodeId, Region>> {
     let mut out = BTreeMap::new();
@@ -142,7 +142,7 @@ fn members_by_node(state: &ClusterState) -> Result<BTreeMap<NodeId, Region>> {
     Ok(out)
 }
 
-/// Highest rendezvous score over a candidate set, total for every input. Ties
+/// Highest owner score over a candidate set, total for every input. Ties
 /// are broken by the full `NodeId` order, so the result is a function, not a
 /// race between iteration orders. Parametric in the value carried per node.
 fn pick<'a, T>(candidates: &'a BTreeMap<NodeId, T>, key: &[u8]) -> Option<(NodeId, &'a T)> {
@@ -206,7 +206,7 @@ pub fn region_nodes(state: &ClusterState, region: &Region) -> Vec<NodeId> {
         .collect()
 }
 
-/// Owner of a placed workload for a supplied key, by rendezvous over the
+/// Owner of a placed workload for a supplied key, by scoring over the
 /// placement's nodes. An absent placement and an empty placement are both
 /// reported as errors, never as a fabricated node.
 pub fn placement_owner(state: &ClusterState, workload: &WorkloadId, key: &[u8]) -> Result<NodeId> {

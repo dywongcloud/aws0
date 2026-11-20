@@ -7,7 +7,7 @@ version = "0.1.0"
 edition = "2021"
 license = "CC0-1.0"
 publish = false
-description = "Self-hosted, horizontally scalable AWS substrate: iroh QUIC transport, CRDT state, self-healing membership, scheduling, routing, persistence, laboon workloads, and a zero-config smartops facade."
+description = "A true 1:1 AWS, local-first and horizontally scalable. Built to give you the democracy to run your own cloud."
 
 [[bin]]
 name = "aws0"
@@ -18,9 +18,8 @@ name = "aws0-fabric-witness"
 path = "src/bin/witness.rs"
 
 [dependencies]
-# Verified against the published 1.5.0 source (src/endpoint.rs, src/protocol.rs,
-# examples/echo.rs). QUIC + hole punching; every inter-node byte is encrypted and
-# authenticated by the endpoint's Ed25519 key, which is also its NodeId.
+# Authenticated transport for capacity that spans more than one machine.
+# Every message is encrypted and bound to an instance identity.
 iroh = "1.5.0"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "io-util", "fs", "process", "net"] }
 serde = { version = "1", features = ["derive"] }

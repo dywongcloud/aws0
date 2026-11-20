@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: CC0-1.0
 
 //! Deterministic scheduler. `reconcile` is a least fixed point: applying it to
-//! its own output produces no new effects (`f compose f == f`). Placement is rendezvous
-//! hashing over live members, so every node independently computes the same
-//! answer from the same CRDT state -- no leader, no consensus, no contention.
+//! its own output produces no new effects (`f compose f == f`). Placement is
+//! deterministic hashing over live capacity, so every instance independently
+//! computes the same answer from the same state -- no leader, no consensus,
+//! no contention.
 
 use crate::crdt::MemberRecord;
 use crate::state::View;
@@ -145,7 +146,7 @@ pub fn reconcile(view: &View, at_ms: u64) -> Result<(View, Vec<Effect>)> {
 }
 
 /// Placement and epoch LWW stamps must be a pure function of the converged
-/// CRDT state, not of the local replica's HLC. Two replicas applying the same
+/// converged state, not of the local replica's HLC. Two replicas applying the same
 /// failure signal therefore write byte-identical registers, and a later join
 /// cannot oscillate between two local clocks. The previous stamp supplies
 /// monotonicity so `Lww::write` always accepts the new value.

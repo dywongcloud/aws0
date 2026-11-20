@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: CC0-1.0
 
-//! The magic facade. A user runs `aws0 up` and gets one AWS-shaped endpoint.
-//! Nothing in this module's public API mentions nodes, QUIC, gossip, CRDTs or
-//! P2P: those are substrate details, entirely hidden.
+//! The one public surface. `aws0 up` gives one AWS-shaped endpoint; callers
+//! see `smart`, `health`, `reset` and `serve`, and nothing about how capacity
+//! is arranged.
 
 use crate::crdt::MemberRecord;
 use crate::net::{admin_capability, idempotency_key, Node, NodeConfig, Shared};
@@ -25,7 +25,7 @@ use tokio::sync::Mutex;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct FabricConfig {
-    /// Directory holding the journal, snapshot, node identity and laboon binary.
+    /// Directory holding the journal, snapshot, instance identity and workload runtime.
     pub data_dir: PathBuf,
     /// Regions this cluster serves. A request's SigV4 region selects one.
     pub regions: Vec<String>,
@@ -33,15 +33,15 @@ pub struct FabricConfig {
     pub accounts: Vec<String>,
     pub bind_host: String,
     pub port: u16,
-    /// Number of substrate nodes booted in-process (horizontal scale).
+    /// Number of instances booted in-process (horizontal scale).
     pub nodes: usize,
-    /// `true` for offline/local mode (no relay, loopback only).
+    /// `true` for local mode (loopback only).
     pub loopback: bool,
     pub capacity_mb: u64,
     /// Key used to sign capabilities. Supplied by configuration/env, never a
     /// literal in this crate.
     pub cluster_secret: Vec<u8>,
-    /// Preinstall the pinned laboon runtime at boot (the default).
+    /// Preinstall the verified workload runtime at boot (the default).
     pub preinstall_runtime: bool,
 }
 
@@ -89,7 +89,7 @@ impl FabricConfig {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Health {
     pub status: &'static str,
-    pub nodes: usize,
+    pub instances: usize,
     pub regions: Vec<String>,
     pub accounts: Vec<String>,
     pub workloads: usize,
@@ -98,8 +98,7 @@ pub struct Health {
     pub runtime_preinstalled: bool,
 }
 
-/// One cluster. Holds every substrate node; callers see only `smart`, `health`,
-/// `reset`, `scope_for` and `serve`.
+/// One cloud. Callers see only `smart`, `health`, `reset` and `serve`.
 #[derive(Debug)]
 pub struct Fabric {
     pub config: FabricConfig,
@@ -112,9 +111,9 @@ pub struct Fabric {
 }
 
 impl Fabric {
-    /// Boot a whole cluster in one call: identity, transport, membership,
-    /// persistence, runtime, and the single front door. Idempotent across
-    /// restarts -- state is recovered from the journal and snapshot.
+    /// Boot your cloud in one call: identity, capacity, persistence,
+    /// workloads and the single front door. Idempotent across restarts:
+    /// state is recovered from the journal and snapshot.
     pub async fn boot(config: FabricConfig) -> Result<Self> {
         config.validate()?;
         std::fs::create_dir_all(&config.data_dir).map_err(|e| Error::Journal(e.to_string()))?;
@@ -391,7 +390,7 @@ impl Fabric {
         Ok(reply)
     }
 
-    /// Read-only health, like `/_ministack/health` but for this substrate.
+    /// Read-only health for the whole cloud.
     pub async fn health(&self) -> Health {
         let mut workloads = 0usize;
         let mut digest = [0u8; 32];
@@ -402,7 +401,7 @@ impl Fabric {
         }
         Health {
             status: "ok",
-            nodes: self.nodes.len(),
+            instances: self.nodes.len(),
             regions: self.config.regions.clone(),
             accounts: self.config.accounts.clone(),
             workloads,
@@ -436,9 +435,9 @@ impl Fabric {
         hashes.windows(2).all(|w| w[0] == w[1])
     }
 
-    /// Per-node state digests, for live anti-entropy diagnostics. Exposes no
-    /// P2P details: the caller sees one hash per node and nothing else.
-    pub async fn node_digests(&self) -> Vec<String> {
+    /// Per-instance state fingerprints for diagnostics. The caller sees one
+    /// hash per instance and nothing else.
+    pub async fn instance_digests(&self) -> Vec<String> {
         let mut hashes = Vec::with_capacity(self.nodes.len());
         for node in &self.nodes {
             hashes.push(hex::encode(node.shared.view.lock().await.digest()));
@@ -446,7 +445,7 @@ impl Fabric {
         hashes
     }
 
-    /// Deterministic owner for a request key, computed from the CRDT state of
+    /// Deterministic owner for a request key, computed from the converged state of
     /// the first node; every node computes the same answer.
     async fn owner_for(&self, key: &[u8]) -> Result<NodeId> {
         let view = self.nodes[0].shared.view.lock().await;
@@ -567,7 +566,7 @@ fn heartbeat_nonce(id: NodeId, at: u64) -> [u8; 16] {
     nonce
 }
 
-/// One cluster-wide heartbeat/failure-detector round. Every transition goes
+/// One capacity-health round. Every transition goes
 /// through `View::apply`; every error becomes a durable audit effect, so no
 /// exception is swallowed in a detached task.
 async fn heartbeat_loop(

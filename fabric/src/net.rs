@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: CC0-1.0
 
-//! iroh transport. Every inter-node message travels over QUIC authenticated by
-//! the endpoint's Ed25519 key; a `NodeId` IS that public key, so a peer cannot
-//! impersonate another node. `Effect` is interpreted only here: `Forward` opens
-//! a real QUIC stream to the resolved owner, `Audit` appends a checksummed
-//! durable record, and neither is ever reported as handled on failure.
+//! The IO boundary. Every message travels on an authenticated channel bound
+//! to an instance identity, so one instance cannot impersonate another.
+//! `Effect` is interpreted only here: `Forward` opens a channel to the
+//! resolved owner, `Audit` appends a checksummed durable record, and neither
+//! is ever reported as handled on failure.
 
 use crate::persistence::Journal;
 use crate::runtime::{WorkloadChild, WorkloadSupervisor};
@@ -22,8 +22,8 @@ use std::path::Path;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
-/// A single smartops frame: 4-byte big-endian length + JSON payload. Bounded so
-/// a malicious peer cannot force an unbounded allocation (p99-bounded graceful).
+/// A single operation frame: 4-byte big-endian length + JSON payload. Bounded so
+/// an untrusted instance cannot force an unbounded allocation (p99-bounded graceful).
 pub const MAX_FRAME: usize = 1 << 20;
 
 /// Audit events are durable records, not log lines. They live in their own
@@ -58,7 +58,7 @@ pub struct Shared {
     pub children: Mutex<Vec<(WorkloadId, NodeId, WorkloadChild)>>,
 }
 
-/// The accepted ALPN handler. It verifies the capability before touching state,
+/// The accepted channel handler. It verifies the capability before touching state,
 /// applies the operation as a pure transition, persists the result, and returns
 /// a reply. No hidden mutation: all mutation is behind `Shared`'s mutexes.
 #[derive(Debug, Clone)]
@@ -242,8 +242,8 @@ fn validate_persist_record(bytes: &[u8]) -> Result<()> {
         .map_err(|e| Error::Protocol(format!("persist record is not a View: {e}")))
 }
 
-/// Resolve a `NodeId` to a usable `EndpointAddr`. `peers` is the boot-time
-/// address table; the membership view is the fallback because each member
+/// Resolve a `NodeId` to a usable `EndpointAddr`. The boot-time address
+/// table is the first source; the membership view is the fallback because each member
 /// carries its own endpoint address. No address is ever fabricated.
 async fn resolve_forward_addr(shared: &Arc<Shared>, target: &NodeId) -> Result<EndpointAddr> {
     {
@@ -289,9 +289,9 @@ async fn resolve_forward_addr(shared: &Arc<Shared>, target: &NodeId) -> Result<E
     }))
 }
 
-/// A real point-to-point forward: the framed smartops request travels over iroh
-/// QUIC to the resolved target, and success is recorded only after the remote
-/// node reports `ok`. Every failure is an error in the report, never a silent
+/// A real direct forward: the framed operation request travels over an
+/// authenticated channel to the resolved target, and success is recorded only
+/// after the remote instance reports `ok`. Every failure is an error in the report, never a silent
 /// success, and a missing address is reported as `Error::Transport`.
 async fn forward_request(
     shared: &Arc<Shared>,
@@ -467,7 +467,7 @@ pub async fn execute(shared: &Arc<Shared>, effects: &[Effect]) -> ExecutionRepor
     }
 }
 
-/// A point-to-point smartops RPC to a peer. Live QUIC, no mocks.
+/// A direct operation call to an instance over a live authenticated channel. No mocks.
 pub async fn send_delta(
     peer: EndpointAddr,
     payload: &[u8],

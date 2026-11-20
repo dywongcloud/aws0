@@ -2,7 +2,7 @@
 
 //! The one state machine. Every transition is a pure morphism
 //! `(view, event) -> (view', effects)`. No transition performs IO; effects are
-//! interpreted by `net::Executor`. `apply` is idempotent under event replay.
+//! interpreted at the single IO boundary. `apply` is idempotent under replay.
 
 use crate::crdt::{AppliedRecord, ClusterState, MemberRecord};
 use crate::types::{
@@ -217,9 +217,9 @@ impl View {
         Ok((next, effects))
     }
 
-    /// Merge a remote state. Pure CRDT join -- no consensus, no leader, no
-    /// coordination. Byzantine-tolerant at the transport (iroh authenticates
-    /// every byte to a NodeId) and at the state (join is monotone).
+    /// Merge a remote state. Pure monotone join -- no consensus, no leader,
+    /// no coordination. Every inbound byte is authenticated to an instance
+    /// identity before it can reach the state layer.
     #[must_use]
     pub fn converge(&self, remote: &ClusterState) -> Self {
         let mut next = self.clone();
@@ -308,7 +308,7 @@ pub fn authorize_partition(scope: &Scope, p: &PartitionKey) -> Result<()> {
 /// the event's workload. Events without an inline partition (scale, delete)
 /// resolve the partition from the replicated workload registry, never from
 /// caller-supplied text; a `PlacementSet` must name the SAME partition as the
-/// workload it places. Cluster-wide membership and anti-entropy events require
+/// workload it places. Cluster-wide membership and state exchange events require
 /// `Scope::ClusterAdmin`. A `Workload(id)` scope is exactly one workload.
 pub fn authorize(cap: &Capability, event: &Event, state: &ClusterState) -> Result<()> {
     if matches!(&cap.scope, Scope::ClusterAdmin) {

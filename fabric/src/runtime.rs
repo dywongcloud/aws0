@@ -1,37 +1,34 @@
 // SPDX-License-Identifier: CC0-1.0
 
-//! Real workload hosting on laboon v0.1.0.
+//! Real workload hosting.
 //!
-//! laboon is a syscall-interception sandbox: guest machine code executes
-//! natively on the host CPU and only its syscall instructions are intercepted.
-//! There is no VM, no second kernel, no daemon, no Docker socket and no root.
-//! That single fact is what lets aws0 boot unmodified OCI images and real
-//! database servers -- PostgreSQL, MySQL, MariaDB, Redis, Valkey, MongoDB,
-//! DuckDB and Kafka -- without Kubernetes and without reimplementing an engine.
-//! The engines below are the actual `postgres`, `mysqld`, `mongod`,
-//! `redis-server` and `kafka-server-start.sh` processes, not modelled subsets.
+//! Guest machine code executes natively on the host CPU; there is no VM, no
+//! second kernel, no daemon and no Docker socket. That single fact is what
+//! lets aws0 boot unmodified images and real database servers -- PostgreSQL,
+//! MySQL, MariaDB, Redis, Valkey, MongoDB, DuckDB and Kafka -- without
+//! reimplementing an engine. The engines below are the actual `postgres`,
+//! `mysqld`, `mongod`, `redis-server` and `kafka-server-start.sh` processes,
+//! not modelled subsets.
 //!
-//! This module performs no IO at import time. [`LaboonRuntime::preinstall`] is
-//! the sole download path and is called explicitly by the CLI. Every process is
-//! spawned from a `Vec<String>` of distinct argv entries; no path, image or
+//! This module performs no IO at import time. The workload runtime is verified
+//! and installed explicitly by the CLI. Every process is spawned from a
+//! `Vec<String>` of distinct argv entries; no path, image or
 //! environment value is ever interpolated into a shell string. User-derived
 //! paths are resolved to absolute paths, rejected when any component begins
 //! with `-`, and separated from tool options by a `--` terminator. The three
 //! host tools are resolved from pinned absolute paths, never from ambient PATH.
 //!
-//! The six pinned SHA-256 values are the byte-exact v0.1.0 release
-//! `checksums.txt` digests, public values from
-//! `https://github.com/samyfodil/laboon/releases/download/v0.1.0/checksums.txt`.
+//! The six pinned SHA-256 values are the byte-exact release digests from the
+//! upstream runtime's published `checksums.txt`.
 //! The implementing contract's inline list truncated three of them; a truncated
 //! literal is not a SHA-256 digest, so the release values below are the sole
-//! authority. The on-disk `laboon.sha256` manifest is only a cache:
-//! [`LaboonRuntime::verify`] recomputes the ARCHIVE digest from the retained
-//! bytes, compares it with the compile-time pin, re-derives the binary digest
-//! from that pinned archive by extracting it again, and compares that digest
-//! with the installed executable. A writable manifest alone can never
-//! authorize a replaced binary.
+//! authority. The on-disk checksum manifest is only a cache: `verify`
+//! recomputes the archive digest from the retained bytes, compares it with the
+//! compile-time pin, re-derives the executable digest from that archive by
+//! extracting it again, and compares it with the installed executable.
+//! A writable manifest alone can never authorize a replaced binary.
 //!
-//! An empty `egress_allowlist` selects laboon's default loopback-only posture:
+//! An empty `egress_allowlist` selects the runtime's default loopback-only posture:
 //! neither `-net` nor `-no-net` is emitted. `-no-net` removes INET sockets
 //! entirely, so it would stop a database server from binding 127.0.0.1. A
 //! non-empty allowlist compiles to `-net -allow-domains` plus the fixed

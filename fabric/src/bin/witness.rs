@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: CC0-1.0
 
 //! Live witnessed verification. No mocks, no fakes, no synthetic test files:
-//! this binary boots real iroh QUIC endpoints, runs real CRDT joins over real
-//! sockets, exercises real journal I/O and checks the pinned laboon runtime.
-//! Every claim is `(id, ts, hash)` witnessed.
+//! this binary boots real capacity, exercises real persistence and checks the
+//! bundled workload runtime. Every claim is `(id, ts, hash)` witnessed.
 
 use aws0_fabric::crdt::{check_join_laws, check_member_freshness, ClusterState, GCounter, Lww, MemberRecord, OrSet, VersionVector};
 use aws0_fabric::facade::{simple_workload, Fabric, FabricConfig};
@@ -414,10 +413,10 @@ async fn main() -> Result<()> {
     cfg.preinstall_runtime = true;
     let fabric = Fabric::boot(cfg).await?;
     let health = fabric.health().await;
-    check!(out, "facade-health", health.status == "ok" && health.nodes == 3, json!(health));
+    check!(out, "facade-health", health.status == "ok" && health.instances == 3, json!(health));
     let converged = fabric.converged().await;
-    let digests = fabric.node_digests().await;
-    check!(out, "facade-converged", converged, json!({"nodes": health.nodes, "digests": digests}));
+    let digests = fabric.instance_digests().await;
+    check!(out, "facade-converged", converged, json!({"instances": health.instances, "digests": digests}));
     let created = fabric
         .smart("000000000000", "us-east-1", SmartOp::Create(simple_workload("pg", "postgres:16", "000000000000", "us-east-1", 2)?), None)
         .await?;

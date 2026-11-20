@@ -8,7 +8,7 @@ use sha2::{Digest, Sha256};
 use std::fmt;
 use std::str::FromStr;
 
-/// A node identity: the raw 32-byte Ed25519 public key of its iroh endpoint.
+/// A node identity: the raw 32-byte Ed25519 public key of its transport endpoint.
 /// Authentication and encryption of every inter-node byte are bound to it.
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct NodeId(pub [u8; 32]);
@@ -26,7 +26,7 @@ impl NodeId {
     pub fn short(&self) -> String {
         hex::encode(&self.0[..4])
     }
-    /// Deterministic, parameterised rendezvous score. No ambient randomness:
+    /// Deterministic, parameterised owner score. No ambient randomness:
     /// the same `(node, key)` pair always yields the same score everywhere.
     #[must_use]
     pub fn rendezvous_score(&self, key: &[u8]) -> [u8; 32] {
@@ -54,7 +54,7 @@ impl fmt::Debug for NodeId {
 }
 
 /// Hex-string wire form. Serde JSON map keys must be strings; `NodeId` is used
-/// as a `BTreeMap` key in the CRDT counters and version vectors, so a byte array
+/// as a `BTreeMap` key in the state counters and version vectors, so a byte array
 /// would make the whole state (and its digest) unserializable. The encoding is
 /// total and canonical: 64 lowercase hex chars, no prefix.
 
@@ -179,7 +179,7 @@ impl fmt::Debug for WorkloadId {
 }
 
 /// All three wire forms decode through their validating constructor. Without
-/// this, a hostile gossip or HTTP payload could carry a 12-byte account id
+/// this, a hostile state exchange or HTTP payload could carry a 12-byte account id
 /// with a NUL, a region with a fake length prefix, or a workload id that
 /// escapes the routing-key partition boundary.
 impl<'de> Deserialize<'de> for AccountId {
@@ -567,9 +567,9 @@ pub struct Placement {
 pub enum Effect {
     /// Append a durable record (journal + snapshot bookkeeping).
     Persist(Vec<u8>),
-    /// Disseminate a state delta to peers over iroh gossip.
+    /// Disseminate a state delta to instances over internal state exchange.
     Broadcast(Vec<u8>),
-    /// Start a workload through the laboon supervisor.
+    /// Start a workload through the runtime supervisor.
     StartWorkload(WorkloadSpec, NodeId),
     /// Stop a workload on a node.
     StopWorkload(WorkloadId, NodeId),

@@ -542,7 +542,7 @@ fn read_node_id(dir: &Path) -> Result<Option<NodeId>> {
 
 /// Bind a journal directory to exactly one derived node identity. The first
 /// boot publishes the id through an exclusive create; later boots must present
-/// the same id, because every CRDT dot and HLC stamp is keyed by it. A stale or
+/// the same id, because every state dot and HLC stamp is keyed by it. A stale or
 /// foreign `node.id` is an error instead of a phantom second identity.
 pub fn bind_identity(dir: &Path, id: &NodeId) -> Result<()> {
     std::fs::create_dir_all(dir).map_err(|e| io_error("create journal directory", e))?;

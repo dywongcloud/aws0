@@ -78,16 +78,14 @@ path used here. The complete family tables are in PARITY-CENSUS.md.
 
 - docs/PARITY-CENSUS.md, BACKLOG.json, PARITY-REPORT.md, CRITIC.md,
   LINKEDIN-POST.txt, WITNESS-OUTPUT.json, findings/*.json, contracts/*
-- fabric/: a nested Cargo workspace implementing the self-hosted substrate:
-  iroh QUIC transport, CRDT state, membership, scheduling, routing, journal
-  and snapshot persistence, laboon runtime supervision, smartops protocol,
-  and a one-command facade that hides every peer-to-peer detail.
-- WITNESS-OUTPUT.json: 36 live witnesses over real QUIC sockets, real journal
-  I/O, real laboon OCI workloads and the repaired security surfaces, all
-  passing.
-- fabric/runtime/: all six byte-verified v0.1.0 laboon release archives
-  are vendored, so a first boot needs no network. `preinstall_runtime` is
-  true by default; `--no-preinstall-runtime` is the explicit opt-out.
+- fabric/: the local-first, horizontally scalable cloud runtime. Real
+  databases and containers, isolated regions, restart-safe state and
+  self-healing capacity behind one command.
+- WITNESS-OUTPUT.json: 36 live witnesses over real capacity, real persistence
+  and the repaired security surfaces, all passing.
+- fabric/runtime/: the six byte-verified runtime archives ship with the
+  emulator, so a first boot needs no network. `preinstall_runtime` is true by
+  default; `--no-preinstall-runtime` is the explicit opt-out.
 - ADVERSARIAL-REFUTATION.md: the refutation ledger, the repairs made in
   response, and the residual holes that remain open.
 

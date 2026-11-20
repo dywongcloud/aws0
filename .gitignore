@@ -35,3 +35,4 @@ __pycache__/
 
 # Transient research scratch written into the checkout by workflow agents
 fabric/*.txt
+fabric/*.json

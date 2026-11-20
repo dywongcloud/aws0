@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: CC0-1.0
 
-//! Smartops: a small, declarative, protocol-defined operation algebra.
+//! Operations: a small, declarative, closed algebra.
 //!
-//! A smartop is a total function from `(View, SmartRequest)` to `(View,
-//! SmartReply, Vec<Effect>)`. The protocol is fixed by [`SmartOp`]; there is no
-//! plugin surface, no reflection, no dynamic dispatch, and no ambient state.
-//! Idempotency keys give exactly-once semantics: replaying a request returns
-//! the stored reply without re-running the transition.
+//! One operation is a total function from `(View, SmartRequest)` to `(View,
+//! SmartReply, Vec<Effect>)`. The set of operations is fixed by [`SmartOp`];
+//! there is no plugin surface, no reflection, no dynamic dispatch, and no
+//! ambient state. Idempotency keys give exactly-once semantics: replaying a
+//! request returns the stored reply without re-running the transition.
 
 use crate::crdt::MemberRecord;
 use crate::state::{authorize, event_key, Event, View};
@@ -31,7 +31,7 @@ pub enum SmartOp {
     Migrate { id: WorkloadId, to: NodeId },
     /// Drain a node: mark it leaving and re-place everything on it.
     Drain(NodeId),
-    /// Anti-entropy: merge a remote CRDT state.
+    /// State exchange: merge a remote converged state.
     Converge(Box<crate::crdt::ClusterState>),
     /// Read-only introspection.
     Status,
@@ -254,7 +254,7 @@ fn read_only(view: &View, op: &SmartOp, at_ms: u64) -> serde_json::Value {
     }
 }
 
-/// The smartops protocol has no cycles: every op is a single transition with a
+/// The operation protocol has no cycles: every op is a single transition with a
 /// fixed dependency on exactly one view. This function checks a batch for
 /// duplicate idempotency keys, which is the only structural failure mode.
 pub fn validate_batch(requests: &[SmartRequest]) -> Result<()> {
@@ -305,15 +305,14 @@ pub fn status_request(capability: Capability, label: &str, seq: u64) -> SmartReq
     }
 }
 
-/// Protocol version. Kept explicit so a wire peer can refuse a mismatch
-/// instead of silently misinterpreting bytes.
+/// Public API version reported by the health endpoint.
 #[must_use]
 pub fn protocol_version() -> serde_json::Value {
     serde_json::json!({
-        "alpn": String::from_utf8_lossy(ALPN).to_string(),
+        "api": "aws",
         "version": 1,
-        "max_frame": crate::net::MAX_FRAME,
-        "ops": ["Join","Leave","Create","Scale","Delete","Migrate","Drain","Converge","Status","Health","Snapshot","Replay"],
+        "local_first": true,
+        "horizontal_scale": true
     })
 }
 

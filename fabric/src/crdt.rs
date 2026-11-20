@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: CC0-1.0
 
-//! State-based CRDTs. Every `join` is a total, pure join-semilattice morphism:
-//! `join(x,x)=x`, `join(x,y)=join(y,x)`, `join(join(x,y),z)=join(x,join(y,z))`.
-//! A value conflict is resolved by `CanonicalRank`: a deterministic byte rank
-//! over every field of the payload, never by a `Debug` string or by the order
-//! in which two replicas happened to merge. `max` over that rank is symmetric,
-//! so first-writer-wins cannot survive a three-replica merge.
+//! Convergent state values. Every `join` is a total, pure join-semilattice
+//! morphism: `join(x,x)=x`, `join(x,y)=join(y,x)`,
+//! `join(join(x,y),z)=join(x,join(y,z))`. A value conflict is resolved by
+//! `CanonicalRank`: a deterministic byte rank over every field of the
+//! payload, never by a `Debug` string or by merge order. `max` over that
+//! rank is symmetric, so first-writer-wins cannot survive a three-way merge.
 
 use crate::types::{
     digest, Epoch, Hlc, NodeId, PartitionKey, Placement, Region, Result, WorkloadId,
@@ -438,7 +438,7 @@ impl ClusterState {
     }
 
     /// Reject membership clocks that claim a future beyond the permitted skew.
-    /// This is a transport boundary check: a Byzantine peer must not be able to
+    /// This is a transport boundary check: an untrusted instance must not be able to
     /// pin a member alive forever with `u64::MAX`.
     pub fn validate_member_clocks(&self, now_ms: u64) -> Result<()> {
         const MAX_CLOCK_SKEW_MS: u64 = 60_000;

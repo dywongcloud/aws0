@@ -1,4 +1,19 @@
-# AWS Emulator README
+# aws0
+
+**A true 1:1 AWS. Local-first. Horizontally scalable.**
+Built to give you the democracy to run your own cloud.
+
+One command gives you an AWS-shaped endpoint on your own machine. Real
+databases and containers boot as real processes, capacity grows with the
+machines you add, regions stay isolated, state survives restarts, and failed
+capacity heals itself. No control plane to operate, no account, no
+subscription, no vendor.
+
+Quick start and the full command reference: [fabric/README.md](fabric/README.md).
+
+---
+
+## Reference: AWS Emulator README
 
 AWS Emulator is a local emulator of the AWS APIs. You use it to test your software without calling AWS, on your own machine, on a development server, or in continuous integration (CI). You don’t need an AWS account. Your requests go to the emulator, not to AWS. So you work with emulated resources instead of AWS resources. AWS Emulator has no additional service fee. You pay only for AWS resources when you deploy on AWS.
 

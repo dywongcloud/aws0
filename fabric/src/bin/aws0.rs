@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: CC0-1.0
 
-//! `aws0` -- one command. `aws0 up` is all a user needs; the P2P substrate is
-//! entirely hidden. `aws0 witness` runs the live verification suite.
+//! `aws0` -- one command for your own AWS. `aws0 up` is all a user needs.
+//! `aws0 witness` runs the live verification suite.
 
 use aws0_fabric::facade::{simple_workload, Fabric, FabricConfig};
 use aws0_fabric::smartops::SmartOp;
@@ -19,7 +19,7 @@ async fn main() -> Result<()> {
             admin(command, &args).await
         }
         "version" => {
-            println!("aws0-fabric 0.1.0 / iroh 1.5.0 / laboon 0.1.0");
+            println!("aws0 0.1.0 -- a true 1:1 AWS, local-first, horizontally scalable");
             Ok(())
         }
         other => {
@@ -62,7 +62,7 @@ fn config_from_env(args: &[String]) -> Result<FabricConfig> {
         .unwrap_or(4566);
     c.nodes = args
         .iter()
-        .position(|a| a == "--nodes")
+        .position(|a| a == "--instances")
         .and_then(|i| args.get(i + 1))
         .and_then(|s| s.parse::<usize>().ok())
         .unwrap_or(3);
@@ -113,7 +113,7 @@ fn cluster_secret(data_dir: &std::path::Path) -> Result<Vec<u8>> {
 async fn up(args: &[String]) -> Result<()> {
     let config = config_from_env(args)?;
     let fabric = Fabric::boot(config).await?;
-    println!("aws0 up: {} nodes across {} regions, endpoint {}", fabric.nodes.len(), fabric.config.regions.len(), fabric.endpoint_url());
+    println!("aws0 up: {} instances across {} regions, endpoint {}", fabric.nodes.len(), fabric.config.regions.len(), fabric.endpoint_url());
     let health = fabric.health().await;
     println!("{}", serde_json::to_string_pretty(&health).map_err(|e| aws0_fabric::types::Error::Protocol(e.to_string()))?);
     fabric.serve().await
