@@ -70,6 +70,16 @@ critique is in CRITIC.md. The complete ledger is BACKLOG.json.
 | service crates | 440 |
 | claim rows | 13,041 |
 
+The external deep-research workflow (`wf_0d66ebf3-c33`, 99 agents, 17
+primary/forum/blog sources, 13 confirmed findings and 12 refuted claims)
+independently reached the same conclusion: upstream officially disclaims full
+fidelity and states that real AWS, not upstream, is the correctness baseline.
+Its receipt is DEEP-RESEARCH.md and DEEP-RESEARCH.json. It also records that
+the fork is time-dependent: identical to upstream at census commit ec5f6fbab,
+six commits ahead at fce38d0c0. Findings 1 and 2 of that report are the
+authoritative scope statement; the product copy in README.md is positioning,
+not a measured conformance result.
+
 Full workspace build needs about 100 GiB for target/. Per-crate verification
 with CARGO_PROFILE_DEV_DEBUG=0 and CARGO_INCREMENTAL=0 is the hardware-bounded
 path used here. The complete family tables are in PARITY-CENSUS.md.
@@ -88,6 +98,8 @@ path used here. The complete family tables are in PARITY-CENSUS.md.
   default; `--no-preinstall-runtime` is the explicit opt-out.
 - ADVERSARIAL-REFUTATION.md: the refutation ledger, the repairs made in
   response, and the residual holes that remain open.
+- DEEP-RESEARCH.md, DEEP-RESEARCH.json: the independent multi-source research
+  receipt, its 13 verified claims, 12 refuted claims, caveats and sources.
 
 ## 7. Provenance hashes
 

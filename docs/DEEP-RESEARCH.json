@@ -1,0 +1,379 @@
+{
+  "agents": 99,
+  "caveats": "MERGE MAP: confirmed claims [0]+[1] merge into the official-scope/disclaimer finding; [2]+[3] merge into the Region/account-and-validation finding; [5]+[6]+[7] merge into the single GetRecords contract finding; [8]/[9]/[10] are grouped as DynamoDB error-handling; [11]/[12] are grouped as SNS. CONFIDENCE: two surviving claims carried split 2-1 votes (HTTP 400 vs 5xx retry classification; SMS sandbox default) and are therefore medium, not high; the LinkedIn finding is low because it rests on one blog-quality, edited, competitor-affiliated source plus self-reported internal docs. REFUTED \u2014 do not report as findings: all 12 transparency-list claims failed verification (votes 0-3 or 1-2), including the zero-diff fork==upstream identity claim (independently falsified locally, but only as of 2026-11-20), the HTTP 501 NotImplemented contract, uneven control/data-plane and IaC fidelity framing, api-models-aws coverage scope, Lambda Invoke returning NotImplemented, the SigV4-signing-name AmbiguousService router defect, CloudFront CreateDistribution validation, DynamoDB Streams 24-hour trim/TrimmedDataAccessException, exact x-amz-json-1.0/x-amzn-RequestId/__type/lowercase-message wire contract, SNS 256 KiB-to-1 MiB byte caps and SMS segment rules, Publish one-of-three destination routing with cross-Region rejection, and the SMS sandbox \"all features available but unverified-number Publish must fail\" contract. UNSOURCED GLOSS: the tails \"older emulators commonly omit\", \"commonly missing from emulators\", \"relatively recent\" and \"large/continuously growing\" are hedged inferences, not primary-source facts; upstream was created 2026-09-11, after the Aug-2025 ThrottlingReasons launch, and implements that surface already. WIRE-LEVEL PRECISION: the ExpiredIteratorException \"message: The provided iterator exceeds the maximum age allowed.\" is a doc description of the message member, not a guaranteed wire string (live AWS sent \"Shard iterator has expired\"); GetRecords Limit=1000 is documentation prose plus a runtime check, not a modeled Smithy/botocore max (only min:1 is modeled); \"1 MB\" is not defined as total HTTP body size; ThrottlingReason is one concatenated reason string, not three fields; batch partial-failure tolerance covers processing-time failures, not malformed-request validation; SDKs use error-code-first retry classifiers beyond the developer guide's 14-entry table. LEDGER CAVEATS: \"issues page\" is ambiguous \u2014 the in-repo issues/ corpus (5,356 do-not-work + 17,672 now-work = 23,028 at main ec5f6fbab) is commit-pinned, while the GitHub Issues tab is a separate ~574 numbered / 518 open corpus that is not commit-pinned; the fork's own census counted 5,355/17,671 documents (a one-file offset from non-timestamped files); only 98.4%/99.6% of docs carry the pin-plus-drift note and some pins are `mainline`/`pending`; the do-not-work tree actually shrank from 7,008 (11-12) to 5,356 (11-19) as fixes were moved out, so \"continuously growing\" is true of the combined ledger only; \"each on its own port\" applies to local-process/Docker mode, while embedded mode uses in-process instances. TIME-SENSITIVITY: all findings are pinned to 2026-11-19/20; upstream ships many releases per day (v1.0.533), its gap ledger changed within 12 hours on 11-19, and the fork pushed six commits between 09:42Z and 10:17Z on 11-20 \u2014 every comparison must be re-pinned to a commit and timestamp. LOCAL EVIDENCE SCOPE: fork-divergence findings come from the clone at /Users/dylanwong/projects/aws0-2026-11-19/aws0 and the GitHub compare/issues APIs on 2026-11-20; no live AWS calls were made in this synthesis step. The fork's fabric/ is a separate nested Cargo workspace whose own ADVERSARIAL-REFUTATION.md admits its HTTP front door exposes only health, status and reset and still needs a full SigV4-authenticated front door, so its \"region isolation / restart-safe state / AWS-compatible endpoint\" claims describe the substrate, not the inherited AWS API surface; /Users/dylanwong/projects/aws0-2026-11-19/aws0/docs/PARITY-REPORT.md and /Users/dylanwong/projects/aws0-2026-11-19/aws0/docs/ADVERSARIAL-REFUTATION.md are self-reported ledgers with a documented coverage gap (only 3.76% of 13,041 claim rows cross-cited; 296/331 open-doc families, 43/63 GitHub families and 140/247 stub families uncited; all 17,671 fixed docs contribute zero rows), so their 188 lens findings and 36 witnesses are not 3-vote-verified parity evidence. Finally, \"1:1\" is upstream's stated aspiration (\"aims for full fidelity\"), never a promise: real AWS, not upstream, is the correctness baseline, and upstream asks users to file issues for any behavior differing from AWS.",
+  "findings": [
+    {
+      "claim": "Fork-vs-upstream identity is time-dependent, not a static fact: at the 2026-11-19T23:54Z census commit ec5f6fbab the two main branches were identical, but as of 2026-11-20T10:17Z dywongcloud/aws0 main is a strict 6-commit, 75-file descendant of aws/aws-emulator main (ahead_by 6, behind_by 0), so the 'zero-diff fork' claim was correctly refuted and every comparison must be pinned to a commit plus a timestamp.",
+      "confidence": "high",
+      "evidence": "GitHub compare API returns status 'ahead', ahead_by 6, behind_by 0, total_commits 6; upstream main is ec5f6fbab9238221b966379f06846c34e9d6a6f5 (2026-11-19T23:54:13Z) while fork main is fce38d0c06669ba958278dac1416ffdd713464d9 (2026-11-20T10:17:30Z, pushed_at 10:17:33Z). Locally, git diff --stat ec5f6fbab..fce38d0c0 = 75 files, 19,096 insertions / 138 deletions: rewritten README, 40+ new docs/findings/design/contracts files, a nested fabric/ Cargo workspace with six vendored laboon runtime archives, and exactly one changed emulator service file. The fork's own docs/PARITY-REPORT.md records 'Zero diff at census time', and verifier evidence for the ledger and SMS-sandbox claims used the same identical HEAD, so both snapshots are true at their respective times. GitHub repo description is now 'an actual 1:1 local aws'.",
+      "sources": [
+        "https://api.github.com/repos/aws/aws-emulator/compare/main...dywongcloud:aws0:main",
+        "https://github.com/dywongcloud/aws0",
+        "https://github.com/aws/aws-emulator",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/docs/PARITY-REPORT.md",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/README.md"
+      ],
+      "vote": "identity claim refuted 0-3; divergence re-verified locally 2026-11-20"
+    },
+    {
+      "claim": "Upstream officially defines AWS Emulator as a local-only build/test emulator (no AWS account, requests go to the emulator rather than AWS, no extra service fee, default bind 127.0.0.1:9297) and explicitly disclaims full 1:1 parity: IAM and resource-based policies are not evaluated as AWS does, fidelity varies by service and feature, and it must not be used for production or security testing. Real AWS, not upstream, is therefore the 1:1 contract baseline.",
+      "confidence": "high",
+      "evidence": "Near-verbatim from the current AWS 'What is AWS Emulator?' page (Last-Modified 2026-11-19) and the upstream README; corroborated by security.html (explicit don't-test list and 'test your security settings on real AWS'), setting-up.html, fidelity.html ('aims for full fidelity'), versioning.html and check-project.html. GitHub API confirms the repo description, homepage, creation date 2026-09-11, non-archived status and continuous releases through v1.0.533. Upstream also asks users to open issues for any behavior differing from AWS, so the disclaimer limits achieved parity, not the obligation to fix divergences.",
+      "sources": [
+        "https://docs.aws.amazon.com/emulator/latest/userguide/what-is-service.html",
+        "https://docs.aws.amazon.com/emulator/latest/userguide/security.html",
+        "https://docs.aws.amazon.com/emulator/latest/userguide/fidelity.html",
+        "https://docs.aws.amazon.com/emulator/latest/userguide/setting-up.html",
+        "https://raw.githubusercontent.com/aws/aws-emulator/main/README.md",
+        "https://api.github.com/repos/aws/aws-emulator"
+      ],
+      "vote": "3-0 (merges confirmed claims 0 and 1)"
+    },
+    {
+      "claim": "The fork's rewritten root README ('A true 1:1 AWS. Local-first. Horizontally scalable') and its new one-command quick start are a concrete UX/DX incongruency with both upstream's documented scope and the fork's own measured residual: docs/PARITY-REPORT.md states '1:1 AWS parity is NOT achieved' with 5,355 open in-repo gap documents, 518 open GitHub issues, 7,011 true marker stubs and 440 service crates, while the quick start changed from AWS CLI/SDK endpoint env vars and embedded mode to 'cd fabric; cargo run --bin aws0 -- up' on port 4566.",
+      "confidence": "high",
+      "evidence": "The 14-line fork README replaced a 137-line upstream README carrying the build/test disclaimer, the Known issues ledger pointer and build instructions; the upstream text is preserved verbatim (ASCII-normalized) at docs/UPSTREAM-README.md. Commit 29794b408 explicitly scrubbed substrate vocabulary from the public surface and commit fce38d0c0 made the root README 'purely product-facing'. Fork README and fabric/README.md assert 'regions stay isolated, state survives restarts' and an 'AWS-compatible endpoint', conflicting with upstream's one-Region/one-account, no-isolation model; the fork's own docs/ADVERSARIAL-REFUTATION.md section 4 concedes its HTTP front door exposes only health, status and reset and still requires a full SigV4-authenticated front door.",
+      "sources": [
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/README.md",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/fabric/README.md",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/docs/UPSTREAM-README.md",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/docs/PARITY-REPORT.md",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/docs/ADVERSARIAL-REFUTATION.md",
+        "https://docs.aws.amazon.com/emulator/latest/userguide/what-is-service.html"
+      ],
+      "vote": "locally verified (outside the 13-claim vote set)"
+    },
+    {
+      "claim": "Upstream's documented request/state contract is one Region and one account (any Region and account ID is accepted but resources are not isolated by Region or account; the emulated account is 000000000000; multi-Region testing requires a separate emulator instance per Region on its own port), and behaviour is verified only in us-west-2 (us-east-1 for global services) with cross-Region service/feature availability differences not reflected \u2014 a hard limit on any 'up-to-date, 1:1 AWS behaviour' claim that the fork inherits.",
+      "confidence": "high",
+      "evidence": "Verbatim Limitations bullets on what-is-service.html, corroborated by point-sdk-to-emulator.html ('The emulator uses one account, 000000000000'), cli-reference.html, getting-started-embedded.html and fidelity.html. Open upstream issues document the real consequences: #567 (7 unsupported service/Region combinations in ap-southeast-6/7 accepted and answered as us-east-1, no Region availability check at source commit c86d8b54a4), #531, #425, #455, #411 and #334. All 67 published releases from 2026-11-07 to 2026-11-20 were scanned: only per-service region-scoping fixes, no lifting of the one-Region/one-account limit; CLI reference exposes no region or account option.",
+      "sources": [
+        "https://docs.aws.amazon.com/emulator/latest/userguide/what-is-service.html",
+        "https://docs.aws.amazon.com/emulator/latest/userguide/point-sdk-to-emulator.html",
+        "https://docs.aws.amazon.com/emulator/latest/userguide/cli-reference.html",
+        "https://docs.aws.amazon.com/emulator/latest/userguide/getting-started-embedded.html",
+        "https://docs.aws.amazon.com/emulator/latest/userguide/fidelity.html",
+        "https://github.com/aws/aws-emulator/issues/567",
+        "https://github.com/aws/aws-emulator/issues/531",
+        "https://github.com/aws/aws-emulator/issues/334"
+      ],
+      "vote": "3-0 (merges confirmed claims 2 and 3)"
+    },
+    {
+      "claim": "The upstream issues page is not a curated shortlist but a roughly 23,028-file, commit-pinned, fast-moving ledger: at main ec5f6fbab on 2026-11-19, issues/things-that-do-not-work held 5,356 entries and issues/things-that-now-work held 17,672, ~98-99% of docs carry a pin-plus-drift warning with a 40-hex commit hash, and fixed gaps are renamed into the sibling directory rather than deleted \u2014 so any fork-vs-upstream incongruency list is a moving target.",
+      "confidence": "high",
+      "evidence": "The authenticated GitHub Git Trees API returned exactly 5,356 and 17,672 with truncated:false, matching the tree pages' '1,000 files / 4,356 entries were omitted' and '1,000 files / 16,672 entries were omitted'; the local clone's counts match. Do-not-work filenames are timestamped 20261021T223000Z through 20261119T235338Z spanning all 30 dates; sampled pin hashes resolve via the commits API; 8/8 sampled fix commits show status 'renamed' with previous_filename under do-not-work. Combined ledger grew 468 (10-22) to 9,498 (10-28) to 16,081 (11-05) to 19,961 (11-12) to 22,330 (11-18) to 23,028 (11-19 23:59), and counts changed within 12 hours on 11-19 (5,410/17,447 to 5,356/17,672). Distinct from the GitHub Issues tab (~574 numbered, 518 open).",
+      "sources": [
+        "https://github.com/aws/aws-emulator/tree/main/issues/things-that-do-not-work",
+        "https://github.com/aws/aws-emulator/tree/main/issues/things-that-now-work",
+        "https://raw.githubusercontent.com/aws/aws-emulator/main/README.md",
+        "https://github.com/aws/aws-emulator/issues",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/issues/things-that-do-not-work",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/docs/PARITY-REPORT.md"
+      ],
+      "vote": "3-0"
+    },
+    {
+      "claim": "DynamoDB Streams GetRecords has one testable 1:1 contract: exactly two request members (required ShardIterator, String of length 1-2048; optional Limit, Integer minimum 1 with a documented/runtime upper bound of 1000), a response bounded by 1 MB of data or 1000 stream records whichever comes first, and a shard iterator that expires 15 minutes after GetShardIterator and then yields ExpiredIteratorException with HTTP 400.",
+      "confidence": "high",
+      "evidence": "Primary API_streams_GetRecords.html plus CLI v2 reference, the current botocore service-2.json (GetRecordsInput has exactly two members), Go SDK v2 docs and the fork's bundled Smithy model with bound-refusal tests; fork's now-work corpus records AWS refusing Limit=1001 with 'Limit should be less than or equal to 1000'. Expiry is corroborated by API_streams_GetShardIterator.html, the botocore error model and live-AWS measurements (valid at 14m30s, 400 ExpiredIteratorException at 15m20s) from ExtendDB and Floci; fork get_records.rs implements a 900 s TTL. Open upstream issue #571 (2026-11-20) reports real AWS still delivering after ~17 idle minutes while the emulator's Pipes DynamoDB-stream source stalls on ExpiredIteratorException \u2014 a genuine shared behaviour gap relevant to both fork and upstream.",
+      "sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_streams_GetRecords.html",
+        "https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_streams_GetShardIterator.html",
+        "https://docs.aws.amazon.com/cli/latest/reference/dynamodbstreams/get-records.html",
+        "https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/dynamodbstreams/2012-08-10/service-2.json",
+        "https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/dynamodbstreams#GetRecordsInput",
+        "https://github.com/ExtendDB/extenddb/pull/634",
+        "https://github.com/floci-io/floci/issues/4522",
+        "https://github.com/aws/aws-emulator/issues/571",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-dynamodbstreams-dynamodbstreams-20120810/src/ops/get_records.rs"
+      ],
+      "vote": "3-0 (merges confirmed claims 5, 6 and 7)"
+    },
+    {
+      "claim": "AWS's DynamoDB developer guide classifies HTTP 400 as a client-side request problem (including throttling) and 5xx as AWS-side, names only InternalServerError (500) and ServiceUnavailable (503) as 5xx errors, advises non-SDK clients to retry 5xx but not 4xx except ThrottlingException and ProvisionedThroughputExceededException, and gives each of its 14 named 400 exceptions an explicit 'OK to retry? Yes/No' flag.",
+      "confidence": "medium",
+      "evidence": "Live Programming.Errors.html (Last-Modified 2026-11-19, includes newer MRSC/ReplicatedWriteConflictException material) parsed between the http400/http5xx anchors yields exactly 14 named 400 entries with 14 retry flags and exactly two named 5xx entries, both 'Yes'. An official re:Post 5xx article agrees on retry with exponential backoff. This is a developer-guide classification with a split 2-1 verification vote, not an exhaustive wire contract: SDKs use error-code-first retry classifiers and broader AWS pages list additional status codes.",
+      "sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.Errors.html",
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ErrorHandling.html"
+      ],
+      "vote": "2-1"
+    },
+    {
+      "claim": "DynamoDB batch operations tolerate partial failure: individual GetItem/PutItem/DeleteItem processing failures do not fail BatchGetItem/BatchWriteItem (but failure of all sub-requests does), the unprocessed residue is returned in UnprocessedKeys / UnprocessedItems, and clients should retry that residue with exponential backoff.",
+      "confidence": "high",
+      "evidence": "Verbatim from Programming.Errors.html and the alias ErrorHandling.html, independently corroborated by API_BatchGetItem.html ('If at least one of the items is successfully processed, then BatchGetItem completes successfully, while returning the keys of the unread items in UnprocessedKeys') and API_BatchWriteItem.html. The fork's now-work corpus records AWS-measured replays on 1-WCU PROVISIONED tables: partial 25-request batches answer HTTP 200 with exactly the withheld PutRequest/DeleteRequest entries in UnprocessedItems, while all-throttled batches return ProvisionedThroughputExceededException. Scope: processing-time failures (throttling/internal processing), not malformed-request validation.",
+      "sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.Errors.html",
+        "https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BatchGetItem.html",
+        "https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BatchWriteItem.html",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/issues/things-that-now-work/20261028T090135Z-dynamodb-the-batchwriteitem-provisioned-write-capacity-check-reaches.md"
+      ],
+      "vote": "3-0"
+    },
+    {
+      "claim": "Current DynamoDB throttling errors (ProvisionedThroughputExceededException, RequestLimitExceeded, ThrottlingException) carry a structured ThrottlingReasons list of {reason, resource} where reason is a concatenated ResourceType+OperationType+LimitType code and resource is the affected table/index ARN \u2014 an August-2025 contract surface that upstream already implements and the fork leaves byte-identical, so it is NOT a fork-vs-upstream incongruency.",
+      "confidence": "high",
+      "evidence": "Three rows on Programming.Errors.html; the botocore develop model defines ThrottlingReasonList with the documented reason format and ARN; AWS SDK .NET issue #3996 (2025-09-03) shows the JSON wire body with ThrottlingReasons; the AWS Database Blog of 15 AUG 2025 announces 'Starting today, every throttled request will contain a new field' and DocumentHistory (2025-09-14) records it, while pre-Aug-2025 botocore tags have zero occurrences. Upstream state.rs:3891 constructs ThrottlingReason{reason, resource}; the fork's entire diff touches only the SNS state.rs, so the DynamoDB file is unchanged. The claim's tail 'older emulators commonly omit' is unsourced and inapplicable here because upstream was created after the launch.",
+      "sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.Errors.html",
+        "https://aws.amazon.com/blogs/database/enhanced-throttling-observability-in-amazon-dynamodb/",
+        "https://github.com/aws/aws-sdk-net/issues/3996",
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/throttling-diagnosing-workflow.html",
+        "https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/dynamodb/2012-08-10/service-2.json",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-dynamodb-dynamodb-20120810/src/state.rs"
+      ],
+      "vote": "3-0"
+    },
+    {
+      "claim": "SNS FIFO Publish has a specific current contract \u2014 MessageGroupId mandatory on FIFO topics, MessageDeduplicationId or ContentBasedDeduplication mandatory, a 5-minute minimum deduplication interval, duplicates accepted successfully but not delivered, dedup scope governed by FifoThroughputScope (Topic vs MessageGroup), content-based dedup as SHA-256 of the body only (not attributes) with a supplied ID overriding it \u2014 and on standard topics MessageGroupId is now valid solely to activate SQS fair queues; this is a parity yardstick upstream and fork both satisfy, not a fork divergence.",
+      "confidence": "high",
+      "evidence": "API_Publish.html (Last-Modified 2026-11-19) states every clause; API_SetTopicAttributes.html, API_CreateTopic.html, fifo-message-dedup.html and sqs-fair-queues.html corroborate; boto3 1.44.6 reproduces the parameter text. Both HEADs implement the rules in the SNS ops/publish.rs and state.rs. The trailing 'commonly missing from emulators' gloss is historical rather than current: the cited LocalStack issues #8145/#10084/#12898/#13008 and Floci PR #3181 are closed, and no primary AWS source establishes prevalence.",
+      "sources": [
+        "https://docs.aws.amazon.com/sns/latest/api/API_Publish.html",
+        "https://docs.aws.amazon.com/sns/latest/api/API_SetTopicAttributes.html",
+        "https://docs.aws.amazon.com/sns/latest/dg/fifo-message-dedup.html",
+        "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-fair-queues.html",
+        "https://docs.aws.amazon.com/boto3/latest/reference/services/sns/client/publish.html",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-sns-amazonsimplenotificationservice/src/ops/publish.rs"
+      ],
+      "vote": "3-0"
+    },
+    {
+      "claim": "New Amazon SNS SMS accounts start in the SMS sandbox by default (IsInSandbox=true, sends restricted to verified destination numbers, exit requires a per-Region AWS Support case), which is a valid AWS-parity criterion but not a proven fork/upstream incongruency: the fork inherits sandbox-on-start behaviour and the real shared gap is that Publish with PhoneNumber returns HTTP 501 (upstream #572).",
+      "confidence": "medium",
+      "evidence": "sns-sms-sandbox.html (Last-Modified 2026-11-20), API_GetSMSSandboxAccountStatus.html, sns-sms-sandbox-moving-to-production.html and the AWS launch post confirm the default. Fork SNS state.rs:3088 sets IN_SMS_SANDBOX_AT_ACCOUNT_START=true with a fresh-account test at tests/all/sms_sandbox_account_status.rs:61, while publish.rs:351-357 returns 501 for PhoneNumber; upstream issue #572 (open, created 2026-11-20T01:58Z) reports exactly this. The claim carried a split 2-1 vote, and its companion claim ('all SNS features remain available but Publish to an unverified number must fail') was refuted 0-3, so it must not be asserted as a verified 1:1 contract.",
+      "sources": [
+        "https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html",
+        "https://docs.aws.amazon.com/sns/latest/api/API_GetSMSSandboxAccountStatus.html",
+        "https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox-moving-to-production.html",
+        "https://github.com/aws/aws-emulator/issues/572",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-sns-amazonsimplenotificationservice/src/state.rs"
+      ],
+      "vote": "2-1"
+    },
+    {
+      "claim": "Exactly one code-level AWS-contract fix separates the fork from upstream: SNS list pagination now treats NextToken=\"\" as the first page (upstream GH #479, still open), while the open upstream issues that matter for parity \u2014 #571 Pipes/ExpiredIteratorException, #572 SNS SMS Publish 501, #567 Region availability, #419 IAM policy semantics \u2014 remain shared gaps applying equally to both.",
+      "confidence": "high",
+      "evidence": "git diff of services/service-com-amazonaws-sns-amazonsimplenotificationservice/src/state.rs adds `Some(\"\") => 0` to the shared paginate helper (used by eight list operations); GH #479 is open, filed 2026-11-16 against v1.0.471, and cites a live AWS CloudShell us-east-1 comparison plus the plain-string Smithy nextToken shape. Commit 46f790ecb calls it an 'Upstream parity fix'. The fork's own docs/ADVERSARIAL-REFUTATION.md section 4 states 'Only the SNS empty NextToken defect (GH #479) has a live-witnessed upstream code fix in this fork' and that the LinkedIn five checks are 'documented ... not all implemented'; the verifier evidence for the ledger and sandbox claims likewise found all other service code byte-identical at the census commit.",
+      "sources": [
+        "https://github.com/aws/aws-emulator/issues/479",
+        "https://github.com/aws/aws-emulator/issues/571",
+        "https://github.com/aws/aws-emulator/issues/572",
+        "https://github.com/aws/aws-emulator/issues/567",
+        "https://github.com/aws/aws-emulator/issues/419",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-sns-amazonsimplenotificationservice/src/state.rs",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/docs/ADVERSARIAL-REFUTATION.md"
+      ],
+      "vote": "locally verified via GitHub API and git diff"
+    },
+    {
+      "claim": "The LinkedIn post is a third-party, edited DX anecdote (Hoang Le, 2026-11-16) reporting 52/54 API checks passing, zero Lambda bundles loading, 0/3 event-flow checks on AWS Emulator, an explicit correction that SigV4/resource-policy enforcement is stricter than he first said, and advice to use a throwaway environment and read the open issues; it establishes no AWS contract and no fork-vs-upstream incongruency.",
+      "confidence": "low",
+      "evidence": "The verbatim copy at docs/LINKEDIN-POST.txt resolves the short link to the LinkedIn post; the author stays on a competitor (Floci) and self-corrects his earlier IAM statement, so it is blog-quality evidence rather than a primary contract source. The fork's docs/PARITY-REPORT.md claims findings L5-01..L5-05 show all five strictness checks are refused in source at fork HEAD and L5-06 traces the bundle failure to a QuickJS node shim missing node:module, fetch, Headers, Request, Response, structuredClone and WebAssembly \u2014 but those are self-reported internal findings with a documented coverage gap (only 3.76% of 13,041 claim rows cross-cited), not 3-vote-verified facts. Refuters also found the post makes no Region/account, DynamoDB, iterator or ThrottlingReason claims and does not contradict the AWS security or fidelity disclaimers.",
+      "sources": [
+        "https://lnkd.in/p/g6xVKc8Q",
+        "https://www.linkedin.com/posts/hoangleitvn_aws-serverless-testing-share-7527929168525938688-sWHo/",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/docs/LINKEDIN-POST.txt",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/docs/PARITY-REPORT.md",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/docs/CRITIC.md"
+      ],
+      "vote": "not in the 13-claim vote set; secondary source plus unverified internal docs"
+    }
+  ],
+  "journal": "/Users/dylanwong/.tclaude/projects/-Users-dylanwong/1fbb9576-9f61-4529-ac97-efd40ba18afd/subagents/workflows/wf_0d66ebf3-c33/journal.jsonl",
+  "open_questions": [
+    "Has upstream since fixed GH #479 (SNS empty NextToken), #571 (Pipes/ExpiredIteratorException), #572 (SNS SMS Publish 501) or #567 (Region availability), and will the fork's six-commit lead be rebased \u2014 i.e. does the single verified code-level divergence still exist at the next commit pin?",
+    "Do the LinkedIn post's five strictness checks, the zero Lambda bundles and the 0/3 event flows reproduce against real AWS at fork HEAD and current upstream main? All five 'check' claims were refuted as verified claims, and the internal L5-01..L5-07 findings are self-reported rather than 3-vote-verified.",
+    "What is the actual documented contract for unimplemented operations (the 'HTTP 501 / NotImplemented' claim was refuted 1-2), and what share of the 5,356 open gap documents and 7,011 stub operation files is reachable through the fork's new fabric front door versus the inherited emulator router?",
+    "Does the fork's 'regions stay isolated / state survives restarts' claim actually change the emulator's one-Region/one-account, account-000000000000 behaviour for real AWS SDK calls, or only the separate substrate's placement model \u2014 and is there a SigV4-authenticated AWS API front door in fabric/ at all, given its own residual-holes ledger says only health, status and reset are exposed?"
+  ],
+  "question": "Identify all incongruencies/issues between https://github.com/dywongcloud/aws0.git (fork) and upstream https://github.com/aws/aws-emulator, including the LinkedIn post https://lnkd.in/p/g6xVKc8Q and the upstream issues page. Up-to-date AWS behaviour, UX/DX, 1:1 API/contracts.",
+  "refuted": [
+    {
+      "claim": "AWS Emulator's official API coverage is scoped to services that have an API model in the aws/api-models-aws repository, so any operation outside that model set is out of scope rather than an emulator bug or a fork/upstream incongruency.",
+      "source": "https://docs.aws.amazon.com/emulator/latest/userguide/fidelity.html",
+      "vote": "0-3"
+    },
+    {
+      "claim": "The documented contract for unimplemented operations is HTTP 501 with error code NotImplemented, and for implemented operations the same results on valid calls and the same errors on invalid calls; a fork returning a different status, a stubbed success, or a generic error is a concrete 1:1 contract deviation.",
+      "source": "https://docs.aws.amazon.com/emulator/latest/userguide/fidelity.html",
+      "vote": "1-2"
+    },
+    {
+      "claim": "Upstream explicitly acknowledges that fidelity is uneven: control plane APIs match AWS most closely, while data plane fidelity and support for CloudFormation, Terraform, and the AWS CDK vary by service \u2014 so gaps in those areas are known, documented scope limits rather than regressions introduced by a fork.",
+      "source": "https://docs.aws.amazon.com/emulator/latest/userguide/fidelity.html",
+      "vote": "0-3"
+    },
+    {
+      "claim": "The fork's main branch and upstream main are identical at the code level: GitHub renders a zero-diff result, so dywongcloud/aws0 contains no fork-side fixes or divergences relative to aws/aws-emulator, and every upstream issue/gap applies equally to the fork.",
+      "source": "https://github.com/dywongcloud/aws0/compare/aws:aws-emulator:main...main",
+      "vote": "0-3"
+    },
+    {
+      "claim": "Upstream's own gap ledger documents that Lambda Invoke does not execute deployed functions: a synchronous Invoke of an Active python3.12 function returns the unmodeled error code NotImplemented with no Payload, whereas the Smithy/AWS contract is HTTP 200 with StatusCode 200 and the handler's return value in Payload. This breaks 1:1 API contracts and makes any cross-service behavior that would run inside a Lambda untestable (the cited suite passed 0/1).",
+      "source": "https://github.com/aws/aws-emulator/tree/main/issues/things-that-do-not-work",
+      "vote": "0-3"
+    },
+    {
+      "claim": "Upstream's shared router keys service resolution on the SigV4 signing name alone, so services whose API versions legitimately share a signing name are entirely unreachable behind an unmodeled, SDK-retryable AmbiguousService error. Kinesis Analytics V2 scored 0/3 on its behavioral checks and ConnectCampaigns is described as 0% functional; the docs state real AWS disambiguates by X-Amz-Target prefix or restJson1 routes and that AmbiguousService exists in no AWS model.",
+      "source": "https://github.com/aws/aws-emulator/tree/main/issues/things-that-do-not-work",
+      "vote": "0-3"
+    },
+    {
+      "claim": "CloudFront CreateDistribution in upstream performs almost no semantic validation: ten recorded rejection probes that real AWS refuses with modeled 400 errors all return 201 Created with a live distribution, and a cache behavior whose TargetOriginId matches no origin is accepted instead of returning 404 NoSuchOrigin. Negative-path tests therefore pass on the emulator and fail against AWS.",
+      "source": "https://github.com/aws/aws-emulator/tree/main/issues/things-that-do-not-work",
+      "vote": "0-3"
+    },
+    {
+      "claim": "DynamoDB Streams retains records for only 24 hours; reading past the trim point (iterator with a sequence number older than 24 hours, or a record trimmed before the iterator is used) must raise TrimmedDataAccessException with HTTP status 400.",
+      "source": "https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_streams_GetRecords.html",
+      "vote": "1-2"
+    },
+    {
+      "claim": "The DynamoDB low-level error wire contract is HTTP 400 with Content-Type application/x-amz-json-1.0, an x-amzn-RequestId response header, and a JSON body whose exception identifier is a namespaced __type (com.amazonaws.dynamodb.v20120810#ResourceNotFoundException) with a lowercase message field; an emulator must reproduce these exact headers and body keys for 1:1 parity.",
+      "source": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.Errors.html",
+      "vote": "0-3"
+    },
+    {
+      "claim": "AWS SNS Publish enforces a 256 KiB (262,144 byte, not character) default message cap, but a topic's MaximumMessageSize attribute raises it to 1 MiB (1,048,576 bytes); SNS validates the combined size of message body plus message attributes and returns InvalidParameter on overflow. SMS uses entirely different limits (140 characters per segment; 160 GSM / 140 ASCII / 70 UCS-2; 1,600 characters total per Publish action, split at whole-word boundaries). Any emulator claiming 1:1 parity must implement both the byte-counted large-payload path and the SMS-specific character/segment rules.",
+      "source": "https://docs.aws.amazon.com/sns/latest/api/API_Publish.html",
+      "vote": "1-2"
+    },
+    {
+      "claim": "Publish routes to exactly one destination type \u2014 TopicArn, TargetArn (a platform endpoint ARN), or PhoneNumber (E.164) \u2014 and documents that omitting one requires one of the other two; publishing is restricted to topics/endpoints in the same AWS Region. This defines the required request-validation and routing surface for API parity, including cross-region rejection.",
+      "source": "https://docs.aws.amazon.com/sns/latest/api/API_Publish.html",
+      "vote": "0-3"
+    },
+    {
+      "claim": "While in the SMS sandbox, all SNS features remain available but SMS delivery is contractually limited to verified destination phone numbers \u2014 i.e., a Publish to an unverified number must fail \u2014 which is a directly testable API contract for an emulator.",
+      "source": "https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html",
+      "vote": "0-3"
+    }
+  ],
+  "schema": "aws0/deep-research/v1",
+  "sources": [
+    {
+      "angle": "Primary baseline: fork vs upstream and official scope",
+      "claimCount": 5,
+      "quality": "primary",
+      "url": "https://docs.aws.amazon.com/emulator/latest/userguide/fidelity.html"
+    },
+    {
+      "angle": "Primary baseline: fork vs upstream and official scope",
+      "claimCount": 5,
+      "quality": "primary",
+      "url": "https://docs.aws.amazon.com/emulator/latest/userguide/what-is-service.html"
+    },
+    {
+      "angle": "LinkedIn post claims and skeptical reception",
+      "claimCount": 5,
+      "quality": "forum",
+      "url": "https://news.ycombinator.com/item?id=50456631"
+    },
+    {
+      "angle": "Upstream issues page and gap inventory",
+      "claimCount": 5,
+      "quality": "primary",
+      "url": "https://github.com/dywongcloud/aws0/compare/aws:aws-emulator:main...main"
+    },
+    {
+      "angle": "Upstream issues page and gap inventory",
+      "claimCount": 5,
+      "quality": "primary",
+      "url": "https://github.com/aws/aws-emulator/tree/main/issues/things-that-do-not-work"
+    },
+    {
+      "angle": "Up-to-date AWS behavior and 1:1 API/contract parity",
+      "claimCount": 5,
+      "quality": "primary",
+      "url": "https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_streams_GetRecords.html"
+    },
+    {
+      "angle": "Up-to-date AWS behavior and 1:1 API/contract parity",
+      "claimCount": 5,
+      "quality": "primary",
+      "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.Errors.html"
+    },
+    {
+      "angle": "Up-to-date AWS behavior and 1:1 API/contract parity",
+      "claimCount": 5,
+      "quality": "primary",
+      "url": "https://docs.aws.amazon.com/sns/latest/api/API_Publish.html"
+    },
+    {
+      "angle": "Up-to-date AWS behavior and 1:1 API/contract parity",
+      "claimCount": 5,
+      "quality": "primary",
+      "url": "https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html"
+    },
+    {
+      "angle": "Up-to-date AWS behavior and 1:1 API/contract parity",
+      "claimCount": 5,
+      "quality": "primary",
+      "url": "https://docs.aws.amazon.com/lambda/latest/dg/python-package.html"
+    },
+    {
+      "angle": "Up-to-date AWS behavior and 1:1 API/contract parity",
+      "claimCount": 5,
+      "quality": "primary",
+      "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html"
+    },
+    {
+      "angle": "UX/DX friction and adoption tradeoffs",
+      "claimCount": 5,
+      "quality": "primary",
+      "url": "https://github.com/aws/aws-emulator"
+    },
+    {
+      "angle": "UX/DX friction and adoption tradeoffs",
+      "claimCount": 5,
+      "quality": "primary",
+      "url": "https://docs.aws.amazon.com/emulator/latest/userguide/point-sdk-to-emulator.html"
+    },
+    {
+      "angle": "UX/DX friction and adoption tradeoffs",
+      "claimCount": 5,
+      "quality": "blog",
+      "url": "https://lnkd.in/p/g6xVKc8Q"
+    },
+    {
+      "angle": "UX/DX friction and adoption tradeoffs",
+      "claimCount": 5,
+      "quality": "blog",
+      "url": "https://innomizetech.com/blog/free-local-aws-emulators-in-2026-what-each-one-runs-and-where-each-one-stops"
+    },
+    {
+      "angle": "UX/DX friction and adoption tradeoffs",
+      "claimCount": 5,
+      "quality": "primary",
+      "url": "https://github.com/aws/aws-emulator/issues"
+    },
+    {
+      "angle": "UX/DX friction and adoption tradeoffs",
+      "claimCount": 5,
+      "quality": "primary",
+      "url": "https://github.com/dywongcloud/aws0"
+    }
+  ],
+  "stats": {
+    "afterSynthesis": 13,
+    "agentCalls": 99,
+    "angles": 5,
+    "budgetDropped": 3,
+    "claimsExtracted": 85,
+    "claimsVerified": 25,
+    "confirmed": 13,
+    "killed": 12,
+    "sourcesFetched": 17,
+    "unverified": 0,
+    "urlDupes": 10
+  },
+  "summary": "At the 2026-11-19 census commit ec5f6fbab the fork and upstream were identical, but as of 2026-11-20T10:17Z dywongcloud/aws0 main is six commits and 75 files ahead of aws/aws-emulator: a rewritten root README repositioning the product as \"a true 1:1 AWS\", a new self-hosted fabric runtime with a different quick start, and exactly one emulator-code parity fix (SNS empty NextToken, upstream #479). Upstream officially defines the emulator as a local-only build/test tool needing no AWS account and charging no extra fee, explicitly disclaims full fidelity (IAM/resource policies not evaluated as AWS does, no production or security testing), and documents a one-Region/one-account model verified only in us-west-2/us-east-1 \u2014 so the fork's 1:1 positioning is an incongruency with both upstream's documented scope and its own parity report, which admits 1:1 parity is NOT achieved (5,355 open gap docs, 518 open GitHub issues, 7,011 stubs). The 13 verified claims are mostly AWS contract yardsticks (GetRecords shape/bounds/iterator expiry, DynamoDB 400-vs-5xx retry rules, ThrottlingReasons, batch partial failure, SNS FIFO dedup/fair queues, SMS sandbox default) that upstream largely already implements; 12 candidate incongruency claims \u2014 including fork==upstream identity, Lambda Invoke, router AmbiguousService, CloudFront validation, exact wire headers and SNS size caps \u2014 were refuted, so the remaining real issues are shared upstream gaps (#571, #572, #567, #479, #419) plus the LinkedIn post's third-party DX complaints. Any answer is highly time-sensitive: the in-repo gap ledger is a 23,028-file, commit-pinned, hourly-changing corpus, so every comparison must be re-pinned to a commit and timestamp.",
+  "task_id": "wz10pvcfk",
+  "total_tokens": 6884762,
+  "total_tool_calls": 3730,
+  "unverified": [],
+  "workflow": "wf_0d66ebf3-c33"
+}
