@@ -1,0 +1,35 @@
+AWS's new local emulator passed 52 of 54 API checks on our serverless app. Then it failed to load a single one of our Lambda bundles.
+
+If you missed it: AWS now ships its own local emulator. Agent teams write the tests, build it, and verify it against real AWS. AWS says no human wrote or reviewed the code.
+
+https://lnkd.in/gBwZtrUd
+
+So I read the security side first. And a correction: last week I wrote that it does not check IAM like AWS does. It checks more than I said. With auth on, every request needs a SigV4 signature, and it enforces resource policies that our current emulator (Floci) skips.
+
+5 checks to run on any local emulator. Real AWS rejects all five, a lenient emulator may let them through:
+
+1. A presigned S3 PUT with a different content-type -> 403
+2. A request without a valid SigV4 signature -> denied
+3. A public function URL without lambda:InvokeFunctionUrl -> 403
+4. EventBridge -> SQS without a queue policy -> nothing delivered
+5. A call on a new DynamoDB table before it is ACTIVE -> ResourceInUseException
+
+Number 5 was a real bug in our code. Our emulator hid it for weeks.
+
+We stay on Floci for now:
+-> Lambda runs in an embedded JS engine, not Node. node:http, node:zlib and fetch are missing, so our bundles failed at load
+-> Event flow: 3 of 3 passed on Floci, 0 of 3 on AWS Emulator
+
+A lenient emulator hides bugs. A strict one that cannot run your code tests nothing. I would run both on my own workload before I pick one.
+
+And because AWS says no human reviewed the code, I would also run it in a throwaway environment and read its open issues before it touches anything real.
+
+Other local tools to look at (links in the first comment). We run Floci and used LocalStack for years. We have not tried the others:
+
+-> Ministack: free, 60+ services, real databases behind some
+-> serverless-offline: Lambda and API Gateway only, for Serverless Framework
+-> LocalStack: the free edition went paid in March 2026
+
+Which of the 5 has bitten you in production?
+
+#AWS #Serverless #Testing | 20 comments on LinkedIn

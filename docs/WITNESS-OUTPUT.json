@@ -1,0 +1,452 @@
+{
+  "failed": 0,
+  "hash": "2b19894265f68f53512cf18ccf21dc8241e1ad75bff85910f01e39ef44d802a3",
+  "passed": 36,
+  "suite": "aws0-fabric-live-witness",
+  "total": 36,
+  "ts_ms": 1795167585639,
+  "witnesses": [
+    {
+      "detail": {
+        "laws": [
+          "associative",
+          "commutative",
+          "idempotent"
+        ]
+      },
+      "hash": "e3d358cb7709127f1920b192cb4ac422ae906861767b3c78f3aba9b5739efa82",
+      "id": "crdt-join-laws",
+      "ok": true,
+      "ts_ms": 1795167488488
+    },
+    {
+      "detail": {
+        "fresh_record_wins_both_orders": true
+      },
+      "hash": "4bb252617561127a51f5348a73b35c28eab0ec1d38e1c5b03c2d73b2a3a79256",
+      "id": "crdt-member-freshness",
+      "ok": true,
+      "ts_ms": 1795167488488
+    },
+    {
+      "detail": {
+        "live": [
+          [
+            "k",
+            "v2"
+          ]
+        ]
+      },
+      "hash": "7df9fecb5b4dca862e19172a239ca9e21d78e1deba5ecd9e5a306ab014d2353f",
+      "id": "orset-observed-remove",
+      "ok": true,
+      "ts_ms": 1795167488488
+    },
+    {
+      "detail": {
+        "left": "Lww { stamp: Some(Hlc { wall_ms: 1002, counter: 0, node: NodeId(03030303) }), value: Some(\"left\") }",
+        "right": "Lww { stamp: Some(Hlc { wall_ms: 1002, counter: 0, node: NodeId(03030303) }), value: Some(\"right\") }"
+      },
+      "hash": "a9096111b23dae315446dc6681a1fe52d2409692392f44740b59ed5be3e5641e",
+      "id": "lww-symmetric",
+      "ok": true,
+      "ts_ms": 1795167488489
+    },
+    {
+      "detail": {
+        "hmac_hex": "ff377a8e3c739561d6394b2b5548944e4380dd476de236183c49cce173f1af2d"
+      },
+      "hash": "fff489c20ec7fe9d8abb1545aec873a9ee36cf3cfdf930218f9fb86dfb15dfc9",
+      "id": "authz-zero-trust",
+      "ok": true,
+      "ts_ms": 1795167488489
+    },
+    {
+      "detail": {
+        "validated": [
+          "AccountId",
+          "Region",
+          "WorkloadId",
+          "WorkloadSpec"
+        ]
+      },
+      "hash": "40ae6d35bacd808d5faf0834e85de7b2ca38ba5a352ad9d1eb80208e9f54eb30",
+      "id": "types-total",
+      "ok": true,
+      "ts_ms": 1795167488489
+    },
+    {
+      "detail": {
+        "first_effects": 2,
+        "replay_effects": 0
+      },
+      "hash": "b87aca28b8f2db1b0ecab408d1e39eb64cc34681ec4dc0dc326d57f50a5e6483",
+      "id": "exactly-once-replay",
+      "ok": true,
+      "ts_ms": 1795167488490
+    },
+    {
+      "detail": {
+        "first_effects": 0,
+        "second_effects": 0
+      },
+      "hash": "9fc1ce6f7c345a30f52060f07042b0415bd50649e64e1502080b557ead1d09d8",
+      "id": "scheduler-fixed-point",
+      "ok": true,
+      "ts_ms": 1795167488491
+    },
+    {
+      "detail": {
+        "placement": "Some(Placement { workload: WorkloadId(web), nodes: [NodeId(01010101)], epoch: Epoch(1), partition: PartitionKey(000000000000:us-east-1), status: Scheduled })"
+      },
+      "hash": "e6551228ccf949d8ad94d30fa7e4adc477365ee9843e13f784181e818e425920",
+      "id": "scheduler-placement",
+      "ok": true,
+      "ts_ms": 1795167488491
+    },
+    {
+      "detail": {
+        "foreign_id_rejected": true,
+        "self": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a"
+      },
+      "hash": "ba9b6224e94c80d0711721f4199aa2b2c1b85e71bd335789c0b2eea5d9d57c83",
+      "id": "fresh-boot-identity",
+      "ok": true,
+      "ts_ms": 1795167488523
+    },
+    {
+      "detail": {
+        "clock_clamped": true,
+        "distinct_incarnation_keys": true,
+        "stale_death_ignored": true
+      },
+      "hash": "3bd0e88a8c612e6bd9f2e0bc15689bb5bb7013f8f02f8659cde5a355f53538cf",
+      "id": "membership-incarnation-guard",
+      "ok": true,
+      "ts_ms": 1795167488523
+    },
+    {
+      "detail": {
+        "keys": 4096,
+        "limit": 4096,
+        "view_bytes": 953336
+      },
+      "hash": "234da443d77da73f4818d0cd3280ffae67f6f88a49796fa3b6c1815edb13a9c7",
+      "id": "seen-events-bounded",
+      "ok": true,
+      "ts_ms": 1795167544356
+    },
+    {
+      "detail": {
+        "hash": "983bba7bc453f834c3457ed1f985e9a319b32c7c442a74709440b1c0440bce1f",
+        "seq": 0,
+        "verified": 1
+      },
+      "hash": "9c8bc0eab852db30f97c59309baa5ed82281a8cfeef27cf475cb7e8df30b6308",
+      "id": "persistence-restart",
+      "ok": true,
+      "ts_ms": 1795167544406
+    },
+    {
+      "detail": {
+        "dropped_frames": 1,
+        "verified_after": 1
+      },
+      "hash": "bc111e024985d623869d869c232a4d65c552c09273e9a82c0eb3e71ca4b86ea7",
+      "id": "journal-corrupt-tail",
+      "ok": true,
+      "ts_ms": 1795167544412
+    },
+    {
+      "detail": {
+        "old_malformed_frame_rejected": true,
+        "snapshot_metadata_tamper_rejected": true
+      },
+      "hash": "a7304d680abd50d0d0955a22b5c2560eed967ad58c3b6b4502ba832971ee461b",
+      "id": "persistence-integrity",
+      "ok": true,
+      "ts_ms": 1795167544435
+    },
+    {
+      "detail": {
+        "hashes": [
+          "428357216295ae5e1bcb37a6ee31382cd633f5561f64791ae724e5992c778f27",
+          "428357216295ae5e1bcb37a6ee31382cd633f5561f64791ae724e5992c778f27",
+          "428357216295ae5e1bcb37a6ee31382cd633f5561f64791ae724e5992c778f27"
+        ]
+      },
+      "hash": "093f675139d0175cef97248ae26583c9598b98ae2f9f69ea78511635488b5865",
+      "id": "crdt-convergence-3-nodes",
+      "ok": true,
+      "ts_ms": 1795167544503
+    },
+    {
+      "detail": {
+        "effects": 1,
+        "state_hash": "e6b39f3b7224335b1b4cd2b7de1628353fc2999f1ca8bc1d0592b0841d1d7cb4",
+        "value": {
+          "hlc_wall_ms": 1795167488462,
+          "last_applied_ms": 1795167488462,
+          "members": 3,
+          "partitions": 0,
+          "placements": 0,
+          "self": "0b513ad9b4924015ca0902ed079044d3ac5dbec2306f06948c10da8eb6e39f2d",
+          "state_hash": "428357216295ae5e1bcb37a6ee31382cd633f5561f64791ae724e5992c778f27",
+          "statuses": {},
+          "workloads": 0
+        }
+      },
+      "hash": "54627f92c8b9d7531a5e6ad28a6df030a02113eea35d6b7f967bce2e6ba72e4f",
+      "id": "live-quic-smartops",
+      "ok": true,
+      "ts_ms": 1795167544521
+    },
+    {
+      "detail": {
+        "effects": 0,
+        "replayed": true
+      },
+      "hash": "73bbb4721fcddf0f7194d78ddb6a8628aa71d1582a24fcf63ee2c7f4a0ec675b",
+      "id": "wire-exactly-once",
+      "ok": true,
+      "ts_ms": 1795167544527
+    },
+    {
+      "detail": {
+        "reply": {
+          "error": "CapabilityDenied"
+        }
+      },
+      "hash": "2cf34838a0b5b6dbfdd2c90a71646cde26077167f7bb7f2060f65026dfa01c9b",
+      "id": "wire-zero-trust",
+      "ok": true,
+      "ts_ms": 1795167544535
+    },
+    {
+      "detail": {
+        "error": "Protocol(\"truncated frame: declared 9, received 1\")"
+      },
+      "hash": "2652f98506e0649ff570e3d2a3a4193a8feb860e0ff5cf1a82af92c9190ba835",
+      "id": "wire-truncation-handled",
+      "ok": true,
+      "ts_ms": 1795167544535
+    },
+    {
+      "detail": {
+        "accounts": [
+          "000000000000"
+        ],
+        "nodes": 3,
+        "protocol": {
+          "alpn": "aws0/smartops/1",
+          "max_frame": 1048576,
+          "ops": [
+            "Join",
+            "Leave",
+            "Create",
+            "Scale",
+            "Delete",
+            "Migrate",
+            "Drain",
+            "Converge",
+            "Status",
+            "Health",
+            "Snapshot",
+            "Replay"
+          ],
+          "version": 1
+        },
+        "regions": [
+          "us-east-1",
+          "eu-west-1"
+        ],
+        "runtime_preinstalled": true,
+        "state_hash": "48dbd5a38b6587c969ccce589ec1eb87f266a05621b546e0eccda8fc51bcc97c",
+        "status": "ok",
+        "workloads": 0
+      },
+      "hash": "426edb18ad132c3f9cefdb5303df25dadc04292b197f10c4409f07e83f33f56c",
+      "id": "facade-health",
+      "ok": true,
+      "ts_ms": 1795167545896
+    },
+    {
+      "detail": {
+        "digests": [
+          "48dbd5a38b6587c969ccce589ec1eb87f266a05621b546e0eccda8fc51bcc97c",
+          "48dbd5a38b6587c969ccce589ec1eb87f266a05621b546e0eccda8fc51bcc97c",
+          "48dbd5a38b6587c969ccce589ec1eb87f266a05621b546e0eccda8fc51bcc97c"
+        ],
+        "nodes": 3
+      },
+      "hash": "53590c1f67e9f6a1069fac658dad0ca11c09e205a0077e4a91c714b36f034d9d",
+      "id": "facade-converged",
+      "ok": true,
+      "ts_ms": 1795167545897
+    },
+    {
+      "detail": {
+        "effects": 4,
+        "errors": [],
+        "state_hash": "fabfd05131c5eba0720b9d5a550f828b34bdd56b97dc53f2e2370abe0b740ba0",
+        "value": {
+          "epoch": 1795167545897,
+          "event": "\"f877717b6758341c2ff19f714c6aa41b57d94c61af84362c757316df72190ac4\"",
+          "members": 3,
+          "workloads": 1
+        }
+      },
+      "hash": "711b81e28c9fd6f4659a693966406c867fb983911494cf68b3c8c00fd3989d0c",
+      "id": "facade-create-workload",
+      "ok": true,
+      "ts_ms": 1795167552152
+    },
+    {
+      "detail": {
+        "effects": 4,
+        "errors": []
+      },
+      "hash": "c57c7dc6a24d7b0f57995c11fbe2cdd67be31d3082e4d126d706dff3dd32ab6c",
+      "id": "facade-tenant-scale",
+      "ok": true,
+      "ts_ms": 1795167562259
+    },
+    {
+      "detail": {
+        "effects": 2,
+        "errors": []
+      },
+      "hash": "6b096e937d5f85f66693bf5993a544c3da5fed9eb5a66b67a3bc72eb0ea1bbca",
+      "id": "facade-tenant-delete",
+      "ok": true,
+      "ts_ms": 1795167562903
+    },
+    {
+      "detail": {
+        "effects": 2,
+        "errors": []
+      },
+      "hash": "6b096e937d5f85f66693bf5993a544c3da5fed9eb5a66b67a3bc72eb0ea1bbca",
+      "id": "facade-admin-join",
+      "ok": true,
+      "ts_ms": 1795167564537
+    },
+    {
+      "detail": {
+        "reply": {
+          "hlc_wall_ms": 1795167563703,
+          "last_applied_ms": 1795167563703,
+          "members": 3,
+          "partitions": 0,
+          "placements": 1,
+          "self": "f1d05b6c214f73a1beb96725c50b9a6d56141b5f78efbe032298153d77a0ba6f",
+          "state_hash": "09c8cd2d21534e2403e0b2c287b4dea543f74aa5d467ab3210fcd255ed38f52e",
+          "statuses": {
+            "pg": "Scheduled"
+          },
+          "workloads": 1
+        }
+      },
+      "hash": "a103739edb7deeb452b3e147adb0ff7c743e889164aab50065754528c7e55994",
+      "id": "facade-multi-region",
+      "ok": true,
+      "ts_ms": 1795167564566
+    },
+    {
+      "detail": {
+        "error": "InvalidAccount(\"999999999999\")"
+      },
+      "hash": "431b9b280f271f7944ac8af786f8c8cc87261bcc82a60615f53573f0ad54aa07",
+      "id": "facade-tenant-isolation",
+      "ok": true,
+      "ts_ms": 1795167564567
+    },
+    {
+      "detail": {
+        "dir": "/Users/dylanwong/projects/aws0-research-2026-11-19/witness-data/fabric"
+      },
+      "hash": "91f5f82e341e7e084bbfe3c2896197c42036c67e73e9cf27196c29802ba41fdc",
+      "id": "facade-snapshot",
+      "ok": true,
+      "ts_ms": 1795167565751
+    },
+    {
+      "detail": {
+        "artifacts": [
+          "laboon_0.1.0_darwin_arm64.tar.gz",
+          "laboon_0.1.0_darwin_amd64.tar.gz",
+          "laboon_0.1.0_linux_arm64.tar.gz",
+          "laboon_0.1.0_linux_amd64.tar.gz",
+          "laboon_0.1.0_windows_arm64.zip",
+          "laboon_0.1.0_windows_amd64.zip"
+        ]
+      },
+      "hash": "29ec8e61ed7c613e99f46e2425a0730e4b0fe3efe61060d175e8a0b2a84dd2e8",
+      "id": "laboon-pinned-artifacts",
+      "ok": true,
+      "ts_ms": 1795167565753
+    },
+    {
+      "detail": {
+        "argv_distinct": 15,
+        "image": "postgres:16"
+      },
+      "hash": "6a2fa64af132810f496c98f140b542b7f1a11bed464805e066ee4d5e47052a1a",
+      "id": "laboon-real-databases",
+      "ok": true,
+      "ts_ms": 1795167565753
+    },
+    {
+      "detail": {
+        "note": "sha256 verified before any execution",
+        "present": false
+      },
+      "hash": "152219678925dab0d32820f02ecf8fbafebfce4e610949e48ce2f45950f7b5c5",
+      "id": "laboon-preinstall-idempotent",
+      "ok": true,
+      "ts_ms": 1795167565753
+    },
+    {
+      "detail": {
+        "refused": true
+      },
+      "hash": "2452697a38c25bd670ebe403f5f96e18affe9b3ef80bc027b90af528536fcc6d",
+      "id": "runtime-output-cap-typed",
+      "ok": true,
+      "ts_ms": 1795167565753
+    },
+    {
+      "detail": {
+        "asset": "laboon_0.1.0_darwin_arm64.tar.gz",
+        "bytes": 4602615,
+        "pin_matched": true
+      },
+      "hash": "8eb7458fa3eeb74c2659217a3f5cb27dbe109e87b723f277264b758a5dfc52bc",
+      "id": "runtime-bundled-archive",
+      "ok": true,
+      "ts_ms": 1795167575822
+    },
+    {
+      "detail": {
+        "digest_match": true,
+        "path": "/Users/dylanwong/projects/aws0-research-2026-11-19/witness-data/private/exec/laboon-5dafb08c6944b5c87356d5b1132341d118218f9c25589629bf78d5b8a87286ec",
+        "private_copy": true
+      },
+      "hash": "688e387513a204895db90e0c3020fca57deedeec0dfd9d0ae77cb06d8878edb6",
+      "id": "runtime-verified-exec",
+      "ok": true,
+      "ts_ms": 1795167585311
+    },
+    {
+      "detail": {
+        "ops": 256,
+        "p99_us": 12711,
+        "total_ms": 327
+      },
+      "hash": "24ea7c2a152e9de9a801834ae02f336d168c485c58d45cd2511242b88d376007",
+      "id": "chaos-max-load",
+      "ok": true,
+      "ts_ms": 1795167585639
+    }
+  ]
+}

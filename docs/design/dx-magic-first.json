@@ -1,0 +1,488 @@
+{
+  "adts": [
+    "AccountId = [u8; 12] where every byte is an ASCII digit and the value is not 000000000000 for tenant-derived accounts.",
+    "Region = AsciiString<1..=63> parsed only from the SigV4 Credential scope; no Host, environment, or implicit default is accepted.",
+    "TenantKey = Product<AccountId, Region>; ShardId = Blake3(AccountId || Region || ServiceFamily); ServiceFamily is a closed enum of selected AWS service prefixes.",
+    "OpId = Blake3(TenantKey || IdempotencyKey || CanonicalRequestHash); RequestId = Blake3(SigV4 signature prefix || monotonic local counter).",
+    "Hlc = Product<WallMillis, LogicalCounter>; FenceToken = monotone u64 carried by LeaseEpoch; Lease = Product<ShardId, EndpointId, LeaseEpoch, FenceToken, ExpiryInstant>.",
+    "AuthzCapability = affine Product<EndpointId, OpId, FenceToken, SignatureRef>; it is consumed once and never cloned.",
+    "SecretRef = Product<KeychainNamespace, PublicIdentifier>; secret bytes are never represented in AST, CRDT, logs, or responses.",
+    "Io<C, A> = Effect<Capability<C>, Result<A, Refusal>>; Reduce is pure and Interpret is the only constructor of Io.",
+    "DurableState = Map<ShardId, ShardState>; ShardState = Product<OpLog, LeaseTable, SnapshotRef, ResetEpoch>; join is associative, commutative, and idempotent.",
+    "OpRecord = Product<OpId, TenantKey, SmartOp, AuthzCapabilityRef, RequestHash, ResponseHash, Hlc, ParentSet>; all fields are total and serializable.",
+    "SnapshotNode = Product<SnapshotRef, ParentSet, iroh_blobs::Hash, StateRootHash, Epoch>; ParentSet contains only previously committed SnapshotRef values.",
+    "Refusal = closed sum over Auth, Validation, NoLease, StaleFence, ChecksumMismatch, PhysicalBudgetExceeded, WorkloadFailed, NetworkUnavailable, StorageFailed, TlsFailed, and FidelityBoundary."
+  ],
+  "build_and_witness": "Sources actually read:\n  - /Users/dylanwong/projects/aws0-2026-11-19/aws0/AGENTS.md\n  - /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/engine/src/lib.rs\n  - /Users/dylanwong/projects/aws0-2026-11-19/aws0/core/embedded/src/lib.rs\n  - /Users/dylanwong/projects/aws0-2026-11-19/aws0/core/router/src/lib.rs\n  - /Users/dylanwong/projects/aws0-2026-11-19/aws0/core/router/src/main.rs\n  - /Users/dylanwong/projects/aws0-2026-11-19/aws0/README.md\n  - /Users/dylanwong/projects/aws0-2026-11-19/aws0/Cargo.toml\n  - /Users/dylanwong/projects/aws0-2026-11-19/aws0/core/router/Cargo.toml\n  - /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server/src/lib.rs\n  - /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/engine/Cargo.toml\n  - /Users/dylanwong/projects/aws0-2026-11-19/aws0/core/embedded/Cargo.toml\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/census.md\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/linkedin-post.txt\n  - /tmp/dxmagic-readmes/laboon/README.md\n  - /tmp/dxmagic-readmes/ministack/README.md\n  - /tmp/dxmagic-laboon-src/go.mod\n  - /tmp/dxmagic-laboon-src/cmd/laboon/main.go\n  - /tmp/dxmagic-laboon-src/cmd/laboond/main.go\n  - /tmp/dxmagic-laboon-src/cmd/laboon-mcp/main.go\n  - /tmp/dxmagic-laboon-src/options.go\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/src-sendme/README.md\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/src-sendme/src__main.rs\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/src-sendme/Cargo.toml\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/_iroh-src-1.5.0/iroh/src/lib.rs\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/_iroh-src-1.5.0/iroh/src/protocol.rs\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/_work/iroh-gossip-0.103.0-extracted/iroh-gossip-0.103.0/src/lib.rs\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/_work/iroh-gossip-0.103.0-extracted/iroh-gossip-0.103.0/src/api.rs\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/quic-rpc-src-v0.20.0/src/lib.rs\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/quic-rpc-src-v0.20.0/src/transport/iroh.rs\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/quic-rpc-src-v0.20.0/Cargo.toml\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/_src/tokio-rustls-acme-v0.10.0/src/lib.rs\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/_src/tokio-rustls-acme-v0.10.0/src/config.rs\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/_src/tokio-rustls-acme-v0.10.0/src/acceptor.rs\n  - /Users/dylanwong/projects/aws0-research-2026-11-19/_src/tokio-rustls-acme-v0.10.0/src/incoming.rs\n  - /tmp/dxmagic-crate-sources/iroh-docs-0.101.0/iroh-docs-0.101.0/src/lib.rs\n  - /tmp/dxmagic-crate-sources/iroh-docs-0.101.0/iroh-docs-0.101.0/src/api.rs\n  - /tmp/dxmagic-crate-sources/iroh-docs-0.101.0/iroh-docs-0.101.0/src/protocol.rs\n  - /tmp/dxmagic-crate-sources/iroh-docs-0.101.0/iroh-docs-0.101.0/src/engine.rs\n  - /tmp/dxmagic-crate-sources/iroh-docs-0.101.0/iroh-docs-0.101.0/src/ticket.rs\n  - /tmp/dxmagic-crate-sources/iroh-docs-0.101.0/iroh-docs-0.101.0/examples/setup.rs\n  - /tmp/dxmagic-crate-sources/iroh-docs-0.101.0/iroh-docs-0.101.0/Cargo.toml\n  - /tmp/dxmagic-crate-sources/iroh-blobs-0.105.0/iroh-blobs-0.105.0/src/lib.rs\n  - /tmp/dxmagic-crate-sources/iroh-blobs-0.105.0/iroh-blobs-0.105.0/src/api.rs\n  - /tmp/dxmagic-crate-sources/iroh-blobs-0.105.0/iroh-blobs-0.105.0/src/net_protocol.rs\n  - /tmp/dxmagic-crate-sources/iroh-blobs-0.105.0/iroh-blobs-0.105.0/src/ticket.rs\n  - /tmp/dxmagic-crate-sources/iroh-blobs-0.105.0/iroh-blobs-0.105.0/Cargo.toml\n  - /tmp/dxmagic-crate-sources/iroh-smol-kv-0.5.0/iroh-smol-kv-0.5.0/src/lib.rs\n  - /tmp/dxmagic-crate-sources/iroh-smol-kv-0.5.0/iroh-smol-kv-0.5.0/Cargo.toml\n  - /tmp/dxmagic-crate-sources/iroh-roq-0.1.0/iroh-roq-0.1.0/src/lib.rs\n  - /tmp/dxmagic-crate-sources/n0-dns-resolver-0.1.1/n0-dns-resolver-0.1.1/src/lib.rs\n  - /tmp/dxmagic-net-tools-src/Cargo.toml\n  - /tmp/dxmagic-net-tools-src/netwatch/src/lib.rs\n  - /tmp/dxmagic-net-tools-src/portmapper/src/lib.rs\n  - /tmp/dxmagic-net-tools-src/portmapper/Cargo.toml\n  - /tmp/dxmagic-crate-sources/checksums.tsv\n  - /tmp/dxmagic-readmes/laboon/checksums.txt\n  - /tmp/dxmagic-readmes/laboon-release.json\n\nGrounding facts with line anchors: /Users/dylanwong/projects/aws0-2026-11-19/aws0/AGENTS.md:52 forbids root Cargo.toml edits and :87 says the emulator verifies every request signature; /Users/dylanwong/projects/aws0-2026-11-19/aws0/README.md:43 documents at least 100 GB free disk for a whole-workspace debug build and :53 documents 127.0.0.1:9297; /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/engine/src/lib.rs:14 says containers and external processes are not available to a generated emulator, :107 defines InMemoryEngine, and :125 exposes listeners; /Users/dylanwong/projects/aws0-2026-11-19/aws0/core/embedded/src/lib.rs:15 says each embedded emulator owns a fresh engine and :37 defines AwsEmulatorEmbedded; /Users/dylanwong/projects/aws0-2026-11-19/aws0/core/router/src/lib.rs:54 marks the router generated and :78 defines build_router; /Users/dylanwong/projects/aws0-2026-11-19/aws0/core/router/src/main.rs:185 creates Arc<InMemoryEngine> and :189 serves; /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server/src/lib.rs:152 fixes EMULATOR_ACCOUNT_ID to 000000000000 and :157 exposes emulator_account_id; /Users/dylanwong/projects/aws0-research-2026-11-19/census.md:13 reports 440 service crates, 5355 open in-repo docs, and 7114 stub files; /Users/dylanwong/projects/aws0-research-2026-11-19/linkedin-post.txt:1 reports 52 of 54 API checks and :20 reports Lambda bundle failure; /tmp/dxmagic-readmes/ministack/README.md:28 says 60+ services on one port 4566, :30 says a 12-digit access key becomes the account, :77 defines health and reset, and :194 says SigV4 region scopes state; /tmp/dxmagic-readmes/laboon/README.md:80 requires Go 1.27.1, :164 lists PostgreSQL, MariaDB, and Redis as tested, and :200 says guest networking is loopback by default.\n\nImplementation order:\n  Step 0: create /Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/Cargo.toml as a separate resolver-2 workspace with rust-version 1.98.1, forbid(unsafe_code), missing_docs=deny, release profile debug=0, strip=true, lto=thin, and a pinned dependency table. Do not edit /Users/dylanwong/projects/aws0-2026-11-19/aws0/Cargo.toml, /Users/dylanwong/projects/aws0-2026-11-19/aws0/core/router/src/lib.rs, or /Users/dylanwong/projects/aws0-2026-11-19/aws0/core/router/Cargo.toml.\n  Step 1: implement magic-core, magic-smartops, and magic-dag-sync. Witness with cargo run -p magic-cli -- witness --suite algebra; prove f(f(x)) = f(x), associativity of join, commutativity of join, strict DAG parent order, and total Refusal coverage.\n  Step 2: implement magic-net with iroh 1.5.0, iroh-gossip 0.103.0, iroh-smol-kv 0.5.0, iroh-roq 0.1.0, n0-dns-resolver 0.1.1, net-tools git pin 40fc25830973a357d99be2b1d5ccc01c3c9f3558, and quic-rpc 0.20.0 with only flume-transport. Witness three processes joining with no peer addresses supplied by a human.\n  Step 3: implement magic-state and magic-dag-sync persistence with iroh-docs 0.101.0 and iroh-blobs 0.105.0 on separate iroh endpoints. Witness kill -9, restart, and exact replay of every committed OpId with no missing prefix.\n  Step 4: implement magic-artifacts and magic-workloads. Verify laboon v0.1.0 and sendme v0.37.1 checksums, install the prebuilt laboon binary, warm OCI image bundles, and witness laboon -image alpine:3.20 cat /etc/os-release plus real PostgreSQL, MariaDB, and Redis health probes.\n  Step 5: copy only the selected service crates and their transitive closure into aws0-magic/third_party/aws0-services with per-crate [workspace] tables and explicit versions. Implement magic-thin-router with build_thin_router(engine) and a compile-time SelectedServices set. Witness cargo tree -p magic-thin-router and du -sh target to prove the 7 GiB bound; the 100 GB full-workspace build is never invoked.\n  Step 6: implement magic-tls, magic-tenancy, magic-api, and magic-cli. Bind one port 4566, expose GET /_aws0/health and POST /_aws0/reset, parse the SigV4 Credential scope, derive a 12-digit account id and region, and normalize the fixed 000000000000 account id only at the gateway boundary.\n  Step 7: implement magic-scheduler and magic-selfheal with deterministic shard ownership, fencing leases, measured physical budgets, and invisible reconciliation. Witness chaos max-load with node kill, partition heal, region isolation, account isolation, Lambda bundle execution, real database restart, and p99 failover measurement.\n  Step 8: run aws0-magic witness --suite all --nodes 3 --accounts 2 --regions 2 --chaos kill-node --max-load. The witness is live execution against the real binaries and produces AuditTuple(id, sha256, ts) rows; no mock services, no synthetic test files, and no synthetic pass are accepted.\n\nLive witness commands:\n  df -h /Users/dylanwong/projects/aws0-2026-11-19/aws0-magic\n  cargo build --release -p magic-cli -p magic-thin-router\n  aws0-magic doctor --preflight\n  aws0-magic\n  curl -fsS http://127.0.0.1:4566/_aws0/health\n  curl -fsS -X POST http://127.0.0.1:4566/_aws0/reset\n  AWS_ENDPOINT_URL=http://127.0.0.1:4566 AWS_ACCESS_KEY_ID=111111111111 AWS_SECRET_ACCESS_KEY=test AWS_REGION=us-east-1 aws sts get-caller-identity\n  AWS_ENDPOINT_URL=http://127.0.0.1:4566 AWS_ACCESS_KEY_ID=222222222222 AWS_SECRET_ACCESS_KEY=test AWS_REGION=eu-west-1 aws sts get-caller-identity\n  aws0-magic witness --probe real-postgres\n  aws0-magic witness --probe lambda-node-bundle\n  aws0-magic witness --suite all --nodes 3 --accounts 2 --regions 2 --chaos kill-node --max-load\n\nAcceptance: JSON Schema shape is checked with python3 -I -c 'import json; d=json.load(open(\"/Users/dylanwong/projects/aws0-research-2026-11-19/design/dx-magic-first.json\")); print(sorted(d))'. WitnessRunner records AuditTuple(id, sha256, ts) for every live command. No test files are authored, no mock control plane is accepted, no 100 GB full-workspace build is invoked, and df -h plus du -sh target are recorded before and after the build to prove the 7 GiB physical bound.",
+  "consensus_and_cap": "There is no Raft, Paxos, Kubernetes controller, or global leader election. Membership is a monotone OR-set with epoch numbers; shard ownership is a deterministic function of the converged sorted EndpointId ring; writes require a current Lease and FenceToken. Under partition, a node without a converged lease refuses writes with Refusal::NoLease, while reads are served from the last verified snapshot. CAP choice is C over A for writes and A over C for reads; after healing, the CRDT union is associative, commutative, and idempotent, so no divergent decision remains. This is physics-bound: measured free bytes, memory, CPU pressure, image-cache bytes, and p99 latency gate placement; no artificial job, credit, or spend cap is introduced.",
+  "crate_layout": [
+    {
+      "depends_on": [],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/Cargo.toml",
+      "public_types": [],
+      "responsibility": "Separate workspace root with resolver 2, shared lints, pinned dependency table, and a release profile tuned for the 7 GiB disk bound. It does not modify the generated aws0 root workspace."
+    },
+    {
+      "depends_on": [],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/crates/magic-core",
+      "public_types": [
+        "AccountId",
+        "Region",
+        "TenantKey",
+        "ShardId",
+        "ServiceFamily",
+        "NodeKey",
+        "LeaseEpoch",
+        "FenceToken",
+        "OpId",
+        "RequestId",
+        "Hlc",
+        "Witness",
+        "AuditTuple",
+        "Io",
+        "Effect",
+        "Refusal",
+        "SecretRef",
+        "Capability",
+        "PhysicalLimit",
+        "HealthState",
+        "ResetEpoch"
+      ],
+      "responsibility": "Refinement ADTs, affine capabilities, monadic IO, audit tuples, physical bounds, and zero ambient state. Every cross-crate value is a total, serializable ADT or a capability token."
+    },
+    {
+      "depends_on": [
+        "magic-core"
+      ],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/crates/magic-smartops",
+      "public_types": [
+        "SmartOp",
+        "SmartRequest",
+        "SmartResponse",
+        "OpAlgebra",
+        "Reduce",
+        "IdempotencyKey",
+        "CommittedOp",
+        "Receipt",
+        "Decision",
+        "ReplayCursor",
+        "Refusal",
+        "CompiledOp",
+        "Interpret"
+      ],
+      "responsibility": "Small declarative total operation algebra. compile maps an AWS request to one SmartOp; reduce is a pure State x SmartRequest morphism; interpret is the only IO boundary."
+    },
+    {
+      "depends_on": [
+        "magic-core",
+        "magic-smartops"
+      ],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/crates/magic-dag-sync",
+      "public_types": [
+        "DagSync",
+        "DagNode",
+        "ParentSet",
+        "TopologicalCursor",
+        "JoinSemilattice",
+        "SnapshotRef",
+        "CycleError"
+      ],
+      "responsibility": "Internal strict DAG synchronizer named for the requested iroh-dag-sync substrate. Snapshot nodes reference parent iroh_blobs::Hash values encoded as bytes; the external crate does not exist on crates.io or in n0-computer GitHub, so no phantom dependency is declared."
+    },
+    {
+      "depends_on": [
+        "magic-core",
+        "magic-smartops",
+        "magic-dag-sync"
+      ],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/crates/magic-state",
+      "public_types": [
+        "DurableState",
+        "DocLog",
+        "OpLog",
+        "LeaseTable",
+        "SnapshotStore",
+        "Commit",
+        "Replay",
+        "Snapshot",
+        "Lease",
+        "Epoch",
+        "MembershipView",
+        "StateError",
+        "WitnessLog"
+      ],
+      "responsibility": "Durable append-only CRDT log, fencing leases, snapshot metadata, replay cursor, and reset epochs. It owns all persistent logical state and exposes pure joins."
+    },
+    {
+      "depends_on": [
+        "magic-core",
+        "magic-state",
+        "magic-dag-sync"
+      ],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/crates/magic-net",
+      "public_types": [
+        "P2PNode",
+        "NetworkOptions",
+        "EndpointBinding",
+        "DataEndpoint",
+        "MembershipEndpoint",
+        "RoqEndpoint",
+        "ProtocolSet",
+        "Alpn",
+        "PeerSet",
+        "AddressBook",
+        "DnsBootstrap",
+        "NatStatus",
+        "RoqLogBridge",
+        "RpcBus",
+        "RpcService",
+        "SmartOpsProtocolHandler"
+      ],
+      "responsibility": "Hidden P2P substrate. It owns three iroh endpoints for data, membership, and ROQ logs; auto DNS discovery; NAT status; local quic-rpc bus; gossip membership; and smol-kv route cache. No user-visible P2P identifier is exported."
+    },
+    {
+      "depends_on": [
+        "magic-core",
+        "magic-net",
+        "magic-state"
+      ],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/crates/magic-artifacts",
+      "public_types": [
+        "ArtifactManifest",
+        "ArtifactKind",
+        "Platform",
+        "Sha256",
+        "ArtifactReceiver",
+        "BlobTicketRef",
+        "PreinstallPlan",
+        "Verify",
+        "Install",
+        "SendmeCli",
+        "LaboonBundle",
+        "OciImageBundle",
+        "ChecksumMismatch"
+      ],
+      "responsibility": "Checksum-verified preinstall of laboon, sendme, and OCI image bundles using sendme-compatible BlobTicket transfer and iroh-blobs. Verify and Install are affine typestates; no unverified binary is executed."
+    },
+    {
+      "depends_on": [
+        "magic-core",
+        "magic-artifacts",
+        "magic-state"
+      ],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/crates/magic-workloads",
+      "public_types": [
+        "LaboonRuntime",
+        "WorkloadSpec",
+        "WorkloadHandle",
+        "DatabaseKind",
+        "RuntimeKind",
+        "ImageRef",
+        "PortBinding",
+        "Mount",
+        "EgressPolicy",
+        "HealthProbe",
+        "RunReceipt",
+        "StopReceipt",
+        "LaboonInvocation",
+        "WorkloadError"
+      ],
+      "responsibility": "Laboon process supervisor for real containers and databases. It owns process handles, ports, mounts, egress policy, health probes, and Drop cleanup. It uses the standalone laboon CLI, not Docker or Kubernetes."
+    },
+    {
+      "depends_on": [
+        "magic-core"
+      ],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/crates/magic-tls",
+      "public_types": [
+        "TlsMode",
+        "TlsFrontDoor",
+        "LocalCa",
+        "AcmeFrontDoor",
+        "AcmeCache",
+        "AcmeConfigBuilder",
+        "IncomingStream",
+        "CertificateRefusal",
+        "AlpnList"
+      ],
+      "responsibility": "One-port TLS front door. Default is a local certificate authority with no user configuration; optional named-domain mode uses tokio-rustls-acme tls-alpn-01 and DirCache."
+    },
+    {
+      "depends_on": [
+        "magic-core"
+      ],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/crates/magic-thin-router",
+      "public_types": [
+        "ThinRouter",
+        "SelectedServices",
+        "ServiceSet",
+        "EngineHandle",
+        "ControlPlaneProcess",
+        "ThinRouterError"
+      ],
+      "responsibility": "Build a MultiServiceRouter from a copied, compile-time selected service closure with per-crate [workspace] Cargo.toml files. It reuses the real InMemoryEngine and generated service crates without editing the generated root workspace or compiling all 440 services."
+    },
+    {
+      "depends_on": [
+        "magic-core",
+        "magic-thin-router",
+        "magic-state"
+      ],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/crates/magic-tenancy",
+      "public_types": [
+        "SigV4Scope",
+        "CredentialParser",
+        "TenantRouter",
+        "ShardMap",
+        "ShardProcess",
+        "ShardKey",
+        "TenantProjection",
+        "AccountProjection",
+        "RegionProjection",
+        "ProcessSupervisor",
+        "Forwarder",
+        "ResponseDenormalizer",
+        "EmulatorProcess"
+      ],
+      "responsibility": "Parse SigV4 Credential scope, derive AccountId and Region, select a disjoint shard process, and apply a typed projection between 12-digit tenant ARNs and the vendored emulator's fixed 000000000000 account id. This projection is explicitly outside 1:1 AWS parity."
+    },
+    {
+      "depends_on": [
+        "magic-core",
+        "magic-smartops",
+        "magic-tenancy",
+        "magic-tls",
+        "magic-workloads"
+      ],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/crates/magic-api",
+      "public_types": [
+        "MagicGateway",
+        "GatewayOptions",
+        "OnePort",
+        "AdminApi",
+        "HealthResponse",
+        "ResetResponse",
+        "ConfigResponse",
+        "RequestEnvelope",
+        "ResponseEnvelope",
+        "ServiceDispatcher",
+        "Interception",
+        "AwsEndpoint",
+        "RouterTable",
+        "LaboonOperation",
+        "AwsFidelityScope"
+      ],
+      "responsibility": "User-facing front door, admin endpoints, AWS service dispatch, and a narrow interception table for operations that require real laboon workloads. It never exposes EndpointId, DocTicket, ALPN, relay URL, lease, or node identity."
+    },
+    {
+      "depends_on": [
+        "magic-core",
+        "magic-state",
+        "magic-net",
+        "magic-workloads"
+      ],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/crates/magic-scheduler",
+      "public_types": [
+        "Scheduler",
+        "Placement",
+        "ScaleDecision",
+        "HealDecision",
+        "NodeLoad",
+        "Ring",
+        "LeaseTable",
+        "MigrationPlan",
+        "FailureDetector",
+        "Heartbeat",
+        "PhysicalBudget",
+        "ScalePolicy",
+        "ScheduleError"
+      ],
+      "responsibility": "Deterministic consistent-hash placement, horizontal scale decisions, lease fencing, migration plans, and measured physical budgets. It uses no global lock, no Kubernetes, and no artificial job or credit caps."
+    },
+    {
+      "depends_on": [
+        "magic-core",
+        "magic-state",
+        "magic-net",
+        "magic-scheduler",
+        "magic-workloads"
+      ],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/crates/magic-selfheal",
+      "public_types": [
+        "Healer",
+        "Reconciler",
+        "FailureSignal",
+        "RestartPlan",
+        "MigrationPlan",
+        "DrainPlan",
+        "SelfHealReceipt",
+        "ObservedState",
+        "DesiredState"
+      ],
+      "responsibility": "Pure reconciliation from desired CRDT state to observed workload state, then an IO effect that restarts, migrates, drains, or replicates shards. Failover is invisible to the user."
+    },
+    {
+      "depends_on": [
+        "magic-core",
+        "magic-api",
+        "magic-state",
+        "magic-net",
+        "magic-workloads",
+        "magic-scheduler",
+        "magic-selfheal"
+      ],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/crates/magic-witness",
+      "public_types": [
+        "WitnessRunner",
+        "InvariantProbe",
+        "ChaosPlan",
+        "LiveWitness",
+        "AuditTuple",
+        "LoadGenerator",
+        "Crucible",
+        "WitnessReport",
+        "DfProbe",
+        "RestartProbe",
+        "AccountIsolationProbe",
+        "RegionIsolationProbe",
+        "P99Probe",
+        "DatabaseProbe",
+        "LambdaBundleProbe",
+        "NoKubernetesProbe"
+      ],
+      "responsibility": "Live witnessed verification and chaos max-load runner. It emits AuditTuple rows with id, sha256, and timestamp; it writes no synthetic test files and accepts no mock implementation as evidence."
+    },
+    {
+      "depends_on": [
+        "magic-core",
+        "magic-api",
+        "magic-net",
+        "magic-state",
+        "magic-witness"
+      ],
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/crates/magic-cli",
+      "public_types": [
+        "Cli",
+        "Up",
+        "Witness",
+        "Reset",
+        "Health",
+        "Doctor",
+        "StartupPlan",
+        "BootReceipt",
+        "ExitCode"
+      ],
+      "responsibility": "Single binary aws0-magic. Zero-argument startup is the one-command user experience; subcommands are for witness, doctor, health, and reset, never P2P configuration."
+    }
+  ],
+  "crdt_design": "One iroh_docs::protocol::Docs instance is created with Docs::persistent(path).spawn(endpoint, blobs, gossip), exactly as demonstrated in iroh-docs-0.101.0/examples/setup.rs. A DocsApi owns a Doc per ShardId. Every accepted state-changing request is encoded as postcard OpRecord and written with Doc::set_bytes(author, OpId.as_bytes(), record). The CRDT join is Gamma_t = union(Gamma_(t-1), {CommittedOp}) with OpId as the idempotence key, max(FenceToken) for leases, and last-writer-wins by (Hlc, EndpointId) for route hints. Doc::get_many and Doc::subscribe supply the replay stream and LiveEvent stream. Doc::share and DocTicket join a new node to a namespace without exposing tickets to the user. iroh_blobs::store::fs::FsStore::load holds snapshot collections; iroh_blobs::ticket::BlobTicket, iroh_blobs::format::collection::Collection, and iroh_blobs::get::request::get_hash_seq_and_sizes move snapshots and laboon artifacts. magic-dag-sync stores SnapshotNode values whose ParentSet refers only to already committed SnapshotRef hashes, forming a strict monoidal DAG; compaction is a new snapshot with a proof that every live node has the complete parent prefix, so knowledge is monotone and no truncation occurs. Reset writes a ResetEpoch record and projects the new epoch to empty state; it never deletes history. iroh-smol-kv 0.5.0 holds only ephemeral membership, heartbeat, and route-cache entries via Client::local, Config, WriteScope, Filter, SubscribeMode, SubscribeItem, and SignedValue. Because iroh-docs 0.101.0 depends on iroh-blobs 0.103 and iroh-gossip 0.101.0 while this design pins iroh-blobs 0.105.0 and iroh-gossip 0.103.0, the data endpoint and membership endpoint are distinct iroh::Endpoint values with distinct ALPN byte strings; no Hash, Gossip, or GossipTopic type crosses a semver-incompatible boundary.",
+  "disjoint_surfaces": [
+    "S_user and R_user: MagicGateway request envelopes, HealthResponse, ResetResponse, ConfigResponse, and AWS SDK responses; owner magic-api.",
+    "S_tenant and R_tenant: SigV4Scope, ShardKey, TenantProjection, and EmulatorProcess handles; owner magic-tenancy.",
+    "S_ops and R_ops: SmartRequest, SmartResponse, Decision, Receipt, and Refusal; owner magic-smartops.",
+    "S_log and R_log: DocLog, OpLog, LeaseTable, SnapshotStore, Commit, and Replay; owner magic-state.",
+    "S_dag and R_dag: DagNode, ParentSet, SnapshotRef, TopologicalCursor, and CycleError; owner magic-dag-sync.",
+    "S_net and R_net: DataEndpoint, MembershipEndpoint, RoqEndpoint, PeerSet, AddressBook, RpcBus, and SmartOpsProtocolHandler accept results; owner magic-net.",
+    "S_artifacts and R_artifacts: ArtifactManifest, PreinstallPlan, Verify, Install, BlobTicketRef, and ChecksumMismatch; owner magic-artifacts.",
+    "S_workload and R_workload: WorkloadSpec, WorkloadHandle, PortBinding, Mount, HealthProbe, RunReceipt, and StopReceipt; owner magic-workloads.",
+    "S_control and R_control: ServiceSet, EngineHandle, ControlPlaneProcess, and MultiServiceRouter dispatch responses; owner magic-thin-router.",
+    "S_tls and R_tls: TlsMode, LocalCa, AcmeCache, IncomingStream, and CertificateRefusal; owner magic-tls.",
+    "S_schedule and R_schedule: Placement, ScaleDecision, LeaseTable, MigrationPlan, Heartbeat, and PhysicalBudget; owner magic-scheduler.",
+    "S_heal and R_heal: ObservedState, DesiredState, RestartPlan, DrainPlan, and SelfHealReceipt; owner magic-selfheal.",
+    "S_witness and R_witness: InvariantProbe, ChaosPlan, AuditTuple, WitnessReport, and Crucible outcomes; owner magic-witness.",
+    "For all i != j, S_i intersect S_j is empty and R_i intersect R_j is empty; each response carries a surfacetag and (RequestId, ShardId) whose enum constructors are disjoint."
+  ],
+  "invariant_proofs": [
+    "Idempotence: for every SmartRequest, OpId is the hash of TenantKey, IdempotencyKey, and CanonicalRequestHash; reduce checks set membership before any effect, so f(f(s, op)) = f(s, op). Witness: aws0-magic witness --suite algebra --probe idempotence.",
+    "Disjoint state and response sets: ShardId partitions by AccountId, Region, and ServiceFamily; every state ADT is owned by exactly one surface tag; every response carries a disjoint enum constructor and (RequestId, ShardId). Witness: AccountIsolationProbe and RegionIsolationProbe with two accounts and two regions on one port.",
+    "No UB, races, or leaks: every crate has forbid(unsafe_code); no std MutexGuard is held across await; WorkloadHandle, AbortOnDropHandle, and Capability consume affine ownership; Drop kills laboon processes and closes iroh endpoints. Witness: RestartProbe under SIGKILL and DfProbe before and after.",
+    "Contention tends to 0 as n tends to infinity: ownership is deterministic per ShardId over a sorted EndpointId ring; each added node owns O(1/n) shards; no global election or global lock exists. Witness: LoadGenerator at three nodes and six nodes with measured lease conflicts equal to zero.",
+    "Clarke-compliant abstraction: the user sees AWS SDK operations, health, reset, and config only; EndpointId, DocTicket, BlobTicket, ALPN, relay URL, membership epoch, and node identity are compile-time private to internal crates. No leaky abstraction is exposed.",
+    "No phantom AST nodes: every service in SelectedServices is copied from a real path under /Users/dylanwong/projects/aws0-2026-11-19/aws0/services; magic-dag-sync is implemented because no external iroh-dag-sync crate or repository exists; every public type in crate_layout has a named responsibility. Witness: cargo tree -p magic-thin-router and a source-to-service hash manifest.",
+    "No truncation: the operation log is append-only; ResetEpoch advances projection without deleting records; compaction writes a SnapshotNode whose ParentSet proves complete prefix possession at every live replica. Witness: kill -9, replay, and prefix hash equality.",
+    "Minimal DeltaSpec: the generated aws0 root Cargo.toml, core/router/src/lib.rs, core/router/Cargo.toml, and vendor engine are unchanged; all new behavior is in the sibling aws0-magic workspace plus copied per-crate manifests. Witness: git diff against the generated roots is empty.",
+    "No sycophancy and no 1:1 AWS parity claim: census.md and linkedin-post.txt are cited as measured gaps; the fixed EMULATOR_ACCOUNT_ID projection and the thin selected service set are declared fidelity boundaries in thesis, routing, and risks.",
+    "Every exception is handled or propagated: Refusal is a closed enum over authentication, validation, lease, checksum, physical budget, workload, network, storage, and TLS failures; every Result is either converted to a strict AWS-shaped refusal or returned as a typed error; no panic path exists in handlers.",
+    "No secrets in AST: SmartRequest and OpRecord contain SecretRef values only; AGENTS.md lines 64-73 rules for root credentials, created credentials, and credential_store().create are preserved; SecretRef is zeroizing and never serialized into CRDT values or logs. Witness: log and CRDT scan for secret material returns zero hits.",
+    "No vibe code: every external API in iroh_api_used is tied to a source file actually read; every new type has a crate path and responsibility; every claim is tied to a live witness command. Hand-waving implementation is rejected by the acceptance gate.",
+    "Monotone knowledge: Gamma_t is a superset of Gamma_(t-1) because the only log operation is union of CommittedOp values; tombstones are ResetEpoch records, not deletions. Witness: replay prefix hash equality after reset and restart.",
+    "State is ADT-isomorphic to pure morphisms: DurableState has no interior mutability; reduce and reconcile are pure functions; interpret is the only IO boundary. Parametric polymorphism over Capability<C> keeps effect separation monadic and lexically scoped.",
+    "Entropy is subtractive O(1) cognitive: the user learns one command, one port, one endpoint URL, one 12-digit access key rule, and one region rule; all substrate nouns are absent from the user surface. Witness: a stock AWS CLI with no custom flags completes health, reset, STS, Lambda, and RDS probes.",
+    "Topology is a monoidal strict DAG: every CommittedOp points to predecessor OpIds and every SnapshotNode points to committed parent hashes; CycleError is unconstructible for accepted records. Witness: TopologicalCursor rejects injected cycles and accepts only strict prefixes.",
+    "Physics is hardware-bounded and CAP-aware: preflight checks free bytes, memory, CPU pressure, image-cache bytes, and p99 budget; writes fail closed without a converged lease, reads use the last verified snapshot. No artificial credit or job cap exists.",
+    "Boundaries are affine typestate and Byzantine-tolerant: Capability<Lease> is consumed once, FenceToken rejects stale writers, EndpointId allowlists are checked with iroh::endpoint::Connection::remote_id, and malformed peer records are refused rather than trusted.",
+    "Correctness is Pi-type static verification: refinement types constrain AccountId to twelve ASCII digits, Region to SigV4 scope syntax, OpId to 32 bytes, Sha256 to 32 bytes, and FenceToken to a monotone u64; serialization is postcard with total parsers. Witness: property probes over generated boundary values.",
+    "Resilience is p99-bounded graceful: FailureDetector uses three missed 250 ms heartbeats, LeaseTtl is two seconds, and P99Probe measures t_new_owner minus t_last_heartbeat; exceeding the configured p99 budget refuses the run rather than claiming success.",
+    "Contracts are strict semantics with zero leak: each SmartResponse has one disjoint constructor, each Refusal has one documented wire shape, and no internal P2P state is serialized into an AWS response. Witness: response schema scan over all probes.",
+    "Crucible is chaos max-load: three nodes, two accounts, two regions, node kill, partition heal, snapshot transfer, Lambda bundle execution, and real database restart run under LoadGenerator; WitnessReport contains only AuditTuple rows from live execution.",
+    "Teleology is utility max for DX and UX: one command, one port, no Kubernetes, no P2P config, persistence across restarts, invisible self-healing, and real workloads are the first-class outcomes; substrate complexity is admitted only where it is necessary to deliver them.",
+    "Uniform style, parameterized IO, and minimal K(Code): all crates use the same ADT, Refusal, AuditTuple, and Io<C, A> vocabulary; all IO is parameterized by explicit capability and physical budget; the nine-constructor algebra replaces imperative scripts and duplicate control planes.",
+    "Effects live in an IO monad with no hidden mutation: Io<C, A> is created only by Interpret; Reduce, Reconciler, and Scheduler planning are pure; no global static mutable state, no ambient environment lookup, and no implicit singleton engine exist.",
+    "Forbidden stub markers, Unicode ellipsis comments, and unchecked panics are rejected by the source scanner and deny lints. AuthZ is ZeroTrust: every AWS request keeps its SigV4 signature, every internal RPC carries an AuthzCapability bound to OpId and FenceToken, and every peer is authenticated by EndpointId before acceptance."
+  ],
+  "iroh_api_used": [
+    "iroh::{Endpoint, EndpointAddr, EndpointId, PublicKey, SecretKey, RelayMode, RelayUrl, TransportAddr, Watcher} from /Users/dylanwong/projects/aws0-research-2026-11-19/_iroh-src-1.5.0/iroh/src/lib.rs.",
+    "iroh::endpoint::presets::N0, Endpoint::bind, Endpoint::builder, Endpoint::online, Endpoint::addr, Endpoint::connect, Endpoint::accept, and iroh::endpoint::Connection::remote_id.",
+    "iroh::protocol::{Router, RouterBuilder, ProtocolHandler, AcceptError} and Router::builder(endpoint).accept(ALPN, handler).spawn() from /Users/dylanwong/projects/aws0-research-2026-11-19/_iroh-src-1.5.0/iroh/src/protocol.rs.",
+    "iroh::address_lookup::{DnsAddressLookup, PkarrPublisher} with DnsAddressLookup::n0_dns() and PkarrPublisher::n0_dns() from /Users/dylanwong/projects/aws0-research-2026-11-19/src-sendme/src__main.rs.",
+    "iroh_blobs::{BlobsProtocol, BlobFormat, Hash, HashAndFormat, ALPN} and iroh_blobs::api::{Store, TempTag} from iroh-blobs-0.105.0/src/lib.rs and src/api.rs.",
+    "iroh_blobs::api::blobs::{AddPathOptions, ExportOptions, ExportMode, ImportMode, AddProgressItem, ExportProgressItem}, iroh_blobs::api::remote::GetProgressItem, iroh_blobs::format::collection::Collection, iroh_blobs::get::request::get_hash_seq_and_sizes, and iroh_blobs::store::fs::FsStore from /Users/dylanwong/projects/aws0-research-2026-11-19/src-sendme/src__main.rs.",
+    "iroh_blobs::ticket::BlobTicket and BlobTicket::new from iroh-blobs-0.105.0/src/ticket.rs; BlobsProtocol::new and ProtocolHandler::accept from src/net_protocol.rs.",
+    "iroh_docs::{DocsApi, Doc, DocTicket, Author, AuthorId, NamespaceId, Capability, CapabilityKind, Entry, ALPN} from iroh-docs-0.101.0/src/lib.rs and src/api.rs.",
+    "iroh_docs::protocol::{Docs, Builder} and Docs::persistent(path).spawn(endpoint, blobs, gossip) from iroh-docs-0.101.0/src/protocol.rs and examples/setup.rs.",
+    "iroh_docs::api::DocsApi::{create, open, import, import_and_subscribe, author_create, author_default} and Doc::{set_bytes, set_hash, get_exact, get_many, share, start_sync, subscribe, status}.",
+    "iroh_docs::engine::{Engine, LiveEvent, DefaultAuthorStorage, ProtectCallbackHandler} and iroh_docs::store::Store::persistent from iroh-docs-0.101.0/src/engine.rs and src/protocol.rs.",
+    "iroh_docs::DocTicket::{new, capability, nodes} from iroh-docs-0.101.0/src/ticket.rs.",
+    "iroh_gossip::{Gossip, GossipTopic, GossipSender, GossipReceiver, Event, TopicId, Builder, JoinOptions, QueueOptions, ALPN} from iroh-gossip-0.103.0/src/lib.rs and src/api.rs.",
+    "iroh_smol_kv::{Client, Config, ExpiryConfig, WriteScope, SubscribeMode, SubscribeItem, Filter, SignedValue} and Client::local(topic, config) from iroh-smol-kv-0.5.0/src/lib.rs.",
+    "iroh_roq::{Session, SendFlow, ReceiveFlow, SendStream, ALPN, RtpPacket, VarInt} from iroh-roq-0.1.0/src/lib.rs.",
+    "n0_dns_resolver::{DnsResolver, Builder, DnsProtocol, FallbackMode, Nameserver, RecordKind, Record, Error, ResponseCode} and DnsResolver::system_with_fallback from n0-dns-resolver-0.1.1/src/lib.rs.",
+    "tokio_rustls_acme::{AcmeConfig, AcmeState, AcmeAcceptor, AcmeAccept, Incoming, ResolvesServerCertAcme, Cache, CertCache, AccountCache}, tokio_rustls_acme::caches::DirCache, AcmeConfig::new, AcmeConfig::incoming, and AcmeAcceptor::accept.",
+    "quic_rpc::{RpcClient, RpcServer, Service, RpcMessage, RpcError, Connector, Listener} and quic_rpc::transport::flume::channel from quic-rpc-0.20.0/src/lib.rs; the iroh-transport feature is disabled because quic-rpc-0.20.0/Cargo.toml pins iroh 0.35 while iroh 1.5.0 exports EndpointId and EndpointAddr.",
+    "portmapper::{Client, Config, ProbeOutput, ProbeError, Protocol, Service} with Client::new, Client::probe, Client::procure_mapping, Client::watch_external_address, and Client::deactivate from /tmp/dxmagic-net-tools-src/portmapper/src/lib.rs.",
+    "netwatch::{IpFamily, BindOptions, SocketRef, UdpSender, UdpSocket} and netwatch::netmon from /tmp/dxmagic-net-tools-src/netwatch/src/lib.rs.",
+    "sendme CLI Commands::Send, Commands::Receive, Args, CommonArgs, SendArgs, ReceiveArgs, and BlobTicket from /Users/dylanwong/projects/aws0-research-2026-11-19/src-sendme/src__main.rs."
+  ],
+  "laboon_preinstall": "Use prebuilt release binaries because /tmp/dxmagic-laboon-src/go.mod declares go 1.27.1 while the local toolchain is go1.26.1. The verified laboon release is samyfodil/laboon v0.1.0, tag commit 049f6c2a764f0e51556a560b575120b5f0f122e0. /tmp/dxmagic-readmes/laboon/checksums.txt gives laboon_0.1.0_darwin_amd64.tar.gz bd3c10db9086d5c0c688c502b7a80607c62f5ad1a9ec510f9146d9fece6ba89e, laboon_0.1.0_darwin_arm64.tar.gz 1116d234f49b3f5f3c7ce363ddb98c4d084a4e6d11342a613386a4d89203f279, laboon_0.1.0_linux_amd64.tar.gz 842fe5620db4592498ff599a080c9f8f31b710a27face7ac2ffa13799d5312c8, laboon_0.1.0_linux_arm64.tar.gz 8459d1d6a00df841d4fff3419beb02e20cf61a37357c4cb5f720ca5384c1955a, laboon_0.1.0_windows_amd64.zip ef9c67428b3cde1aecae2b3c90a123f56f4d70a02e7b62fa7ec517f474c14366, and laboon_0.1.0_windows_arm64.zip 2e1a02a19882975ef8b0dc14b275f8625704b6b1a7861cfac8e52ff81f710071. The darwin-arm64 archive was downloaded, verified, extracted, and its binary SHA-256 is 5dafb08c6944b5c87356d5b1132341d118218f9c25589629bf78d5b8a87286ec. The sendme v0.37.1 darwin-aarch64 archive SHA-256 is 3c2502860b87cd2500a3295dbad6fbff3355318122e17f1a1f9638086e4a2bcd and its extracted sendme binary SHA-256 is 422eda74d65e70bdf4c772c1a3a2abcfdf19f477a3e88c7ba92d652e745ad2b4. ArtifactReceiver verifies the archive, verifies the extracted binary, then chmods and executes; Verify and Install are affine typestates. The release contains laboon and laboon-mcp, not a laboond binary, so the design uses the standalone CLI from /tmp/dxmagic-laboon-src/cmd/laboon/main.go with exact flags -image, -root, -mount, -env, -net, -no-net, -allow-domains, -allow-cidrs, -allow-ports, -mem, -platform, -pull, and -runtime. OCI image bundles are warmed once with laboon -image <pinned-ref> <probe>; later runs use the cached image. Sendme-compatible BlobTicket transfer imports laboon, sendme, and image bundles under ~/.aws0/runtime with no Docker socket and no Kubernetes.",
+  "membership_failure_detection": "P2PNode creates a MembershipEndpoint with iroh::Endpoint::bind(iroh::endpoint::presets::N0), then Gossip::builder().spawn(endpoint.clone()) and a GossipTopic. Heartbeat messages contain NodeKey, LeaseEpoch, FenceToken, Hlc, PhysicalBudget, and EndpointAddr, and are broadcast every 250 ms through GossipSender::broadcast. iroh_smol_kv::Client::local stores signed heartbeat entries under Filter::key_prefix with WriteScope::put; Client::subscribe_with_opts uses SubscribeMode::Both and an ExpiryConfig with horizon 9 s and check_interval 1 s. FailureDetector marks a node dead after three missed heartbeats. n0_dns_resolver::DnsResolver::system_with_fallback refreshes nameserver resolution, DnsAddressLookup::n0_dns and PkarrPublisher::n0_dns publish and resolve EndpointAddr, portmapper::Client::watch_external_address observes NAT changes, and netwatch::IpFamily plus netwatch::UdpSocket report local network state. Scheduler recomputes the ring only on a monotone MembershipView epoch change. P99Probe measures t_new_owner minus t_last_heartbeat and refuses the run if the observed p99 exceeds the declared failover budget.",
+  "name": "dx-magic-first",
+  "persistence": "State survives restarts as a deterministic append-only command log, not as a fragile process memory dump. Each accepted SmartRequest is committed to the per-shard iroh_docs::Doc before the AWS response is released; the response contains the committed OpId. On boot, Replay reads Doc::get_many in OpId order, verifies the strict DAG snapshot prefix, and re-applies pure reduce morphisms to a fresh InMemoryEngine. Reset is a new ResetEpoch record, so Gamma_t remains a superset of Gamma_(t-1). Laboon writable directories are mounted from ~/.aws0/state/<account>/<region>/<service>/workloads, and snapshot artifacts are stored in iroh_blobs::store::fs::FsStore with BlobTicket hashes in the same log. The secret key, ACME account cache, and credential-store references live in SecretRef values backed by an OS keychain or 0600 files; no secret bytes enter the AST, logs, or CRDT values. Restart witness kills the process with SIGKILL, starts aws0-magic again, and asserts that S3 objects, SQS queues, DynamoDB tables, RDS instances, and Lambda bundles from both accounts and both regions are identical to their pre-restart AuditTuple hashes.",
+  "pinned_deps": [
+    "rustc 1.98.1 local toolchain; go1.26.1 is present locally and is not used to build laboon because /tmp/dxmagic-laboon-src/go.mod requires go 1.27.1.",
+    "iroh = 1.5.0, crates.io checksum 40ac5d8330439176254581b6db4bc6f1d947d7cc741fda4e04b96d758addf1db, n0-computer/iroh main commit 40833b58fbcfdecfa154a2d22a38f767c705f355.",
+    "iroh-blobs = 0.105.0, crates.io checksum b9ef502f80b48a0d87bc6b4212a9140ecc2915e2683cb3f2606b9241fec4349a, n0-computer/iroh-blobs main commit b798eea75b9fdfce3d35c28b6213a67f8c9d8a3b.",
+    "iroh-docs = 0.101.0, crates.io checksum 8fd1bd5e39d0321a3c4a2bcef9650476c076e2df41a0e84577eca23d6de6c8ab, n0-computer/iroh-docs main commit 8cfeacb087b4b195b1930683aa4448e990da0659, features fs-store and rpc, default-features preserved from the published manifest.",
+    "iroh-gossip = 0.103.0, crates.io checksum 74c4170847b5603f489c4d7771f1e7b263fa63a2521dbbb747601931987aa777, n0-computer/iroh-gossip main commit 201a12521dbb93760e576d00c7387c0c334daf7f, feature net.",
+    "iroh-smol-kv = 0.5.0, crates.io checksum f25caa3f604a0ebacf2c3e72bf1289caaee749c40a9259a2b38945df97f4de3d, n0-computer/iroh-smol-kv main commit 3007ed0b84f718958e386f03a7bef0f4cccc48a8.",
+    "iroh-roq = 0.1.0, crates.io checksum 8ba28cc2a62f5f2ce520c60563d6868d75c3e29742e73d1c56ccd5ec2d830a09, n0-computer/iroh-roq main commit fe00827e5fc0749386fc208d07254725ee16fd7d.",
+    "tokio-rustls-acme = 0.10.0, crates.io checksum 14303ebe76ff697adc251341c800c56e7a6a15c53dcd6e45986dbc291e2ae9a4, n0-computer/tokio-rustls-acme main commit 4017266013e0bd00bae83e9edc410f3624f80815, features tls-ring and tls-webpki-roots.",
+    "quic-rpc = 0.20.0, crates.io checksum 18bad98bd048264ceb1361ff9d77a031535d8c1e3fe8f12c6966ec825bf68eb7, n0-computer/quic-rpc main commit 0e3358e86bcd51272f90279461b5bae5c2277c8f, features flume-transport only; iroh-transport is disabled.",
+    "n0-dns-resolver = 0.1.1, crates.io checksum 0381996935dc55768ae8b13e7db69d3a90f13afb51dde80f870484027968bcd2, repository n0-computer/iroh.",
+    "sendme = 0.37.1, crates.io checksum 1dee2428dae3fceabe093d64f65038104a576dc77edcffac16fc530c1eeb52d9, n0-computer/sendme main commit fe29e3454999794bc5ea686cef1ad53d99124a53, used as verified release CLI and source contract.",
+    "net-tools = git pin 40fc25830973a357d99be2b1d5ccc01c3c9f3558, subcrates portmapper 0.20.2 and netwatch 0.20.2; crates.io returns 404 for net-tools, so it is a git source, not a registry crate.",
+    "laboon = samyfodil/laboon v0.1.0 tag commit 049f6c2a764f0e51556a560b575120b5f0f122e0, prebuilt release assets and checksums from /tmp/dxmagic-readmes/laboon/checksums.txt.",
+    "iroh-dag-sync = internal magic-dag-sync crate; crates.io returns 404 and n0-computer/iroh-dag-sync returns GitHub 404, so no external crate or repository is pinned."
+  ],
+  "real_databases": "The first workload slice boots real PostgreSQL, MariaDB, and Redis through laboon, matching the tested workload set in /tmp/dxmagic-readmes/laboon/README.md:164 and the real-infrastructure expectation in /tmp/dxmagic-readmes/ministack/README.md:32. RDS CreateDBInstance, ElastiCache CreateCacheCluster, ECS RunTask, and Lambda Invoke compile to SmartOp::Run with DatabaseKind or RuntimeKind. LaboonRuntime invokes laboon -image <pinned-ref> <entrypoint> with -mount state:/var/lib/postgresql/data, -net, -allow-cidrs 127.0.0.1/32, -allow-ports 5432,3306,6379, and -mem set from PhysicalBudget. Lambda uses real Node.js or Python OCI images rather than the embedded JS engine criticized in /Users/dylanwong/projects/aws0-research-2026-11-19/linkedin-post.txt:20. Each workload gets a HealthProbe and a WorkloadHandle whose Drop kills the process and releases the port. Native protocol endpoints are advertised through ctx.endpoint() and the existing emulator listener contract from /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/engine/src/lib.rs:24-35. This is real workload hosting without Docker socket, containerd, CRI-O, or Kubernetes.",
+  "risks": [
+    "Fidelity: 1:1 AWS parity is not achieved. /Users/dylanwong/projects/aws0-research-2026-11-19/census.md lists 5355 open in-repo issue docs and 7114 stub files, and /Users/dylanwong/projects/aws0-research-2026-11-19/linkedin-post.txt reports Lambda bundle failure in the upstream emulator. The thin selected service set and tenant projection are explicit scope boundaries.",
+    "Fixed account id: /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server/src/lib.rs:138-158 forbids per-AKID-derived internal account ids and fixes 000000000000. Multi-account isolation is therefore shard-process isolation plus gateway projection, not modification of the agent-immutable vendored runtime described in /Users/dylanwong/projects/aws0-2026-11-19/aws0/AGENTS.md:37-39.",
+    "Vendor engine boundary: /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/engine/src/lib.rs:14 says containers and external processes are not available to a generated emulator. magic-workloads runs laboon outside that engine as a separate capability-bound process and integrates through the gateway, instead of editing or forking the vendored engine.",
+    "Version skew: iroh-docs 0.101.0 depends on iroh-blobs 0.103 and iroh-gossip 0.101.0, while the requested direct pins are iroh-blobs 0.105.0 and iroh-gossip 0.103.0. Two semver-incompatible minor versions may be linked; the design uses distinct endpoints and never passes Hash, Gossip, or GossipTopic values between those versions.",
+    "Quic-rpc skew: quic-rpc 0.20.0 pins iroh 0.35 and its source uses NodeAddr and NodeId, while iroh 1.5.0 exports EndpointAddr and EndpointId. The design enables only flume-transport and uses quic-rpc as an in-process typed command bus, not as the P2P transport.",
+    "Missing external iroh-dag-sync: crates.io and n0-computer GitHub return 404. The design implements magic-dag-sync internally from iroh-docs entries and iroh-blobs hashes instead of inventing a dependency or an API.",
+    "Net-tools source only: crates.io returns 404 for net-tools. The design pins the GitHub commit 40fc25830973a357d99be2b1d5ccc01c3c9f3558 and uses only the public portmapper and netwatch exports verified in source.",
+    "Laboon maturity: /tmp/dxmagic-readmes/laboon/README.md:33-35 says its daemon and OCI runtime are newer and should not be read as production maturity. The design uses only the standalone laboon CLI path from cmd/laboon/main.go and declares the tested workload set, not complete Linux syscall compatibility.",
+    "Laboon release shape: v0.1.0 publishes laboon and laboon-mcp assets, not a laboond binary. The Docker-API-compatible daemon in cmd/laboond/main.go is not used; no Docker socket is required.",
+    "Disk bound: /Users/dylanwong/projects/aws0-2026-11-19/aws0/README.md:43 documents 100 GB for a whole-workspace debug build, while this task has a 7 GiB hard bound. The design builds only the sibling workspace and a copied selected service closure; DfProbe aborts with PhysicalBudgetExceeded if measured free bytes or target growth violate the bound.",
+    "ACME scope: tokio-rustls-acme defaults to the Let's Encrypt staging directory according to /Users/dylanwong/projects/aws0-research-2026-11-19/_src/tokio-rustls-acme-v0.10.0/src/config.rs:117. Default startup uses a local CA and no external certificate order; production ACME is used only when an operator explicitly supplies a domain.",
+    "Security: laboon's syscall-interception design is a sandbox, not a hardware isolation boundary. Egress is loopback plus explicit allowlists, state mounts are per ShardId, and guest stdout plus stderr are bounded by physical memory budgets. No secrets are injected into guest environments."
+  ],
+  "routing": "External routing is TCP port 4566 to TlsFrontDoor to MagicGateway. CredentialParser reads the SigV4 Authorization header, extracts the 12-digit access key as AccountId and the Credential scope region as Region, and derives ShardId. TenantRouter maps ShardId to one ShardProcess backed by build_thin_router(Arc<InMemoryEngine>) from magic-thin-router. Requests are forwarded with their original signature so the existing emulator's own SigV4 verification is preserved, as required by /Users/dylanwong/projects/aws0-2026-11-19/aws0/AGENTS.md line 87. Because /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server/src/lib.rs lines 152-158 fix EMULATOR_ACCOUNT_ID to 000000000000 and forbid per-AKID-derived internal accounts, TenantProjection normalizes request ARNs to that placeholder and denormalizes response ARNs to the tenant account only at the gateway boundary; this is a documented fidelity boundary, not 1:1 AWS parity. Region scope comes from SigV4, never a Host header or ambient environment. Internal P2P routing uses iroh::EndpointAddr, iroh::address_lookup::DnsAddressLookup::n0_dns(), iroh::address_lookup::PkarrPublisher::n0_dns(), iroh::RelayMode::Default, n0_dns_resolver::DnsResolver::system_with_fallback, portmapper::Client::watch_external_address, and iroh::protocol::Router::builder(endpoint).accept(ALPN, handler).spawn(). User-facing URLs come from ctx.endpoint() or the one configured AWS_ENDPOINT_URL, per AGENTS.md lines 75-85; no EndpointId, relay URL, ticket, ALPN, or node id appears in a user response. No Kubernetes ingress, service mesh, or sidecar configuration is present.",
+  "scheduling": "Scheduler computes owner = argmin over sorted live EndpointId values of Blake3(ShardId || EndpointId), with replicas on the next two ring positions. ShardId is Blake3(AccountId || Region || ServiceFamily), so disjoint tenants and regions map to disjoint state sets. A Lease carries LeaseEpoch and FenceToken; every Run, Put, Scale, and Heal effect consumes an affine Capability<Lease> and is rejected with Refusal::StaleFence if the token is not current. Adding a node only changes ring ownership for shards whose owner changes; a MigrationPlan streams a verified iroh-blobs snapshot to the new owner and then advances the lease. The only admission limits are PhysicalBudget values measured from free bytes, resident memory, CPU pressure, image-cache bytes, and p99 latency; there are no credit caps, no job-count caps, and no artificial spend gates. Contention tends to 0 as n tends to infinity because each node owns O(1/n) of the shards, there is no global election, and the only shared control structure is the monotone membership OR-set. Preflight uses df and du to enforce the 7 GiB hard bound: the build is cargo build --release -p magic-cli -p magic-thin-router with CARGO_TARGET_DIR=/Users/dylanwong/projects/aws0-2026-11-19/aws0-magic/target, not the 100 GB whole-workspace build.",
+  "self_healing": "Reconciler is a pure function from DesiredState in the CRDT log to ObservedState from HealthProbe values. It emits RestartPlan, MigrationPlan, or DrainPlan; Healer interprets those plans as Io<Capability<Lease>, SelfHealReceipt>. A failed laboon process is restarted with the same WorkloadSpec and state mount. A failed node loses its heartbeat, the deterministic ring assigns a new owner, the new owner streams the latest verified snapshot through iroh-blobs, and the lease advances with a higher FenceToken. Old owners cannot write because every effect consumes the affine capability and checks the fence. Under partition the gateway serves reads from the last verified snapshot and refuses writes with Refusal::NoLease, so the user observes graceful p99-bounded behavior rather than split-brain mutation. All of this is invisible: the AWS API response shape is unchanged and no P2P or membership state is exposed.",
+  "smartops_protocol": "Smartops is a nine-constructor total operation algebra, not an imperative plugin language. SmartOp has Health(HealthQuery), Reset(ResetEpoch), Put(PutIntent), Get(GetQuery), Run(WorkloadSpec), Scale(ScalePolicy), Heal(HealIntent), Route(RouteIntent), and Snapshot(SnapshotRef). SmartRequest carries scope: SigV4Scope, op_id: OpId, capability: AuthzCapability, and op: SmartOp. SmartResponse is Health(HealthResponse), Reset(ResetResponse), Value(ValueReceipt), Run(RunReceipt), Scale(ScaleDecision), Heal(SelfHealReceipt), Route(RouteReceipt), Snapshot(SnapshotReceipt), or Refused(Refusal). OpAlgebra::compile is total over RequestEnvelope; Reduce::apply is a pure morphism (DurableState, SmartRequest) -> (DurableState, Decision); Decision is Admit, Replay, Refuse, or Effect; Interpret transforms only Effect into Io<Capability<C>, SmartResponse>. Idempotence is f(f(s, op)) = f(s, op) because OpId is Blake3(TenantKey || IdempotencyKey || CanonicalRequestHash) and apply checks membership before any effect. Every exception is a Refusal variant with a strict wire shape; there is no panic path, no ambient state, no implicit region, no global mutable engine, and no hidden mutation. Capabilities are passed lexically and consumed affinely. The user never authors or sees smartops; ordinary AWS operations compile into it and it just works.",
+  "thesis": "The user sees one command, one port, and ordinary AWS SDKs: run aws0-magic, set AWS_ENDPOINT_URL=http://127.0.0.1:4566, use a 12-digit AWS_ACCESS_KEY_ID, and let the SigV4 Credential region select state. Health and reset are GET /_aws0/health and POST /_aws0/reset. Peer discovery, CRDT convergence, leases, snapshots, laboon, ACME, routing, scheduling, and self-healing are behind a strict capability boundary and never appear in user configuration or responses. This is a hardware-bounded, horizontally scalable, self-hosted AWS-compatible emulator with real workload execution, not a claim of 1:1 AWS parity. /Users/dylanwong/projects/aws0-research-2026-11-19/census.md reports 440 service crates, 572 GitHub issues, 5355 open in-repo issue docs, and 7114 stub files; /Users/dylanwong/projects/aws0-research-2026-11-19/linkedin-post.txt reports 52 of 54 API checks passing while Lambda bundles fail to load. The design therefore states fidelity limits honestly and uses those gaps as constraints. The root Cargo.toml at /Users/dylanwong/projects/aws0-2026-11-19/aws0/Cargo.toml is generated and is not edited; all new Rust code lives in the sibling workspace /Users/dylanwong/projects/aws0-2026-11-19/aws0-magic, so the 100 GB full-workspace build documented in /Users/dylanwong/projects/aws0-2026-11-19/aws0/README.md is avoided under the 7 GiB hard bound. No Kubernetes and no artificial job or credit caps are used; only measured disk, memory, CPU, image-cache, and p99 budgets gate execution.",
+  "user_facing_magic": "One command: aws0-magic. One port: 4566. The only user setup is AWS_ENDPOINT_URL=http://127.0.0.1:4566, AWS_ACCESS_KEY_ID=<12 digits>, AWS_SECRET_ACCESS_KEY=test, and AWS_REGION=<region>. A 12-digit access key becomes the AccountId; the SigV4 Credential region scopes every ARN, queue, table, bucket, function, database, and log to that tenant and region. Two accounts and two regions can use the same resource name on the same port without collision. GET /_aws0/health returns a typed HealthResponse with edition, services, workloads, state_epoch, and p99_ms. POST /_aws0/reset returns a ResetResponse and starts a new epoch without deleting history. POST /_aws0/config changes only declared service settings; there is no P2P configuration surface. Persistence across restarts, peer discovery, CRDT convergence, lease failover, snapshot transfer, laboon image warming, and self-healing are invisible. The user never sees EndpointId, DocTicket, BlobTicket, ALPN, relay URL, node id, membership epoch, or Kubernetes objects. Adding a second host uses aws0-magic join <cluster-capability-ticket>; that is an affine capability transfer, not P2P configuration. No Kubernetes is installed, required, or exposed. This deliberately does not claim 1:1 AWS parity; it claims a magical, strict, workload-capable local AWS surface with honest fidelity bounds.",
+  "zero_trust_authz": "Every AWS request retains its SigV4 signature and is verified by the existing emulator, matching /Users/dylanwong/projects/aws0-2026-11-19/aws0/AGENTS.md:87. CredentialParser only reads the public access key id and Credential scope; it never reconstructs a secret. Every internal SmartRequest carries AuthzCapability with EndpointId, OpId, FenceToken, and SignatureRef; SmartOpsProtocolHandler checks iroh::endpoint::Connection::remote_id against the live EndpointId allowlist before accepting an ALPN stream. Every RPC over quic-rpc repeats the capability check. Capability<Lease> is affine and consumed once. Root credentials from ctx.callback().credentials() are never logged or returned; created credentials use ctx.credential_store().create(&AWS_ACCESS_KEY) and delete(id) as AGENTS.md:64-73 requires. Presigned URLs use ctx.url_signer() and unsigned addresses use ctx.endpoint(), per AGENTS.md:75-85. SecretRef values are zeroizing and never serialized into the AST, CRDT, logs, admin responses, or guest environments. No ambient trust, no implicit account, no implicit region, and no shared static mutable authority exists."
+}

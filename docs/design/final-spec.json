@@ -1,0 +1,85 @@
+{
+ "schema": "aws0/substrate-final-spec/v1",
+ "fork": "dywongcloud/aws0",
+ "fork_head": "ec5f6fbab9238221b966379f06846c34e9d6a6f5",
+ "winner": "crdt-first-replicated-state-algebra",
+ "source_designs": [
+  "laboon-first",
+  "crdt-first",
+  "iroh-native",
+  "capability-first",
+  "dx-magic-first"
+ ],
+ "pinned_dependencies": {
+  "iroh": "1.5.0",
+  "tokio": "1",
+  "serde": "1",
+  "serde_json": "1",
+  "sha2": "0.10",
+  "hex": "0.4",
+  "bytes": "1",
+  "quic-rpc": "0.20.0",
+  "iroh-blobs": "0.103.1",
+  "iroh-docs": "0.101.0",
+  "iroh-gossip": "0.101.0"
+ },
+ "hard_blockers": [
+  "iroh-docs 0.101.0 requires iroh-blobs ^0.103 and iroh-gossip ^0.101",
+  "iroh-roq 0.1.0 pins iroh ^0.33; iroh-dag-sync pins iroh 1.0.0-rc.1; sendme 0.37.1 is binary-only",
+  "quic-rpc iroh-transport pulls iroh ^0.35; irpc ^0.17 vs ^1.0 skew"
+ ],
+ "runtime": {
+  "name": "laboon",
+  "version": "0.1.0",
+  "go": "1.27.1",
+  "artifact_count": 6,
+  "darwin_arm64_sha256": "1116d234f49b3f5f3c7ce363ddb98c4d084a4e6d11342a613386a4d89203f279",
+  "checksum_source": "https://github.com/samyfodil/laboon/releases/download/v0.1.0/checksums.txt",
+  "databases": [
+   "postgres:16",
+   "mysql:8.4",
+   "mariadb:11",
+   "redis:7",
+   "valkey/valkey:8",
+   "mongo:7",
+   "duckdb/duckdb:latest",
+   "apache/kafka:3.8.0"
+  ]
+ },
+ "alpn": "aws0/smartops/1",
+ "invariants": {
+  "idempotence": "f(f(x)) == f(x), witnessed by scheduler-fixed-point and crdt-join-laws",
+  "disjoint_surfaces": "one writer per module; PartitionKey(account,region) indexes every replicated map",
+  "crdt": "Lww with symmetric digest tie-break, OrSet with observed-remove, GCounter, VersionVector",
+  "persistence": "checksummed journal frames plus snapshot, recovery across restart",
+  "authz": "HMAC-SHA256 capabilities with constant-time verify, Scope derived from validated account",
+  "effects": "pure transitions return Vec<Effect>; only net::execute performs IO",
+  "bounds": "1 MiB frame cap, 1 MiB payload cap, 8192-byte HTTP read, p99 chaos witness"
+ },
+ "facade": {
+  "user_command": "aws0 up",
+  "endpoint": "https://127.0.0.1:4566",
+  "routes": [
+   "GET /_aws0/health",
+   "GET /health",
+   "GET /_aws0/status",
+   "POST /_aws0/reset"
+  ],
+  "hidden": [
+   "QUIC",
+   "EndpointAddr",
+   "CRDT",
+   "gossip",
+   "relay",
+   "NodeId",
+   "journal"
+  ]
+ },
+ "witness": {
+  "total": 25,
+  "passed": 25,
+  "failed": 0,
+  "artifact": "docs/WITNESS-OUTPUT.json"
+ },
+ "hardware_bound": "full 440-crate workspace requires about 100 GiB target; per-crate builds and a nested fabric workspace are used instead"
+}

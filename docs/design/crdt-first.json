@@ -1,0 +1,647 @@
+{
+  "name": "crdt-first-replicated-state-algebra",
+  "thesis": "Replicated state algebra is the specification; consensus is only the guard on effects. The leading move is a strict partition of the whole state space into (A) an inflationary join-semilattice Gamma replicated by iroh-docs and ordered by a dotted causal DAG, and (B) a small set of exclusive, safety-critical effects gated by quorum-certified leases with monotone fencing tokens. Gamma is the tensor product of disjoint surfaces: MembershipOrSet (add-wins OR-set of configured nodes), LwwMap placement register with a total order of (HlcStamp, Dot, ActorId), DottedVersionVector causal context built on iroh_docs::heads::AuthorHeads, grow-only WorkloadLog (GSet of content-addressed WorkloadDecl plus a grow-only RevocationSet), RouteTable, CapacityView, AuditLog and SmartOpsSpec set. Every delta is an immutable, signed iroh_docs::Entry keyed by its Dot; joining is set union or pointwise max, so f composed with f equals f, Gamma_t is a superset of Gamma_{t-1}, and any two delivery orders fold to the same ADT-isomorphic state. What must NOT be a CRDT: unique name allocation, starting or stopping a real laboon process, listener binding, credential issuance, ACME certificate ownership, protocol activation, snapshot barriers, membership eviction and any conditional write. Those are consensus/lease-protected because a CRDT can converge on intent but cannot make an external side effect exclusive; a LWW placement register alone would let two schedulers start the same WorkloadId on two nodes under a partition. CAP is chosen per operation, not globally: reads and declarative writes are AP with a monotone ConsistencyToken read barrier; uniqueness, activation, eviction, credentials and compaction are CP and refuse with modeled AWS errors in a minority partition rather than fabricating success. The user sees one HTTPS endpoint, one command and four AWS environment variables; iroh, CRDT, quorum, lease, region and DAG are crate-private. Grounding and honesty: /Users/dylanwong/projects/aws0-2026-11-19/aws0/AGENTS.md forbids editing the generated root Cargo.toml and marks core/router/src/lib.rs RE-RENDERED ON EVERY SERVICE ADD; /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/engine/src/lib.rs states containers and external processes are NOT available to a generated emulator and that InMemoryEngine is one process-wide type-map; /Users/dylanwong/projects/aws0-2026-11-19/aws0/core/embedded/src/lib.rs states each emulator owns a FRESH engine and two emulators never share state, which is precisely why a replicated algebra is required; /Users/dylanwong/projects/aws0-2026-11-19/aws0/README.md requires at least 100 GB for a full workspace build while this machine has 6.5 GiB free. Consequently all new code lives in a sibling SEPARATE workspace and path-depends only on read-only vendored crates with no workspace inheritance. 1:1 AWS parity is NOT achieved and is NOT claimed: /Users/dylanwong/projects/aws0-research-2026-11-19/census.md records 440 service crates, 7114 stub files, 5355 open in-repo fidelity documents (111 CRITICAL, 3888 HIGH) and 572 GitHub issues; unimplemented operations keep the scaffold honest 501 channel. The product goal is taken from /Users/dylanwong/projects/aws0-research-2026-11-19/linkedin-post.txt: run real Lambda bundles with node:http, node:zlib and fetch under a real runtime, keep strict SigV4 and resource-policy behavior, and boot real databases behind AWS-shaped endpoints.",
+  "crdt_design": "ALGEBRA FIRST. The authoritative state is a strict monoidal tensor of eight disjoint join-semilattices, each an iroh-docs namespace. Every crate in fabric-core and fabric-algebra is pure: no tokio, no iroh, no clock, no environment read. JoinSemiLattice has bottom, join and leq, and the four laws (idempotent, commutative, associative, inflationary) are executable property witnesses, not prose. (1) MembershipOrSet: add-wins observed-remove set. Add carries a fresh Dot = (AuthorId, monotone u64 counter); Remove carries the BTreeSet of add-dots it observed; value is adds minus removes, so a concurrent add survives. Add-wins is deliberate: a partition must not silently kill a configured node. Eviction is NOT a CRDT remove; it is a quorum-certified entry in the grow-only RevocationSet, so effective membership = OrSet.value() minus revoked actors, and re-admission requires a higher JoinEpoch plus a certificate. (2) DottedVersionVector: Dvv = (iroh_docs::heads::AuthorHeads, BTreeSet<Dot>). AuthorHeads is literally a version vector keyed by AuthorId with merge as pointwise max and has_news_for for anti-entropy; Dot exceptions represent non-contiguous deliveries. join = heads.merge(other.heads) union (dots union other.dots) minus dots dominated by the merged heads. Forbidding AuthorHeads::encode(Some(limit)) for correctness is mandatory: its source says it will skip oldest entries if the size limit is reached, which would break the no-truncation invariant; it is used only as a lossy hint. (3) LwwMap placement register: LwwRegister<Placement> resolved by a total order of (HlcStamp, Dot, ActorId) so clock skew can never make two replicas disagree. HLC is monotonic per actor and advanced on receive. LWW converges on DESIRED placement, but it is explicitly NOT the authority to start a process: the Effect StartWorkload carries a FenceToken from a quorum lease and the laboon supervisor rejects any fence below its local maximum. (4) WorkloadLog: GSet<WorkloadDecl> keyed by WorkloadId = blake3(spec_hash, region, submitter, nonce) plus a grow-only RevocationSet of retire events. No deletions, no overwrites; f composed with f equals f by key dedup. (5) RouteTable as LwwMap<ResourceId, EndpointAddr>, CapacityView as LwwMap<EndpointId, ResourceVector> of measurements with a lease-protected ReservationLedger, AuditLog as GSet<EffectReceipt> keyed by OpId, Config as GSet<SmartOpsSpec> with an LwwRegister<ProtocolId> activation. All derived values, including the effective membership and available capacity, are pure functions of the log, so State is ADT-isomorphic to a fold over the event DAG. SUBSTRATE MAPPING. One NamespaceId per Surface is derived deterministically by BLAKE3 domain separation of (b\"aws0/v1\", surface, region), so restart rejoins the same document. One AuthorId per node from DocsApi::author_create, persisted via DefaultAuthorStorage::Persistent. Each delta is written with Doc::set_bytes(author, key, value) for small payloads or Doc::set_hash(author, key, hash, size) for blobs, where key = surface || region || kind || dot. Keys are append-only and dot-unique, so iroh-docs never overwrites a CRDT event and its own per-author LWW machinery cannot lose an event. Replay is Doc::get_many(Query::key_prefix(prefix)); fold order is the topological order from fabric-dag, not insertion order. Doc::subscribe drives LiveEvent::{InsertLocal, InsertRemote, ContentReady, PendingContentReady, SyncFinished} into the LiveEventSink. Engine::spawn(endpoint, gossip, replica_store, bao_store, downloader, default_author_storage, protect_cb) is the single wiring point; Start_sync takes Vec<EndpointAddr>; Doc::share(ShareMode::Read, AddrInfoOptions::Id) yields the read-only DocTicket used as a join capability, while Capability::Write(NamespaceSecret) lives in SecretVault and is granted only to the region leader under lease. Doc::del inserts an empty prefix-clearing entry, so it is forbidden on the log: truncation would break Gamma_t superset Gamma_{t-1}. CAUSAL DAG. The requested substrate name iroh-dag-sync is NOT a published crate (crates.io API /crates/iroh-dag-sync returned 404, index.crates.io/ir/oh/iroh-dag-sync returned 404, api.github.com/repos/n0-computer/iroh-dag-sync returned 404, and a repository search returned no relevant repository). No hallucinated dependency is declared. fabric-dag implements the same contract: DagVertex has id = blake3(payload), dot, parents = Vec<VertexId>, context = Dvv, payload_hash = iroh_blobs::Hash and surface; a vertex may reference only dots already present in its Dvv, so cycles are impossible by construction; TopologicalOrder is Kahn's algorithm with the total-order tie-break (HlcStamp, Dot, VertexId); a missing parent yields DagError::MissingParent and is propagated, never skipped. AntiEntropyMessage exchanges AuthorHeads via has_news_for and fetches missing blobs with iroh_blobs::api::downloader::Downloader. DagSync is a trait with IrohDagSyncAdapter as the sole implementation, so if an upstream crate is published later the swap is one file and no algebra changes. COMPACTION. A Snapshot is a content-addressed blob of MaterializedState at a StableFrontier (a Dvv dominated by every active member's Dvv, certified by quorum). Only entries fully covered by the snapshot may be dropped from the local replica; the immutable event blobs are retained, so replay from genesis still yields the identical StateHash. ProtectCallbackHandler keeps every referenced blob alive against iroh-blobs GC. DownloadPolicy governs which content a replica fetches. CAP TRADE is per operation and enumerated in consensus_and_cap. Reads are AP with a bounded monotone read barrier; uniqueness and effects are CP. The design does not claim to circumvent CAP, only to choose it per operation and to refuse honestly when the chosen side is unavailable. CONTAINMENT. iroh-docs entries are SignedEntry values verified against AuthorId::into_public_key() and PublicKey::verify before fold; a node cannot forge another actor's Dot. Secrets never enter the algebra: only SecretRef(blake3::Hash) appears in ADTs. WITNESS. LawSuite runs 100000 randomized deltas with duplicate, reorder and partition injection and asserts join laws and fold equality across 7 replicas; two different topological delivery orders must produce one StateHash; after compaction, genesis replay must reproduce the same hash.",
+  "consensus_and_cap": "CONSENSUS PROTOCOL. No Kubernetes, no etcd, no external coordinator. LeaseAuthority is a per-region quorum of n = 3f+1 voters drawn from MembershipOrSet at a StableFrontier, with quorum q = 2f+1. A LeaseVote for (LeaseKey, Epoch, holder, expires_at) is signed with iroh::SecretKey::sign and verified with iroh::PublicKey::verify; each voter signs at most one vote per (LeaseKey, Epoch), persisted durably. Two quorums of size 2f+1 in a set of 3f+1 intersect in at least f+1 voters, at least one honest, so two conflicting leases for one LeaseKey cannot both be certified. Epoch is strictly monotone and FencingTable rejects any StartWorkload whose FenceToken epoch is below the local maximum, which removes split-brain even if a stale lease message is replayed. Lease validity is bounded by HLC plus an explicitly measured max_clock_skew_ms from PhysicsBudget; every lease RPC has a tokio::time::timeout. Equivocation (two signed votes from one voter for one epoch) produces EquivocationProof and a grow-only RevocationSet entry. GlobalLease composes region-leader certificates for cross-region invariants. Reconfiguration of VoterSet itself requires a certificate from the old set, so a Byzantine minority cannot enlarge itself. EXACT CAP TRADE PER OPERATION. (1) PutObject, PutItem-like data writes: AP. LwwMap<ObjectKey, iroh_blobs::Hash> over immutable blobs, resolved by (HlcStamp, Dot, ActorId). A minority partition accepts writes; on heal one version deterministically wins and the loser remains in the AuditLog, never a phantom. Trade: no linearizability, possible lost update by deterministic LWW, explicitly documented. (2) GetObject, Describe, List, GetItem: AP with ConsistencyToken. The node reads its local fold only after local Dvv dominates the token's Dvv, under a bounded timeout; failure returns StaleReplica mapped to modeled ServiceUnavailable, never a stale value presented as fresh. Trade: read latency bounded, no quorum round trip; a minority may have to refuse reads for tokens it has not seen. (3) CreateBucket, CreateTable, CreateQueue, CreateFunction, CreateDBInstance (unique name allocation): CP. GlobalLease compare-and-set on the name; minority returns modeled ServiceUnavailable or ResourceInUseException. Trade: no duplicate names ever, at the cost of availability during a WAN partition. (4) RunTask, Invoke, CreateDBInstance process start, StopWorkload, DeleteResource reclamation: CP. Lease plus FenceToken; the laboon supervisor and ListenerBinding both check the fence. Running instances continue under their existing fence until it expires; a minority cannot start or migrate. Trade: no double-start and no double-delete. (5) Scale, UpdateDesiredCount, UpdateService: AP intent in an LwwRegister<usize>, CP per-replica effectuation. Trade: the desired number is always writable; actual capacity converges after the partition heals. (6) JoinNode, LeaveNode (configured membership): AP MembershipOrSet add or remove. Trade: declarative only, never a liveness verdict. (7) EvictNode, FenceNode, ReplaceKey, RotateCredential, CreateAccessKey, RevokeCredential, ACME certificate issuance, ProtocolActivation, Snapshot, Restore, Compact: CP quorum certificate. Minority refuses with a modeled error. Trade: safety of identity and of single-writer certificates over availability. (8) Route, RegisterEndpoint, function URL publication: AP RouteTable LWW map, CP ListenerBinding because a host port is exclusive. Trade: stale routes resolve to the current binding at request time. (9) Heartbeat, Suspect, presence hint via iroh-smol-kv: advisory AP, expiring, explicitly excluded from authoritative Gamma. Trade: freshness without correctness authority. (10) Cross-region replication: AP with causal DAG anti-entropy; only GlobalLease operations are CP. Trade: bounded staleness across regions, no global serial order of unrelated writes. (11) Presigned URL generation, GetCallerIdentity and other pure reads of local state: local deterministic, no replication, no quorum. Every CP refusal is a typed FabricError variant propagated to a modeled AWS error; no exception is swallowed, no success is fabricated, and p99 is bounded by Deadline plus Compensation. CAP is therefore respected, not evaded: the AP side keeps Gamma monotone and available, the CP side keeps external effects exclusive and refuses when it cannot prove a quorum.",
+  "membership_failure_detection": "Two-plane separation is the central safety result. Plane A is MembershipOrSet, an AP add-wins OR-set of CONFIGURED nodes with EndpointId, RegionId, ZoneId, JoinEpoch and ResourceVector; it answers who is allowed to participate. Plane B is liveness, which is never a CRDT decision. Heartbeats are broadcast with iroh_gossip::api::GossipSender::broadcast over a TopicId derived from the region, carrying (EndpointId, HlcStamp, Dvv head, measured load). Phi-accrual suspicion is computed from inter-arrival times with a bounded window; iroh-smol-kv 0.5.0 holds expiring presence hints in the isolated sidecar. Both are advisory and explicitly excluded from Gamma because ExpiryConfig is subtractive and would violate monotone knowledge. A suspicion never terminates a workload. It triggers a LeaseAuthority proposal; only a QuorumCertificate of 2f+1 signed LeaseVotes at a higher Epoch yields an EvictionCertificate, which is appended to the grow-only RevocationSet. Effective membership is OrSet.value() minus revoked actors, so no information is deleted and a re-admission needs a higher JoinEpoch plus a fresh certificate. The failed node's leases are not revoked instantly: they expire by their HLC deadline, and the FencingTable guarantees that any late StartWorkload from that node is rejected at the laboon supervisor. This prevents a false-positive suspicion from killing a healthy workload while still bounding takeover time. n0_dns_resolver::DnsResolver::lookup_txt and lookup_srv resolve _iroh.<region> records for bootstrap EndpointAddr discovery; iroh::Endpoint::watch_addr and n0_watcher::Watcher track address changes; netwatch and portmapper from n0-computer/net-tools are diagnostics only. CAP trade: suspicion is AP and cheap; eviction is CP and unavailable in a minority partition, which is correct because a minority cannot distinguish a crashed peer from a partitioned one. Witness: kill -9 one of seven nodes, inject 500 ms of clock skew and a double-voting Byzantine node, and assert no double-start, no lost acknowledged write, and identical membership hash on all surviving replicas within the p99 deadline.",
+  "scheduling": "Scheduler is a PURE function: reconcile(MaterializedState, PhysicsBudget) -> PlacementPlan. No scheduler holds mutable state and there is no global scheduler election. Ownership is rendezvous hashing: owner(WorkloadId) = argmin over active members of blake3(EndpointId || WorkloadId). Every node computes the same owner from the same CRDT fold, so exactly one node proposes a lease per LeaseKey; per-key contention is O(1) and independent of n, hence contention tends to zero as n grows. Gossip fanout is bounded by MembershipConfig and Doc::start_sync peer lists are sampled, so aggregate coordination grows sublinearly. AdmissionControl uses measured PhysicsBudget from df, sysctl and cgroup limits: free_disk_bytes, total_memory_bytes, cpu_count, max_clock_skew_ms, deadline_ms. There are NO artificial job caps, credit caps or quota gates; the only limits are physics. This is a hard requirement on this machine, where df -h reports 6.5 GiB free. WithMaxImageSize is bounded by free_disk_bytes minus a reserve, never by a constant. ReservationLedger is lease-protected: a reservation is a GSet entry carrying (ReservationId, WorkloadId, ResourceVector, FenceToken) authorized by a Lease, so two schedulers cannot allocate the same RAM. CapacityView is only a LWW map of measurements. Scale is AP intent in LwwRegister<u16>; each replica activation is CP. A ScaleIntent that cannot get a lease stays in the grow-only log and is re-applied by the Reconciler after the partition heals, idempotently by OpId. DrainPlan emits lease-protected StopWorkload effects with a fence and a Compensation that re-adds the desired count. Anti-affinity spreads replicas across ZoneId and RegionId; the tie-break is blake3(WorkloadId, replica_index, EndpointId) so the plan is deterministic on every node. Witness: 1 to 64 node benchmark with p99 scheduling latency and lease retry counts; a two-order replay of the same WorkloadLog must produce byte-identical PlacementPlan values.",
+  "routing": "User plane: one MagicEndpoint at https://127.0.0.1:9297 by default (EMULATOR_DATA_PORT from /Users/dylanwong/projects/aws0-2026-11-19/aws0/AGENTS.md), overridable by a public domain with tokio-rustls-acme 0.10.0 (AcmeConfig::new(domains).directory_lets_encrypt(production).contact(..).cache(DirCache).state(), ResolvesServerCertAcme, AcmeAcceptor, Incoming). Local-only deployments use emulator_server::TlsCertificateAuthority and publish its pem() as AWS_CA_BUNDLE, exactly as core/embedded/src/lib.rs documents. ACME needs a public DNS name and inbound port 80 or 443, so it is opt-in and never a hidden requirement. RegionRouter resolves the SigV4 credential scope to a RegionId; cross-region requests are proxied over iroh to the region leader holding the GlobalLease, with no user-visible hop. Internal plane: n0_dns_resolver::DnsResolver with Builder, FallbackMode, Nameserver and DnsProtocol resolves _iroh.<region> TXT, SRV and HTTPS records to EndpointAddr; iroh::Endpoint::connect(addr, alpn) with RelayMode provides NAT traversal; iroh::protocol::RouterBuilder::accept registers distinct ALPNs for iroh-docs (iroh_docs::ALPN), iroh-blobs (iroh_blobs::ALPN), iroh-gossip, dag/1, rpc/1, lease/1 and smartops/1. quic_rpc::RpcClient and RpcServer run over IrohRpcConnector and IrohRpcListener, which implement quic_rpc::transport::Connector::open and Listener::accept over Connection::open_bi and accept_bi, so no incompatible quic-rpc iroh-transport feature is enabled. Data plane: real database and function workloads never bind their own sockets. Per /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/engine/src/lib.rs the core owns socket, TLS and bind interface; emulator_server::Listeners::tcp, ::tcp_plaintext, ::tls_upgrader and ::http(handler, HttpPolicy) are used, and a NativeHandler bridges bytes to the laboon guest AF_UNIX socket. An HTTP endpoint is reported as ResourceListener::url() and a host:port field as ResourceListener::authority(), NEVER a format! of host() and port(), which breaks on wildcard and IPv6 binds. Presigned URLs come only from ctx.url_signer().sign(SignedUrlRequest::new(method, signing_name, path), expires_in), with url.as_str(), expires_at() and required_headers() returned; unsigned addresses come only from ctx.endpoint() followed by the resource path, never from <service>.<region>.amazonaws.com. Clarke-compliant abstraction: no iroh, CRDT, quorum, lease, DAG or P2P identifier appears in any AwsRequest, AwsResponse, modeled error, CLI string or environment variable. RouteTable is AP, ListenerBinding is CP; a stale route is re-resolved at request time against the current lease holder. Witness: aws CLI and AWS SDK against the single endpoint succeed with no extra configuration; rg for the forbidden vocabulary in aws0-cli user strings returns zero hits; a presigned PUT with a changed content-type returns 403.",
+  "persistence": "Restart is a pure replay, not a restore of mutable memory. /Users/dylanwong/projects/aws0-2026-11-19/aws0/core/embedded/src/lib.rs states each emulator owns a FRESH InMemoryEngine and two emulators never share state; therefore engine::InMemoryEngine::state::<T>() is used ONLY as a local derived cache and is never authoritative. Durable state: iroh_docs::store::Store::persistent(<data_dir>/docs) for the replica store; iroh_blobs::store::fs::FsStore::load(<data_dir>/blobs) converted via impl From<FsStore> for iroh_blobs::api::Store; DefaultAuthorStorage::Persistent(<data_dir>/default_author) so the AuthorId is stable; iroh::SecretKey::to_bytes and from_bytes in SecretVault with file mode 0600 and zeroize on drop; NamespaceSecret, DocTicket and BlobTicket in the vault, never in the CRDT. All paths are under the emulator-owned state dir, satisfying the containment rule in vendor/engine/src/lib.rs. Boot sequence S: open FsStore, open Store, Engine::spawn(endpoint, gossip, replica_store, bao_store, downloader, default_author_storage, protect_cb), DocsApi::spawn(Arc<Engine>), Doc::open for each deterministically derived NamespaceId, Doc::start_sync(peers) from DNS-discovered EndpointAddr values, Doc::get_many(Query::key_prefix(..)) replay through fabric-dag topological order into MaterializedState, verify StateHash against the last certified Snapshot, then reconcile running laboon children against the fold. Workload data: laboon guests get a host directory mounted with -mount or -v, so PostgreSQL, MySQL, Redis and MongoDB data files survive process restarts. Ports are reassigned on restart, so clients never hold a raw port: RouteTable maps a stable AWS-shaped ResourceId to the current EndpointAddr or ResourceListener::authority() and the gateway resolves it at request time. This mirrors the stable network alias technique in ministack while using laboon instead of Docker. Blobs: workload images, function bundles, snapshots and database seeds are content-addressed by iroh_blobs::Hash, transferred with BlobTicket and Downloader, and bulk-seeded across nodes by the preinstalled sendme CLI. ProtectCallbackHandler prevents GC of any blob still referenced by a doc entry or a Snapshot. DownloadPolicy bounds what a replica fetches; PhysicsBudget bounds total bytes. No truncation: the immutable event blobs are never deleted. Compaction only drops locally covered replica entries after a quorum-certified Snapshot at a StableFrontier, and genesis replay must reproduce the same StateHash. Witness: kill -9 the node, restart with the same SecretVault, assert identical StateHash, identical bucket objects, identical table rows and a live psql connection to the same real PostgreSQL instance.",
+  "self_healing": "The Reconciler is a pure fixpoint loop: desired = fold(Gamma, SmartOpsSpec), observed = fold(Gamma, AuditLog) union live LaboonHandle records, and EffectPlan = diff(desired, observed). It emits only closed Effect variants, each with OpId = blake3(spec, dot), Precondition, Postcondition, Compensation and Deadline. Idempotence: an Effect already present in the AuditLog GSet of EffectReceipt values is a no-op, so replays after a crash or a duplicate gossip delivery cannot restart a workload twice. Every StartWorkload and StopWorkload carries a FenceToken checked by the supervisor. Failure paths are all typed. A missing lease yields LeaseUnavailable mapped to modeled ServiceUnavailable; a stale doc yields StaleReplica; a missing DAG parent yields MissingParent; a corrupt image hash yields PhysicsExhausted or NotImplemented; a physics shortfall yields PhysicsExhausted with the measured numbers. Nothing is swallowed and no success is fabricated. Image repair: if an OCI image or function bundle is missing locally, Downloader fetches it by Hash from a peer and the checksum verifier re-checks SHA-256 before the laboon CLI is invoked; sendme handles bulk directory seeding. A guest that fails its health probe is drained with a fenced StopWorkload and replaced by a new lease on the rendezvous-hashed owner. p99-bounded graceful: every effect has a tokio::time::timeout derived from PhysicsBudget.deadline_ms, every retry uses bounded exponential backoff with jitter, and Compensation restores the previous desired count on failure. A minority partition keeps serving AP reads from the local fold and refuses CP operations with modeled errors; when the partition heals, anti-entropy via AuthorHeads::has_news_for and the causal DAG converge Gamma with no operator action. Crucible: chaos at maximum physics load with node kill, partition, disk-full, clock skew, image corruption, duplicated entries and Byzantine double-votes; assert convergence of StateHash on all replicas, zero double-starts, zero lost acknowledged writes and no secret in logs.",
+  "laboon_preinstall": "laboon is a Go syscall-interception sandbox (no VM) that runs OCI images and Linux ELF binaries on Linux, macOS and Windows; its README gives `laboon -image alpine:3.20 cat /etc/os-release`, the Go API laboon.RunImage for images and laboon.Run for ELF binaries, and documents WithNet, WithNoNet, WithAllowDomains, WithAllowCIDRs, WithAllowPorts, WithMount, WithMountReadOnly, WithDevice, WithStdio, WithMaxMemory, WithMaxImageSize, WithImageCacheDir, WithRejectRWX, WithPlatform, WithPull, WithEnv, WithDir, WithUser, WithEntrypoint, WithArgs, WithTerminal, WithTrace and WithCache. Its go.mod declares `go 1.27.1`; the local toolchain is go1.26.1, so building from source is impossible here. The realistic preinstall path is the v0.1.0 prebuilt release with SHA-256 verification against the release checksums.txt: laboon_0.1.0_darwin_arm64.tar.gz = 1116d234f49b3f5f3c7ce363ddb98c4d084a4e6d11342a613386a4d89203f279, laboon-mcp_0.1.0_darwin_arm64.tar.gz = 192a474acfc6f93ce77c7f132427bedba73f19b4afeb9b39a365053ca9fbaf88, laboon_0.1.0_linux_amd64.tar.gz = 842fe5620db4592498ff599a080c9f8f31b710a27face7ac2ffa13799d5312c8, laboon_0.1.0_linux_arm64.tar.gz = 8459d1d6a00df841d4fff3419beb02e20cf61a37357c4cb5f720ca5384c1955a. Untrusted-download discipline: each archive is fetched into its own NEW EMPTY directory, verification scripts live in a different directory, python3 -I is used, paths are passed as arguments, extraction rejects absolute and traversal paths, and the binary is chmod +x only after its digest matches. The resolved absolute path, version, triple and digest are recorded in PreinstallManifest and in ClaimLedger with an id, hash and timestamp. Invocation is argv-only with no ambient environment: -image pinned by digest, -entrypoint, -pull, -platform, -root into the emulator-owned state dir, -mount or -v for a host directory containing an AF_UNIX socket, -env or -e for explicit variables, -no-net for databases, -net with -allow-domains, -allow-cidrs and -allow-ports only for workloads that must reach emulator endpoints, -mem, -reject-rwx, -q, -discard-stdout, -discard-stderr, -user and -trace. -net gives OUTBOUND supervisor-proxied sockets only and WithAllowPorts restricts destination ports; no inbound guest listener is documented. Therefore the emulator core owns the TCP and TLS listener and a NativeHandler bridges to a guest AF_UNIX socket exposed through a -mount (the laboon permissions doc says mounts may expose host Unix sockets beneath them). This bridge is a VERIFICATION GATE: if the guest cannot reach the mounted socket, the database is never reported ACTIVE and the operation returns the modeled error or the scaffold 501, never a fabricated endpoint. WithDevice (a host socketpair byte-stream device) is the preferred future bridge, but no socketpair CLI flag exists (verified in cmd/laboon/main.go) and the Go library cannot be built with go1.26.1, so it is deferred behind a LaboonCommand variant and not depended upon. The laboon-mcp release binary (./laboon-mcp -http 127.0.0.1:8080) is an optional control surface; its HTTP tool documentation is not published (README 404), so an McpCapabilityProbe must enumerate tools at boot and fall back to the CLI. Physics bounds: WithMaxImageSize defaults to 16 GiB which exceeds the 6.5 GiB free disk, so it is derived from df at boot; WithMaxMemory is documented as not yet enforced on macOS, so ResourceGovernor enforces it host-side. Containment follows vendor/engine/src/lib.rs: -no-net and -mount only into the emulator-owned state dir, no outbound connection to any other host, no host file outside that dir, tokio::time::timeout on every execution, bounded stdout and stderr capture. sendme v0.37.1 is preinstalled as a checked CLI binary (sendme send <dir> then sendme receive <ticket>), never as a Cargo dependency because crates.io reports has_lib = false; its ticket is a SecretRef. netwatch and portmapper come from github.com/n0-computer/net-tools at a pinned commit because net-tools is not a crates.io crate.",
+  "real_databases": "Requirement source: ministack boots real PostgreSQL, MySQL, MariaDB, Redis, Valkey, Memcached, DuckDB, MongoDB via documentdb-local and postgres:16-alpine, returns an actual host:port endpoint for CreateDBInstance, and uses a stable AWS-shaped network alias so replacement does not break DNS. We reproduce that behavior with laboon OCI images instead of Docker and without Kubernetes. Concrete catalog: RDS and Aurora DSQL use postgres:16-alpine with a validating PG wire-protocol proxy; RDS MySQL uses mysql:8 or mariadb:11; ElastiCache uses redis:7-alpine, valkey/valkey:8 and memcached:1.6; DocumentDB uses documentdb-local speaking the MongoDB wire protocol; Athena uses DuckDB for real SQL; Glue uses the official amazon/aws-glue-libs PySpark image; Lambda uses real Node and Python OCI runtimes so bundles that import node:http, node:zlib and fetch actually load, which is the exact failure recorded in linkedin-post.txt; ECS RunTask runs real OCI containers. Every one of these is a genuine engine, not an in-process stub and not a hand-written subset evaluator: vendor/engine/src/lib.rs forbids echoing input back as output, pattern-matching source text, and hand-writing an evaluator for a subset of a language. Where an engine is unavailable, the operation returns the modeled error or the scaffold 501 with everything around it real (resource resolution, versions, permissions, status codes, endpoints, logs, asynchronous delivery). Transport: laboon guests are confined with -no-net and cannot expose inbound listeners, so each guest listens on an AF_UNIX socket inside a host directory passed with -mount or -v. emulator_server::Listeners::tcp(handler) serves TLS-terminated protocols, ::tcp_plaintext(handler) serves PostgreSQL SSLRequest and MySQL greeting-first, and ::tls_upgrader().accept(conn, alpn) performs the in-band upgrade. The NativeHandler is a byte bridge between ListenerConn and the guest Unix socket. The core owns the socket, TLS and bind interface; the guest owns only the database engine. Endpoints: CreateDBInstance returns Endpoint.Address and Endpoint.Port derived from ResourceListener::authority(), an HTTP function URL from ResourceListener::url(), and presigned URLs from the emulator UrlSigner. A stable ResourceId in RouteTable hides port reassignment across restarts. Witness: psql against the returned endpoint executes select version(); redis-cli PING returns PONG; a Lambda bundle importing node:http and fetch succeeds; an S3 object round-trips through a presigned URL; a DynamoDB table queried before ACTIVE returns ResourceInUseException.",
+  "smartops_protocol": "The smartops layer is protocol-defined, versioned and declarative, with no imperative plugin code and no ambient state. Wire: ALPN smartops/1 over quic_rpc::RpcClient and RpcServer, with Service, RpcMessage and RpcError implemented for SmartOpsRequest and SmartOpsResponse, and postcard as the canonical encoding. Every frame carries ProtocolVersion, ProtocolId = blake3(spec), Dot and ConsistencyToken. A node that does not hold the active ProtocolId refuses with SmartOpsError::ProtocolMismatch and asks for the spec blob by Hash; there is no implicit downgrade and no unversioned frame. Spec: a SmartOpsSpec is an immutable content-addressed GSet entry containing a closed set of SmartOp variants (EnsureService, EnsureDatabase, EnsureBucket, EnsureQueue, EnsureFunction, Scale, Route, Backup, Drain, Evict, Upgrade, JoinRegion) plus explicit Precondition, Postcondition, Compensation and Deadline. There is no Todo, Unimplemented, Other or catch-all variant, so no phantom AST nodes exist. Activation: ProtocolActivation is a CP GlobalLease over the region leaders, so exactly one ProtocolId is active per region at an Epoch; the activation is an LwwRegister<ProtocolId> in the CRDT but the side effect of switching the interpreter is lease-protected. Execution: Reconciler is a pure total function (Gamma, SmartOpsSpec) -> EffectPlan, deterministic and strongly normalizing; EffectInterpreter is the ONLY place Io<A> is run, through one explicit Runtime handle. Each Effect is deduplicated by OpId in the AuditLog GSet, so reconcile composed with reconcile equals reconcile. Every Effect carries a FenceToken when it touches an external resource. Just works: a single aws0.toml with a service, a postgres database, a bucket and a function is enough; aws0 deploy hashes it, replicates it, activates it, allocates names, obtains leases, pulls images, starts real workloads, binds listeners and publishes routes. The user never mentions regions, quorums, CRDTs or peers. Upgrades are new immutable specs plus a CP activation; the old spec remains in the log, so monotone knowledge holds and rollback is a new activation pointing at the old Hash, never a deletion. Witness: apply the same spec twice and assert zero additional Effects; apply an older spec after a newer activation and assert ProtocolMismatch; apply under a minority partition and assert modeled ServiceUnavailable with no partial side effect.",
+  "user_facing_magic": "One command: aws0 up. It prints or writes AWS_ENDPOINT_URL, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_CA_BUNDLE and AWS_REGION, then the user runs unmodified AWS CLI, SDK, Terraform, CDK or Pulumi commands. No region map, no peer list, no ticket, no iroh endpoint id, no quorum size, no CRDT term, no DAG and no P2P concept is user-visible. Second command: aws0 deploy app.aws0.toml creates a real PostgreSQL instance, a real S3-like bucket, a real queue and a real Lambda bundle under laboon; aws0 db create postgres returns a usable psql connection string; aws0 scale 5, aws0 status, aws0 logs, aws0 regions and aws0 join <short-code> cover the rest. Multi-node is one short join code; multi-region is one AWS_REGION value. Telemetry is OFF by default (EmbeddedOptions::default().telemetry(Telemetry::Off)), which also avoids the process-wide Once and global telemetry client that core/embedded/src/lib.rs installs; our design has no ambient or implicit state at all. Errors are modeled AWS errors (ResourceInUseException, AccessDenied, ServiceUnavailable, ThrottlingException) or the honest scaffold 501 for unimplemented operations. An internal iroh, docs or lease failure never leaks into a response body, satisfying Clarke-compliant abstraction. The five strictness checks from linkedin-post.txt are the user-visible acceptance contract: a presigned S3 PUT with a different content-type returns 403; an unsigned or invalid SigV4 request is denied; a public function URL without lambda:InvokeFunctionUrl returns 403; EventBridge to SQS without a queue policy delivers nothing; a call on a new DynamoDB table before ACTIVE returns ResourceInUseException. A lenient emulator hides bugs and a strict one that cannot run your code tests nothing; this design is strict AND runs real bundles. No 1:1 AWS parity is claimed: census.md records 440 service crates, 7114 stub files and 5355 open fidelity documents. The declared OperationSet is the real-workload subset; everything else keeps the honest 501.",
+  "zero_trust_authz": "Every request, every doc entry and every lease vote is verified; network position confers no trust. Request plane: the core verifies SigV4 through emulator_server::SigV4Authenticator implementing RequestAuthenticator::verify(parts, body, serving_signing_name, &CredentialStore) -> Result<(), Denied>. Per AGENTS.md a service never checks signatures itself, every @auth and @optionalAuth trait in smithy-model stays as shipped, and auth_schemes() is never overridden to an empty list. Credential plane: root credentials from ctx.callback().credentials() and ctx.callback().aws_credentials_provider() are used only for in-process signing and are NEVER placed in a response or a log. Created credentials are minted only via ctx.credential_store().create(&AWS_ACCESS_KEY) or create(&AWS_SESSION) from emulator_server::aws_credentials, the returned id and secret are handed to the caller and never written to a file or log, and revocation uses delete(id). No id or secret is ever constructed by hand. URL plane: a presigned URL is signed only with ctx.url_signer().sign(SignedUrlRequest::new(method, signing_name, path), expires_in), returning url.as_str(), expires_at() and required_headers(); X-Amz-Signature is never written by hand and no AWS SDK presigner is used. An unsigned address is ctx.endpoint() plus the resource path, never <service>.<region>.amazonaws.com. A resource endpoint is ResourceListener::url() or authority(). Replication plane: iroh EndpointId is an ed25519 PublicKey; every DocTicket is ShareMode::Read by default and Capability::Write(NamespaceSecret) is granted only to a lease-holding region leader. Every SignedEntry is checked against AuthorId::into_public_key() and PublicKey::verify before fold. Every LeaseVote is signed with SecretKey::sign and verified with PublicKey::verify. A quorum certificate with any invalid or duplicate signature is rejected. Secret plane: no secret bytes exist in any ADT, AST, Effect, SmartOp, doc entry or log. Only SecretRef(blake3::Hash) appears. NamespaceSecret, SecretKey, DocTicket, BlobTicket and VendedCredentials live in SecretVault, encrypted at rest under file mode 0600 with zeroize on drop, and are passed as affine CapabilityProof values. Resource policies: SQS queue policy gates EventBridge delivery, lambda:InvokeFunctionUrl gates public function URLs, IAM and STS identity policies gate every operation, and a table in CREATING state returns ResourceInUseException. Witness: the five linkedin-post.txt checks as named live tests; a log scrubber test asserts zero key material in any emitted line; a forged doc entry and a forged lease vote are both rejected.",
+  "crate_layout": [
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/Cargo.toml",
+      "responsibility": "Separate workspace root, never nested inside the generated aws0 workspace. Declares resolver = 3, edition 2024, one pinned [workspace.dependencies] table, one rustfmt.toml, one clippy lint set, [profile.dev] debug = 0 and incremental = false, [profile.release] lto = thin, and [workspace.lints] forbidding unsafe_code, unwrap_used, expect_used, panic, todo, unimplemented, missing_docs, unreachable_pub. No member of the 440-crate workspace is built.",
+      "public_types": [
+        "Workspace",
+        "LintPolicy",
+        "ProfilePolicy"
+      ],
+      "depends_on": []
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/crates/fabric-core",
+      "responsibility": "Pure ADTs with zero IO, zero ambient state and zero static mutable cells. Refinement newtypes with private constructors, affine capabilities, typestates, a single Io<A> effect monad, closed error sum, physics budget, opaque secret references. No tokio, no iroh, no clock, no environment reads.",
+      "public_types": [
+        "ActorId",
+        "RegionId",
+        "ZoneId",
+        "TenantId",
+        "Dot",
+        "Dvv",
+        "Hlc",
+        "HlcStamp",
+        "WorkloadId",
+        "PlacementId",
+        "LeaseKey",
+        "FenceToken",
+        "Epoch",
+        "OpId",
+        "RequestId",
+        "Surface",
+        "ScopeKey",
+        "ResponseKey",
+        "ConsistencyToken",
+        "PhysicsBudget",
+        "SecretRef",
+        "ProtocolVersion",
+        "Cap<K>",
+        "Io<A>",
+        "Effect<A>",
+        "Effects",
+        "NodePhase",
+        "WorkloadPhase",
+        "FabricError",
+        "SmartOp",
+        "EffectPlan"
+      ],
+      "depends_on": [
+        "serde",
+        "postcard",
+        "blake3",
+        "thiserror",
+        "zeroize"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/crates/fabric-algebra",
+      "responsibility": "The CRDT semilattice library. One trait with bottom, join, leq; law objects for property witnesses; pure fold from a causal vertex stream to MaterializedState. Disjoint key prefixes per surface. No side effects, no clocks.",
+      "public_types": [
+        "JoinSemiLattice",
+        "OrSet<T>",
+        "LwwRegister<T>",
+        "LwwMap<K,V>",
+        "GSet<T>",
+        "GCounter",
+        "PNCounter",
+        "DotContext",
+        "MembershipOrSet",
+        "WorkloadLog",
+        "PlacementRegister",
+        "RouteTable",
+        "CapacityView",
+        "RevocationSet",
+        "ReservationLedger",
+        "AuditLog",
+        "Snapshot",
+        "StableFrontier",
+        "MaterializedState",
+        "fold",
+        "join_all",
+        "IdempotenceLaw",
+        "CommutativityLaw",
+        "AssociativityLaw",
+        "MonotonicityLaw",
+        "AlgebraError"
+      ],
+      "depends_on": [
+        "fabric-core"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/crates/fabric-dag",
+      "responsibility": "Causal DAG ordering and anti-entropy. Implements the DagSync contract locally because the crate name iroh-dag-sync is NOT published (crates.io API 404, sparse index 404, GitHub repo 404 on 2026-11-19). A DagSync trait plus IrohDagSyncAdapter is the single swap seam if upstream ever publishes it; no phantom dependency is declared.",
+      "public_types": [
+        "DagSync",
+        "IrohDagSyncAdapter",
+        "CausalDag",
+        "DagVertex",
+        "TopologicalOrder",
+        "AntiEntropyMessage",
+        "MissingParent",
+        "DagSnapshot",
+        "SyncProgress",
+        "DagError",
+        "VertexId"
+      ],
+      "depends_on": [
+        "fabric-core",
+        "fabric-algebra",
+        "iroh-docs = 0.101.0",
+        "iroh-blobs = 0.103.1"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/crates/fabric-docs",
+      "responsibility": "The iroh-docs document CRDT substrate and durable replica store. One NamespaceId per Surface derived by BLAKE3 domain separation; one AuthorId per node; dot-keyed immutable entries written with Doc::set_bytes or Doc::set_hash; Query::key_prefix replay; Doc::subscribe LiveEvent sink; Doc::start_sync; DocTicket read-only join; GC protected by ProtectCallbackHandler. Never calls Doc::del on the log.",
+      "public_types": [
+        "DocsRuntime",
+        "DocsConfig",
+        "SurfaceDoc",
+        "NamespacePlan",
+        "AuthorKey",
+        "DocWriter",
+        "DocReader",
+        "LiveEventSink",
+        "DownloadPolicyPlan",
+        "GcGuard",
+        "StorePaths",
+        "DocsError",
+        "DocDelta",
+        "JoinTicket"
+      ],
+      "depends_on": [
+        "fabric-core",
+        "fabric-algebra",
+        "fabric-dag",
+        "iroh = 1.5.0",
+        "iroh-docs = 0.101.0",
+        "iroh-blobs = 0.103.1",
+        "iroh-gossip = 0.101.0"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/crates/fabric-net",
+      "responsibility": "iroh 1.5.0 endpoint, ALPN registry on RouterBuilder, quic-rpc transport implemented directly over iroh Connection::open_bi and accept_bi (the quic-rpc iroh-transport feature is disabled because it pins iroh 0.35), DNS discovery via n0-dns-resolver, relay mode and address lookup, netwatch and portmapper diagnostics as prebuilt CLIs.",
+      "public_types": [
+        "FabricEndpoint",
+        "Alpn",
+        "PeerDirectory",
+        "EndpointDirectory",
+        "IrohRpcConnector",
+        "IrohRpcListener",
+        "DnsDiscovery",
+        "NetConfig",
+        "NetError",
+        "AlpnRegistry",
+        "NetReport"
+      ],
+      "depends_on": [
+        "fabric-core",
+        "iroh = 1.5.0",
+        "quic-rpc = 0.20.0",
+        "n0-dns-resolver = 0.1.1"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/crates/fabric-consensus",
+      "responsibility": "Quorum-certified leases. VoterSet from the membership OR-set at a stable Dvv, n = 3f+1 voters, quorum q = 2f+1 ed25519-signed LeaseVotes, monotone Epoch, FencingTable, GlobalLease across region leaders, EquivocationProof feeding the grow-only RevocationSet. CP surface only; no CRDT is stored here.",
+      "public_types": [
+        "LeaseAuthority",
+        "VoterSet",
+        "Quorum",
+        "LeaseVote",
+        "QuorumCertificate",
+        "Lease",
+        "GlobalLease",
+        "Epoch",
+        "FencingTable",
+        "EquivocationProof",
+        "Reconfiguration",
+        "BftConfig",
+        "LeaseError"
+      ],
+      "depends_on": [
+        "fabric-core",
+        "fabric-net",
+        "iroh = 1.5.0",
+        "quic-rpc = 0.20.0"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/crates/fabric-scheduler",
+      "responsibility": "Pure deterministic reconcile. Rendezvous hashing maps each WorkloadId to exactly one lease owner so per-key contention is O(1) independent of node count; admission control uses measured PhysicsBudget only, with no artificial job or credit caps; reservations are lease-protected; scale intent is AP, per-replica effectuation is CP.",
+      "public_types": [
+        "Scheduler",
+        "SchedulePolicy",
+        "PlacementPlan",
+        "AdmissionControl",
+        "ReservationLedger",
+        "BinPackScore",
+        "ScaleIntent",
+        "DrainPlan",
+        "SchedulerError",
+        "OwnerHash"
+      ],
+      "depends_on": [
+        "fabric-core",
+        "fabric-algebra",
+        "fabric-consensus"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/crates/fabric-runtime",
+      "responsibility": "laboon supervisor. Spawns the checksum-verified prebuilt laboon CLI with an explicit argv, never an ambient environment; affine LaboonHandle typestates; kill_on_drop; wall-clock timeouts; bounded stdout and stderr; image cache under the emulator-owned state dir; WithNoNet containment; host AF_UNIX socket mounted into the guest; ResourceGovernor enforces physics bounds where laboon does not.",
+      "public_types": [
+        "LaboonSupervisor",
+        "LaboonBinary",
+        "LaboonCommand",
+        "LaboonHandle<S>",
+        "RunImageSpec",
+        "OciImage",
+        "GuestMount",
+        "GuestSocket",
+        "RuntimeKind",
+        "ProcessId",
+        "RuntimeEvent",
+        "SupervisorError",
+        "ChecksumVerifier",
+        "PreinstallManifest",
+        "ImageCache",
+        "ResourceGovernor",
+        "MountToken"
+      ],
+      "depends_on": [
+        "fabric-core",
+        "fabric-consensus",
+        "tokio",
+        "sha2",
+        "blake3"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/crates/fabric-dataplane",
+      "responsibility": "Native wire-protocol bridges to real database guests through core-owned sockets. Uses the vendored emulator_server::{Listeners, NativeHandler, HttpHandler, HttpPolicy, ResourceListener, TlsUpgrader, ListenerConn} path dependency; PostgreSQL SSLRequest and MySQL greeting-first use tcp_plaintext plus tls_upgrader; all returned addresses come from ResourceListener::url or authority, never a format! of host and port.",
+      "public_types": [
+        "NativeProtocolHandler",
+        "PgWireBridge",
+        "MySqlGreetingBridge",
+        "RedisRespBridge",
+        "MongoWireBridge",
+        "DuckDbQueryBridge",
+        "FunctionUrlHandler",
+        "ListenerBinding",
+        "ResourceEndpoint",
+        "BridgeError"
+      ],
+      "depends_on": [
+        "fabric-core",
+        "fabric-runtime",
+        "fabric-consensus",
+        "aws-emulator-server (path /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server)",
+        "aws-emulator-engine (path /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/engine)"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/crates/fabric-state",
+      "responsibility": "Local derived view. engine::InMemoryEngine::state::<T>() holds ONLY a cache of the pure CRDT fold; replay from genesis reconstructs it after restart; ConsistencyToken read barrier waits until local Dvv dominates the token under tokio::time::timeout; stale reads return StaleReplica, never a fabricated value; compaction writes a Snapshot at a StableFrontier before dropping covered entries.",
+      "public_types": [
+        "MaterializedState",
+        "StateProjection<T>",
+        "Replay",
+        "Checkpoint",
+        "Compactor",
+        "StableFrontier",
+        "ReadBarrier",
+        "StaleReplicaError",
+        "StateError",
+        "StateHash"
+      ],
+      "depends_on": [
+        "fabric-core",
+        "fabric-algebra",
+        "fabric-docs",
+        "aws-emulator-engine (path dependency)"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/crates/fabric-authz",
+      "responsibility": "ZeroTrust. Every request SigV4-verified by the core, every doc entry signature-verified against AuthorId, every lease vote signature-verified; root credentials never logged or returned; created credentials only via CredentialStore::create with AWS_ACCESS_KEY or AWS_SESSION; SecretVault holds NamespaceSecret, SecretKey, DocTicket and BlobTicket with zeroize on drop; presigned URLs built only with UrlSigner and SignedUrlRequest; unsigned addresses only with ctx.endpoint. auth_schemes is never emptied and @auth traits stay as shipped.",
+      "public_types": [
+        "AuthzGate",
+        "Principal",
+        "Policy",
+        "Decision",
+        "Grant",
+        "CapabilityProof",
+        "SecretVault",
+        "CredentialIssuer",
+        "PresignService",
+        "AuditEvent",
+        "AuthzError",
+        "DeniedReason"
+      ],
+      "depends_on": [
+        "fabric-core",
+        "aws-emulator-server (path dependency)",
+        "aws-emulator-smithy-server-runtime (path dependency)"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/crates/fabric-gateway",
+      "responsibility": "The single AWS-shaped user endpoint. Closed OperationSet for the declared real-workload subset; MultiServiceRouter with set_url_base and set_request_authentication; modeled AWS errors only; unimplemented operations return the scaffold 501; no raw iroh or CRDT type or vocabulary crosses this boundary. Local TLS uses the emulator TlsCertificateAuthority; public TLS uses tokio-rustls-acme.",
+      "public_types": [
+        "MagicEndpoint",
+        "AwsRequest",
+        "AwsResponse",
+        "OperationSet",
+        "OperationHandler",
+        "NotImplemented",
+        "ModeledError",
+        "RegionRouter",
+        "GatewayError",
+        "RequestContext"
+      ],
+      "depends_on": [
+        "fabric-core",
+        "fabric-state",
+        "fabric-authz",
+        "fabric-scheduler",
+        "fabric-dataplane",
+        "aws-emulator-smithy-server-runtime (path dependency)",
+        "tokio-rustls-acme = 0.10.0"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/crates/fabric-smartops",
+      "responsibility": "Protocol-defined smartops. Versioned content-addressed SmartOpsSpec in the grow-only log, activation lease-protected so exactly one ProtocolId is active per region; pure Reconciler from (Gamma, Spec) to a closed EffectPlan; EffectInterpreter is the only place IO happens; every Effect has OpId, Precondition, Postcondition, Compensation and Deadline; smartops/1 ALPN over quic-rpc.",
+      "public_types": [
+        "SmartOpsSpec",
+        "SmartOp",
+        "ProtocolId",
+        "ProtocolActivation",
+        "Reconciler",
+        "EffectInterpreter",
+        "EffectResult",
+        "Compensation",
+        "Deadline",
+        "UpgradePlan",
+        "SmartOpsError",
+        "SmartOpsService"
+      ],
+      "depends_on": [
+        "fabric-core",
+        "fabric-algebra",
+        "fabric-state",
+        "fabric-consensus",
+        "quic-rpc = 0.20.0"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/crates/aws0-node",
+      "responsibility": "Node daemon binary. Node<S> typestate Booting, Joining, Active, Draining, Retired; explicit Runtime handle threaded through every function; the one Io<A> interpreter; Effects is the only mutable handle; bootstrap from a JoinTicket; graceful shutdown closes Doc, Engine and Endpoint and kills every laboon child. No global once, no static mutable state.",
+      "public_types": [
+        "NodeConfig",
+        "NodeRuntime",
+        "Node<S>",
+        "Bootstrap",
+        "JoinTicket",
+        "Runtime",
+        "Shutdown",
+        "NodeError"
+      ],
+      "depends_on": [
+        "fabric-core",
+        "fabric-docs",
+        "fabric-net",
+        "fabric-consensus",
+        "fabric-scheduler",
+        "fabric-runtime",
+        "fabric-dataplane",
+        "fabric-state",
+        "fabric-authz",
+        "fabric-gateway",
+        "fabric-smartops"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/crates/aws0-cli",
+      "responsibility": "User-facing CLI binary aws0. Commands up, deploy, scale, status, logs, join, regions, db. Prints AWS_ENDPOINT_URL, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_CA_BUNDLE, AWS_REGION; writes credentials via emulator_server::request_authentication::write_credentials_file; telemetry off by default. CI forbids the words iroh, CRDT, quorum, lease, P2P, DAG in any user-visible string.",
+      "public_types": [
+        "Cli",
+        "Up",
+        "Deploy",
+        "Scale",
+        "Status",
+        "Logs",
+        "Join",
+        "Regions",
+        "DbCreate",
+        "OutputStyle",
+        "CliError"
+      ],
+      "depends_on": [
+        "fabric-core",
+        "aws0-node",
+        "aws-emulator-server (path dependency)"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/sidecars/smol-kv/Cargo.toml",
+      "responsibility": "Isolated workspace with its own Cargo.lock for iroh-smol-kv 0.5.0, which pulls iroh-gossip 0.103.0 and irpc 1.0.0 and would otherwise duplicate gossip types in the state plane. Used ONLY for advisory presence hints with ExpiryConfig; explicitly excluded from authoritative Gamma because expiry violates monotone knowledge. Speaks to the node over quic-rpc with a byte-level protocol.",
+      "public_types": [
+        "PresenceHint",
+        "AdvisoryClient",
+        "SidecarConfig"
+      ],
+      "depends_on": [
+        "iroh-smol-kv = 0.5.0",
+        "iroh = 1.5.0",
+        "quic-rpc = 0.20.0"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/sidecars/roq/Cargo.toml",
+      "responsibility": "Isolated workspace with its own Cargo.lock for iroh-roq 0.1.0, which depends on iroh 0.33.0 and cannot share Endpoint types with iroh 1.5.0. RTP over iroh media plane for real-time streaming workloads only; never in the control or state plane.",
+      "public_types": [
+        "MediaSession",
+        "MediaConfig",
+        "SidecarError"
+      ],
+      "depends_on": [
+        "iroh-roq = 0.1.0",
+        "quic-rpc = 0.20.0"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/tools/preinstall",
+      "responsibility": "Untrusted download isolation: each release archive is fetched into its own new empty directory, verification scripts live in a different directory, all paths are passed as arguments, and python3 -I is used. Pins laboon v0.1.0 and sendme v0.37.1 binaries and the netwatch and portmapper CLIs from n0-computer/net-tools at a pinned commit; verifies SHA-256 against checksums.txt before any binary is executable.",
+      "public_types": [
+        "PreinstallScript",
+        "ChecksumTable",
+        "ToolManifest"
+      ],
+      "depends_on": [
+        "laboon v0.1.0",
+        "sendme v0.37.1",
+        "n0-computer/net-tools pinned commit"
+      ]
+    },
+    {
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/witness/",
+      "responsibility": "Off-workspace live-execution harness, not test files inside crates: CRDT law property runner, two-order replay comparator, prefix-collision checker, version-coherence probe, five strictness checks from linkedin-post.txt, chaos and max-load crucible, p99 histograms, df and du budget gates. Every claim carries an id, a hash and a timestamp.",
+      "public_types": [
+        "WitnessRunner",
+        "ChaosPlan",
+        "LawSuite",
+        "StrictnessSuite",
+        "WitnessReport",
+        "ClaimLedger"
+      ],
+      "depends_on": [
+        "all aws0-fabric-crdt crates",
+        "aws0-node"
+      ]
+    }
+  ],
+  "adts": [
+    "pub struct Dot { pub actor: ActorId, pub counter: u64 }",
+    "pub struct Dvv { pub heads: AuthorHeads, pub dots: BTreeSet<Dot> }",
+    "pub struct HlcStamp { pub wall_ms: u64, pub logical: u16, pub actor: ActorId }",
+    "pub trait JoinSemiLattice: Clone { fn bottom() -> Self; fn join(&self, other: &Self) -> Self; fn leq(&self, other: &Self) -> bool; }",
+    "pub struct OrSet<T> { pub adds: BTreeMap<Dot, T>, pub removes: BTreeSet<Dot> }",
+    "pub struct LwwRegister<T> { pub value: Option<(HlcStamp, Dot, T)> }",
+    "pub struct LwwMap<K, V> { pub entries: BTreeMap<K, LwwRegister<V>> }",
+    "pub struct GSet<T> { pub items: BTreeSet<T> }",
+    "pub struct MembershipOrSet { pub inner: OrSet<NodeRecord> }",
+    "pub struct NodeRecord { pub endpoint_id: EndpointId, pub region: RegionId, pub zone: ZoneId, pub join_epoch: Epoch, pub capacity: ResourceVector }",
+    "pub struct WorkloadDecl { pub id: WorkloadId, pub image: OciImage, pub spec_hash: blake3::Hash, pub replicas: u16, pub region: RegionId, pub resources: ResourceVector }",
+    "pub struct WorkloadLog { pub declarations: GSet<WorkloadDecl>, pub revocations: RevocationSet }",
+    "pub struct RevocationSet { pub entries: GSet<(WorkloadId, Dot, QuorumCertificate)> }",
+    "pub struct PlacementRegister { pub by_workload: LwwMap<WorkloadId, Placement> }",
+    "pub struct Placement { pub node: EndpointId, pub region: RegionId, pub fence: FenceToken, pub phase: WorkloadPhase }",
+    "pub struct Lease { pub key: LeaseKey, pub holder: EndpointId, pub epoch: Epoch, pub expires_at: HlcStamp, pub certificate: QuorumCertificate }",
+    "pub struct QuorumCertificate { pub votes: BTreeMap<ActorId, Signature>, pub epoch: Epoch, pub subject: LeaseKey }",
+    "pub struct FenceToken { pub subject: LeaseKey, pub epoch: Epoch }",
+    "pub struct DagVertex { pub id: VertexId, pub dot: Dot, pub parents: Vec<VertexId>, pub context: Dvv, pub payload_hash: iroh_blobs::Hash, pub surface: Surface }",
+    "pub struct EffectReceipt { pub op_id: OpId, pub dot: Dot, pub fence: FenceToken, pub outcome: EffectResult }",
+    "pub struct ConsistencyToken { pub context: Dvv, pub issued_at: HlcStamp }",
+    "pub enum Surface { Membership, Workloads, Placements, Routes, Capacity, Audit, Config, BlobIndex }",
+    "pub enum SmartOp { EnsureService(ServiceDecl), EnsureDatabase(DatabaseDecl), EnsureBucket(BucketDecl), EnsureQueue(QueueDecl), EnsureFunction(FunctionDecl), Scale(ScaleIntent), Route(RouteIntent), Backup(SnapshotIntent), Drain(DrainPlan), Evict(EvictionIntent), Upgrade(UpgradePlan), JoinRegion(JoinIntent) }",
+    "pub enum Effect<A> { Pure(A), WriteDoc { surface: Surface, key: DocKey, delta: DocDelta }, AddBlob { bytes: Bytes }, RequestLease { key: LeaseKey }, StartWorkload { spec: RunImageSpec, fence: FenceToken }, StopWorkload { id: WorkloadId, fence: FenceToken }, BindListener { binding: ListenerBinding }, MintCredential { kind: CredentialKind }, EmitResponse { key: ResponseKey, body: AwsResponse } }",
+    "pub struct Io<A> { run: Box<dyn FnOnce(&Runtime) -> Pin<Box<dyn Future<Output = Result<A, FabricError>> + Send>> + Send> }",
+    "pub struct Cap<K> { scope: ScopeKey, marker: PhantomData<K>, _not_clone: NotClone }",
+    "pub struct Node<S> { phase: S, runtime: Runtime }",
+    "pub struct PhysicsBudget { pub free_disk_bytes: u64, pub total_memory_bytes: u64, pub cpu_count: u32, pub max_clock_skew_ms: u64, pub deadline_ms: u64 }",
+    "pub struct SecretRef(pub blake3::Hash)",
+    "pub enum FabricError { Unauthenticated, Denied, StaleReplica, LeaseUnavailable, MissingParent, InvalidRefinement, DuplicateResponse, PhysicsExhausted, NotImplemented, Modeled(ModeledError), Io(IoError), Signature(SignatureError) }"
+  ],
+  "pinned_deps": [
+    "rustc = 1.98.1 (measured locally), edition = 2024, resolver = 3",
+    "iroh = =1.5.0",
+    "iroh-docs = =0.101.0 (newest published per crates.io API /crates/iroh-docs/versions)",
+    "iroh-blobs = =0.103.1 in the state plane: iroh-docs 0.101.0 declares iroh-blobs ^0.103 and Doc::set_hash takes iroh_blobs::Hash, so 0.105.0 would be a DISTINCT Hash type and a compile error",
+    "iroh-blobs = =0.105.0 is the newest published version but is used only behind byte-level [u8;32] boundaries in isolated sidecar processes, never sharing Hash with fabric-docs",
+    "iroh-gossip = =0.101.0 in the state plane: iroh-docs 0.101.0 declares iroh-gossip ^0.101.0 and Engine::spawn takes iroh_gossip::net::Gossip",
+    "iroh-gossip = =0.103.0 newest published, used only inside the isolated smol-kv sidecar with its own Cargo.lock",
+    "irpc = =0.17.0 in the state plane (iroh-docs 0.101.0 and iroh-blobs 0.103.1 requirement); irpc 1.0.0 appears only in the smol-kv sidecar",
+    "quic-rpc = =0.20.0 with default-features = false and features = [flume-transport]; the iroh-transport feature is FORBIDDEN because quic-rpc 0.20.0 declares iroh = 0.35 there",
+    "tokio-rustls-acme = =0.10.0",
+    "n0-dns-resolver = =0.1.1",
+    "iroh-smol-kv = =0.5.0 (isolated sidecar workspace)",
+    "iroh-roq = =0.1.0 (isolated sidecar workspace; declares iroh = 0.33.0)",
+    "sendme = =0.37.1 as a preinstalled CLI binary only: crates.io reports has_lib = false, so it is NOT a Cargo dependency",
+    "net-tools is NOT a crates.io crate (API 404); use prebuilt netwatch and portmapper binaries from github.com/n0-computer/net-tools at a pinned commit",
+    "iroh-dag-sync is NOT a published crate (crates.io API 404, index.crates.io/ir/oh/iroh-dag-sync 404, github.com/n0-computer/iroh-dag-sync 404, repository search 0 relevant hits); NO dependency is declared and fabric-dag implements the algebra",
+    "laboon = v0.1.0 prebuilt release; laboon_0.1.0_darwin_arm64.tar.gz SHA-256 1116d234f49b3f5f3c7ce363ddb98c4d084a4e6d11342a613386a4d89203f279",
+    "laboon-mcp_0.1.0_darwin_arm64.tar.gz SHA-256 192a474acfc6f93ce77c7f132427bedba73f19b4afeb9b39a365053ca9fbaf88",
+    "laboon_0.1.0_linux_amd64.tar.gz SHA-256 842fe5620db4592498ff599a080c9f8f31b710a27face7ac2ffa13799d5312c8",
+    "laboon_0.1.0_linux_arm64.tar.gz SHA-256 8459d1d6a00df841d4fff3419beb02e20cf61a37357c4cb5f720ca5384c1955a",
+    "go = 1.27.1 required by github.com/samyfodil/laboon go.mod, local toolchain is go1.26.1, therefore NO Go source build and prebuilt binaries with SHA-256 verification are mandatory",
+    "aws-emulator-server, aws-emulator-engine, aws-emulator-smithy-server-runtime as read-only path dependencies into /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/ (verified 0 occurrences of workspace = true in those manifests; a cargo metadata --no-deps probe at /tmp/aws0-pathdep-probe-20261119 succeeded)",
+    "aws-sigv4 = =1.6.5 (version in /Users/dylanwong/projects/aws0-2026-11-19/aws0/Cargo.lock)",
+    "serde = 1, postcard = 1, blake3 = 1, sha2 = 0.10, tokio = 1, zeroize = 1, thiserror = 2",
+    "hardware bound measured with df -h: 6.5 GiB free; no full-workspace build (README demands at least 100 GB), no artificial job or credit caps, only measured disk, memory and CPU"
+  ],
+  "iroh_api_used": [
+    "iroh::Endpoint, iroh::EndpointAddr, iroh::EndpointId, iroh::PublicKey, iroh::SecretKey, iroh::Signature, iroh::RelayMode, iroh::Watcher",
+    "iroh::endpoint::Builder::secret_key, ::relay_mode, ::alpns, ::address_lookup, ::dns_resolver, ::bind_addr, ::bind",
+    "iroh::Endpoint::bind, ::connect, ::accept, ::addr, ::watch_addr, ::online, ::close, ::address_lookup, ::set_alpns",
+    "iroh::endpoint::connection::Connection::open_bi, ::accept_bi, ::open_uni, ::accept_uni",
+    "iroh::protocol::{Router, RouterBuilder, ProtocolHandler, DynProtocolHandler, Accepting, AcceptError}; RouterBuilder::accept, ::spawn; Router::shutdown",
+    "iroh::address_lookup::{AddressLookup, AddressLookupBuilder, AddressLookupServices, AddrFilter, Item}",
+    "iroh::dns::DnsResolver (iroh-dns 1.5.0 wraps n0_dns_resolver::FallbackMode and ::Nameserver; the two DnsResolver types are distinct, so n0-dns-resolver is used directly for our own TXT, SRV, HTTPS lookups and iroh::dns::DnsResolver is passed to Builder::dns_resolver)",
+    "iroh_docs::api::{DocsApi, Doc}; DocsApi::spawn(Arc<Engine>), ::author_create, ::author_default, ::author_set_default, ::author_export, ::author_import, ::create, ::open, ::import, ::import_namespace, ::list",
+    "iroh_docs::api::Doc::set_bytes(author, key, value) -> Hash, ::set_hash(author, key, hash, size), ::get_exact, ::get_many, ::get_one, ::del (forbidden on log), ::share(ShareMode, AddrInfoOptions) -> DocTicket, ::start_sync(Vec<EndpointAddr>), ::leave, ::subscribe, ::status, ::set_download_policy, ::import_file, ::export_file",
+    "iroh_docs::engine::Engine::spawn(endpoint, gossip, replica_store, bao_store, downloader, default_author_storage, protect_cb), ::start_sync, ::subscribe, ::shutdown, ::blob_store",
+    "iroh_docs::engine::{LiveEvent, SyncEvent, DefaultAuthorStorage, DefaultAuthor, ProtectCallbackHandler}",
+    "iroh_docs::heads::AuthorHeads::{insert, merge, has_news_for, encode (forbidden with a size limit for correctness)}",
+    "iroh_docs::store::{Store, Query, QueryBuilder, KeyFilter, AuthorFilter, SortBy, DownloadPolicy, OpenError}; Store::persistent(path), Store::memory(); Query::all, ::single_latest_per_key, ::key_prefix, ::author",
+    "iroh_docs::{Author, AuthorId, NamespaceId, NamespaceSecret, Capability, CapabilityKind, DocTicket, Entry, SignedEntry, EntrySignature, Record, RecordIdentifier, ContentStatus, ALPN, PeerIdBytes}",
+    "iroh_docs::Entry::{timestamp, author, key, namespace, content_hash, content_len}; SignedEntry::signature",
+    "iroh_docs::api::protocol::{ShareMode, AddrInfoOptions, DocsProtocol}",
+    "iroh_blobs::{Hash, BlobFormat, HashAndFormat, BlobsProtocol, ALPN}; Hash::from_bytes, ::as_bytes",
+    "iroh_blobs::api::Store, ::api::blobs::{Blobs, AddPathOptions, ExportOptions, BlobStatus}, ::api::downloader::Downloader, ::api::downloader::DownloaderBuilder::new(&Store, &Endpoint)",
+    "iroh_blobs::store::fs::FsStore::load(root); impl From<FsStore> for iroh_blobs::api::Store; iroh_blobs::store::{ProtectCb, ProtectOutcome}",
+    "iroh_blobs::ticket::BlobTicket; iroh_blobs::net_protocol::BlobsProtocol::new(&Store, events)",
+    "iroh_gossip::net::{Gossip, Builder, ALPN}; Builder::spawn(endpoint)",
+    "iroh_gossip::api::{GossipApi, GossipTopic, GossipSender, GossipReceiver, JoinOptions, Event, Message, DeliveryScope}; GossipSender::broadcast(Bytes)",
+    "iroh_gossip::proto::{TopicId, BroadcastConfig, MembershipConfig}",
+    "quic_rpc::{RpcClient, RpcServer, RpcMessage, RpcError, Service, Connector, Listener, RpcChannel, Accepting, UpdateStream, UpdateSink, flume_channel, quinn_channel}",
+    "quic_rpc::transport::{Connector::open, Listener::accept, StreamTypes, ConnectionErrors, LocalAddr, MappedConnector, CombinedConnector}",
+    "tokio_rustls_acme::{AcmeConfig, AcmeState, ResolvesServerCertAcme, AcmeAcceptor, AcmeAccept, Incoming, Cache, CertCache, AccountCache, EventOk, EventError, DirCache}; AcmeConfig::new(domains).directory_lets_encrypt(production).contact(..).cache(..).state()",
+    "n0_dns_resolver::{DnsResolver, Builder, FallbackMode, Nameserver, DnsProtocol, Record, RecordKind, TxtRecordData, SrvRecordData, HttpsRecordData, public_resolvers::Provider, public_resolvers::default_order, interleave_nameservers}",
+    "n0_dns_resolver::DnsResolver::builder, ::system_with_fallback, ::lookup_record, ::lookup_txt, ::lookup_srv, ::lookup_https, ::lookup_svcb, ::lookup_ipv4, ::lookup_ipv6, ::clear_cache",
+    "iroh_smol_kv::{Client, Config, WriteScope, SignedValue, ExpiryConfig, Filter, Subscribe, SubscribeResponse, SubscribeItem, SubscribeMode, InsertError, IterResult} (advisory sidecar only)",
+    "iroh_roq::{Session, SendFlow, ReceiveFlow, SendStream, RtpPacket, VarInt, ALPN} (media sidecar only)",
+    "sendme CLI: `sendme send <file or directory>` yields a ticket, `sendme receive <ticket>` fetches it; ticket is a SecretRef",
+    "emulator_server::{Listeners, NativeHandler, HttpHandler, HttpPolicy, ResourceListener, TlsUpgrader, ListenerConn, TlsCertificateAuthority, CredentialStore, MintedCredential, RequestAuthenticator, SigV4Authenticator, VendedCredentials, Denied, presign_url, PresignTarget, write_credentials_file, authentication_enabled}",
+    "emulator_server::aws_credentials::{AWS_ACCESS_KEY, AWS_SESSION}",
+    "emulator_server::embedded::{Authentication, EmbeddedOptions, Telemetry}",
+    "aws_emulator_smithy_server_runtime::{MultiServiceRouter, UrlSigner, SignedUrlRequest, SignedUrl, EndpointUrl, SignError, MAX_SIGNED_URL_EXPIRY}; SignedUrlRequest::new(method, signing_name, path); SignedUrl::as_str, ::expires_at, ::required_headers; MultiServiceRouter::set_url_base",
+    "aws_emulator_engine::{InMemoryEngine, ServiceState<T>, EMULATOR_ACCOUNT_ID}; InMemoryEngine::new, ::state::<T>(), ::listeners()"
+  ],
+  "disjoint_surfaces": [
+    "S_Membership: Doc NamespaceId = blake3('aws0/v1' || Membership || region), key prefix 'mem/<region>/', writes only OrSet adds and removes keyed by Dot, responses only MembershipView.",
+    "S_Workloads: namespace blake3('aws0/v1' || Workloads || region), key prefix 'wl/<region>/', writes only GSet WorkloadDecl and RevocationSet entries, responses only WorkloadDescriptor set.",
+    "S_Placements: namespace blake3('aws0/v1' || Placements || region), key prefix 'pl/<region>/', writes only LwwRegister<Placement> deltas, responses only PlacementView.",
+    "S_Routes: namespace blake3('aws0/v1' || Routes || region), key prefix 'rt/<region>/', writes only LwwMap<ResourceId, EndpointAddr> deltas, responses only EndpointAddress.",
+    "S_Capacity: namespace blake3('aws0/v1' || Capacity || region), key prefix 'cap/<region>/', writes only measurement LWW deltas and lease-authorized ReservationLedger entries, responses only CapacityView.",
+    "S_Audit: namespace blake3('aws0/v1' || Audit || region), key prefix 'au/<region>/', writes only GSet EffectReceipt keyed by OpId, responses only ReceiptSet.",
+    "S_Config: namespace blake3('aws0/v1' || Config || region), key prefix 'cf/<region>/', writes only GSet SmartOpsSpec and LwwRegister<ProtocolId>, responses only ActiveProtocol.",
+    "S_BlobIndex: iroh_blobs content-addressed by Hash, immutable bytes only, responses only BlobTicket and Hash; disjoint from all doc namespaces because no doc key equals a blob Hash.",
+    "S_Leases: consensus plane, NO CRDT namespace at all; Lease and QuorumCertificate live in LeaseAuthority memory plus a durable local voter log, responses only LeaseGrant and LeaseDenied.",
+    "S_Secrets: SecretVault with opaque SecretRef handles, no doc key, no response body; secrets are never serialized into any surface.",
+    "S_Advisory: iroh-smol-kv sidecar with expiring presence hints, explicitly excluded from authoritative Gamma and from every response that affects a state transition.",
+    "S_Media: iroh-roq RTP sidecar, no doc key, no control response; disjoint by its own ALPN and its own process.",
+    "R_Response: ResponseKey = (ScopeKey, RequestId, OpId) with ScopeKey = (TenantId, RegionId, ServiceId, ResourceId, ResourceKind); a single-assignment map returns DuplicateResponse on any second write, so R_i intersection R_j is empty for i != j.",
+    "Topology: for every i != j, S_i intersection S_j is empty by the BTree prefix partition and distinct NamespaceId; the tensor of surfaces is strict because no write touches two prefixes and no Effect emits two ResponseKey values; a witness enumerates all Surface variants and asserts pairwise key-prefix disjointness."
+  ],
+  "invariant_proofs": [
+    "IDEMPOTENCE f composed with f equals f: GSet uses BTreeSet union, OrSet uses union of adds minus a union of remove dots, LwwRegister uses max over a total order, Dvv uses pointwise max plus set union; all four operations are idempotent. WorkloadId = blake3(spec) makes a repeated declaration the same set element, and EffectReceipt is keyed by OpId. A replayed DagVertex whose Dot is already in Dvv returns AlreadyApplied. Witness: 100000 randomized deltas with duplicate and reorder injection.",
+    "DISJOINT STATE AND RESPONSE SETS: each Surface has a distinct BTree key prefix and a distinct BLAKE3-derived NamespaceId; ResponseKey is a product type with RequestId and OpId, so two operations cannot address the same response slot. Single-assignment response map returns DuplicateResponse instead of overwriting. Witness: exhaustive pairwise prefix check over all eight Surface variants plus a concurrent request test.",
+    "NO UB, RACES OR LEAKS: every crate is #![forbid(unsafe_code)] matching vendor/engine/src/lib.rs line 62; no static mutable cell, no OnceLock state, no global telemetry (contrast core/embedded/src/lib.rs); tokio structured concurrency with AbortOnDropHandle; engine::ServiceState<T>::lock recovers poisoned locks via PoisonError::into_inner; all laboon children use kill_on_drop(true) and an explicit Drop; bounded mpsc channels; tokio::time::timeout on every IO. Witness: clippy -D warnings, miri on pure crates, loom on concurrent maps, dhat leak report after 10000 ops.",
+    "CONTENTION TENDS TO ZERO AS n GROWS: owner(WorkloadId) is rendezvous hashing over the membership OR-set, so exactly one node proposes a lease per LeaseKey and per-key writer count is 1 for any n. Gossip fanout is bounded by MembershipConfig and sync peer lists are sampled. Witness: benchmark n = 1..64 nodes with p99 scheduling latency and lease retry counts flat in n.",
+    "CLARKE-COMPLIANT ABSTRACTION: all iroh, CRDT, lease, quorum and DAG types are pub(crate) behind fabric-net, fabric-consensus and fabric-dag; MagicEndpoint exposes only AWS-shaped verbs and modeled errors. Witness: CI grep of aws0-cli user strings for the forbidden vocabulary returns zero, and every injected internal error becomes a modeled AWS error.",
+    "NO PHANTOM AST NODES: SmartOp and Effect are closed enums with no Todo, Unimplemented, Other or fallback variant; exhaustive match plus deny(unreachable_patterns) forces exactly one interpreter arm per variant; an unimplemented AWS operation is a wire-level 501 from the scaffold, never an AST node. Witness: variant-to-arm coverage report has cardinality equality.",
+    "NO TRUNCATION: append-only dot-keyed entries; Doc::del is prefix-deleting per iroh-docs 0.101.0 api.rs and is forbidden on the log; AuthorHeads::encode(Some(limit)) explicitly skips oldest entries per heads.rs and is forbidden for authoritative context; compaction only drops locally covered replica entries after a quorum-certified Snapshot while immutable event blobs remain. Witness: post-compaction genesis replay produces the identical StateHash.",
+    "MINIMAL DELTA SPEC: root Cargo.toml is GENERATED and untouched (AGENTS.md), core/router/src/lib.rs is RE-RENDERED ON EVERY SERVICE ADD and untouched, core/router/src/main.rs is marked do not edit in AGENTS.md while core/router/src/lib.rs calls it yours, so the conflict is resolved by editing NEITHER; no file under /Users/dylanwong/projects/aws0-2026-11-19/aws0 is modified. New code is a sibling workspace with read-only path deps to vendored crates that have zero workspace = true occurrences. Witness: git diff --stat in the checkout is empty; cargo metadata --no-deps on the new workspace succeeds (probe at /tmp/aws0-pathdep-probe-20261119).",
+    "NO SYCOPHANCY OR HALLUCINATION: iroh-dag-sync is not published (crates.io API 404, sparse index 404, GitHub repo 404), net-tools is not a crates.io crate (404), sendme has has_lib = false, iroh-roq 0.1.0 pins iroh 0.33.0, and 1:1 AWS parity is NOT claimed with census.md evidence of 440 crates, 7114 stubs, 5355 open issues (111 CRITICAL) and 572 GitHub issues. Witness: ClaimLedger with verified and unverified marks plus HTTP status codes for every substrate name.",
+    "EVERY EXCEPTION HANDLED OR PROPAGATED: FabricError is a closed sum; deny(clippy::unwrap_used, clippy::expect_used, clippy::panic, clippy::todo, clippy::unimplemented); no todo!() or panic!() in any handler because vendor/engine/src/lib.rs says the server would turn a panic into a 500 InternalFailure the real service never gives; every Result is propagated with ? or mapped to a modeled error. Witness: fault injection for each FabricError variant with an exact expected response.",
+    "NO SECRETS IN AST: only SecretRef(blake3::Hash) is serializable in fabric-core, fabric-algebra and fabric-smartops; NamespaceSecret, SecretKey, DocTicket, BlobTicket and VendedCredentials are confined to SecretVault and never derive Serialize into a doc entry. Witness: rg for those type names in the three pure crates returns zero, plus a log scrubber test.",
+    "MONOTONE KNOWLEDGE Gamma_t superset Gamma_t-1: every CRDT join is inflationary, no log delete is permitted, revocations are a GSet, AuthorHeads::merge is pointwise max, and the expiring iroh-smol-kv sidecar is excluded from Gamma. Witness: leq(Gamma_t, Gamma_t+1) is asserted after every applied delta in the law runner.",
+    "STATE IS ADT-ISOMORPHIC TO PURE MORPHISMS: fold(MaterializedState, DagVertex) -> MaterializedState is a total pure function; fabric-core and fabric-algebra manifests contain no IO crate. Witness: cargo tree -p fabric-algebra contains no tokio or iroh; two different delivery orders yield one StateHash.",
+    "ENTROPY IS SUBTRACTIVE O(1) COGNITIVE: one endpoint, one CLI, one aws0.toml, four AWS environment variables; no region, quorum, CRDT or peer knob is exposed. Witness: first real psql query is reachable in two user actions (aws0 up, then psql).",
+    "TOPOLOGY IS A STRICT MONOIDAL DAG: DagVertex.parents may reference only dots present in its own Dvv, so a cycle is impossible by construction; TopologicalOrder is Kahn with a total-order tie-break of (HlcStamp, Dot, VertexId); the tensor of surfaces has disjoint keys. Witness: cycle detection property test plus a bound on DAG depth.",
+    "PHYSICS IS HARDWARE-BOUNDED AND CAP-AWARE: PhysicsBudget is measured from df, sysctl and cgroup limits at boot; WithMaxImageSize is bounded by free_disk_bytes minus a reserve; there are NO artificial job or credit caps; the 440-crate workspace is never built because README demands at least 100 GB while df -h reports 6.5 GiB free. Witness: df -h and du -sh target before and after each build phase, with CARGO_BUILD_JOBS=2, CARGO_INCREMENTAL=0 and debug = 0.",
+    "BOUNDARIES ARE AFFINE TYPESTATE BYZANTINE: Cap<K> is moved and never cloned, Node<S> and Workload<S> are typestates, LeaseVote is ed25519-signed, quorum is 2f+1 of 3f+1 with intersection at least f+1 honest voters, FencingTable rejects lower epochs, and EquivocationProof appends to the grow-only RevocationSet. Witness: inject f Byzantine voters with double votes, stale epochs and forged signatures; assert zero split-brain.",
+    "CORRECTNESS BY STATIC VERIFICATION: refinement newtypes have private constructors and TryFrom obligations (RegionId, WorkloadId, LeaseKey, ConsistencyToken), NonZeroU64 and BoundedVec<const N: usize> carry proofs in types, #[must_use] on all Results, deny(missing_docs, unreachable_pub) matching iroh 1.5.0's own lint set. Witness: trybuild compile-fail cases for every invalid refinement.",
+    "RESILIENCE IS p99-BOUNDED GRACEFUL: every Effect has Deadline and Compensation, the ConsistencyToken barrier is bounded by tokio::time::timeout and returns StaleReplica, a majority keeps serving while a minority serves AP reads and refuses CP ops with ServiceUnavailable. Witness: chaos run with p99 histogram and exact modeled-error assertions.",
+    "CONTRACTS ARE STRICT SEMANTICS WITH ZERO LEAK: presigned URLs only through UrlSigner and SignedUrlRequest plus expires_at and required_headers; unsigned addresses only through ctx.endpoint; resource endpoints only through ResourceListener::url or authority, never a format! of host and port (vendor/engine/src/lib.rs lines 30 to 35); a presigned PUT with a changed content-type returns 403. Witness: the five linkedin-post.txt checks.",
+    "CRUCIBLE CHAOS AT MAX LOAD: node kill, partition, disk-full, clock skew, image corruption, duplicated doc entries and Byzantine equivocation at maximum measured physics load; assert identical StateHash on all replicas, zero double-starts and zero lost acknowledged writes. Witness: witness/chaos.py with 7 nodes, 3 regions and 10000 ops.",
+    "TELEOLOGY IS UTILITY MAX: aws0 up then aws0 deploy yields a real PostgreSQL, a working Lambda bundle with node:http and fetch, and one AWS SDK endpoint. Witness: end-to-end SDK script from linkedin-post.txt workloads.",
+    "UNIFORM STYLE, PARAMETERIZED IO, MINIMAL K(Code): one rustfmt.toml, one clippy lint set, one Io<A> monad, one Effects handle, one Runtime threaded explicitly as &Runtime; no hidden mutation, no static mut, no OnceLock state, no environment read in any request path (matching the HttpPolicy doc in vendor/server/src/listeners.rs). Witness: manifest lint plus rg for static mut and OnceLock in crates returns zero.",
+    "AUTHZ IS ZEROTRUST: SigV4 verified on every request, SignedEntry verified on every fold, LeaseVote verified on every certificate, read-only DocTicket by default, root credentials never in a response or log, created credentials only via CredentialStore::create with AWS_ACCESS_KEY or AWS_SESSION, and delete(id) for revocation. Witness: five strictness checks plus forged-entry and forged-vote rejection tests.",
+    "NO VIBE CODE: no hand-written subset evaluator, no echo of input as output, no source-text pattern matching, no fabricated endpoint; real engines only, honest 501 for the rest, exactly as vendor/engine/src/lib.rs requires. Witness: source audit plus an operation-by-operation fidelity table."
+  ],
+  "risks": [
+    "VERSION COHERENCE IS THE HARD BLOCKER: a real cargo generate-lockfile probe pinning iroh 1.5.0, iroh-blobs 0.105.0, iroh-docs 0.101.0 and iroh-gossip 0.103.0 resolved TWO versions of iroh-blobs (0.103.1 and 0.105.0), TWO of iroh-gossip (0.101.0 and 0.103.0) and TWO of irpc (0.17.0 and 1.0.0). iroh_docs::api::Doc::set_hash takes iroh_blobs::Hash from the 0.103 family, so mixing 0.105.0 in the state plane is a distinct-type compile error. Mitigation: pin 0.103.1 and 0.101.0 in the state plane, isolate 0.105.0 and 0.103.0 behind byte-level sidecars, and assert uniqueness with cargo tree -d at S1.",
+    "quic-rpc 0.20.0 declares iroh = 0.35 in its optional iroh-transport feature. Enabling it would introduce an incompatible Endpoint type. Mitigation: default-features = false with flume-transport only, and IrohRpcConnector and IrohRpcListener implement quic_rpc::transport::Connector and Listener over iroh 1.5.0 Connection::open_bi and accept_bi.",
+    "iroh-roq 0.1.0 declares iroh = 0.33.0 (observed in /tmp/aws0-crdt-probe2-20261119/Cargo.lock), and iroh-smol-kv 0.5.0 pulls iroh-gossip 0.103.0 and irpc 1.0.0. Mitigation: both live in isolated sidecar workspaces with their own Cargo.lock and communicate over quic-rpc with byte-level messages; they never share a Rust type with the state plane.",
+    "iroh-dag-sync does not exist as a published crate (crates.io API 404, sparse index 404, n0-computer GitHub repo 404, repository search returned no relevant hit). A design that declares it as a dependency would be a hallucination. Mitigation: fabric-dag implements the algebra behind a DagSync trait; the upstream crate, if published, replaces one adapter file.",
+    "net-tools is not a crates.io crate (API 404); it is github.com/n0-computer/net-tools containing netwatch and portmapper. Mitigation: prebuilt binaries at a pinned commit, checksum verified, diagnostics only.",
+    "sendme 0.37.1 reports has_lib = false. Mitigation: preinstalled CLI binary, never a Cargo dependency; its ticket is a SecretRef.",
+    "laboon go.mod requires go 1.27.1 while the local toolchain is go1.26.1. Mitigation: prebuilt v0.1.0 binaries with SHA-256 verification against checksums.txt, no Go build; a Go shim that calls laboon.RunImage is explicitly out of scope on this machine.",
+    "laboon documents OUTBOUND supervisor-proxied sockets and WithAllowPorts for destination ports, but NO inbound guest listener and no socketpair CLI flag. Mitigation: emulator core owns the TCP and TLS listener and a NativeHandler bridges to a guest AF_UNIX socket exposed through -mount; this is a boot-time verification gate, and a failed probe returns the modeled error or the scaffold 501, never a fabricated endpoint.",
+    "WithMaxMemory is documented as not yet enforced on macOS, and WithMaxImageSize defaults to 16 GiB while df -h reports 6.5 GiB free. Mitigation: ResourceGovernor enforces memory host-side and WithMaxImageSize is derived from measured free bytes minus a reserve.",
+    "laboon-mcp HTTP tool documentation is not published (README 404, directory contains only go.mod, go.sum and main.go). Mitigation: McpCapabilityProbe enumerates tools at boot and falls back to the CLI; its implementation must read cmd/laboon-mcp/main.go before use.",
+    "iroh_docs::heads::AuthorHeads::encode(Some(limit)) explicitly skips oldest entries. Using it for causal context would truncate knowledge. Mitigation: full AuthorHeads and Dvv objects only; the truncated encoding is a lossy hint with no correctness authority.",
+    "iroh_docs::api::Doc::del(author, prefix) inserts an empty entry that clears all entries with that prefix. Mitigation: forbidden on every log surface; revocations are grow-only entries.",
+    "iroh-smol-kv has ExpiryConfig, which is subtractive and would break monotone knowledge. Mitigation: advisory presence only, excluded from Gamma and from any state transition.",
+    "The generated emulator cannot run containers or external processes per vendor/engine/src/lib.rs, and core/router/src/lib.rs is RE-RENDERED ON EVERY SERVICE ADD. Mitigation: laboon and all new code live in a sibling workspace; no service crate, router file or root Cargo.toml is edited; AGENTS.md and core/router/src/lib.rs disagree about whether main.rs is editable, so neither is touched.",
+    "core/embedded/src/lib.rs installs a process-wide telemetry Once and global(). Our design has no ambient state. Mitigation: Telemetry::Off and no dependency on aws-emulator-embedded, which would also pull all 440 service crates via build_router.",
+    "README.md requires at least 100 GB of free disk for a full workspace build; this machine has 6.5 GiB. Mitigation: build only 16 small crates in the sibling workspace with a shared CARGO_TARGET_DIR, CARGO_BUILD_JOBS=2, CARGO_INCREMENTAL=0, debug = 0, one cargo build -p per phase, and a df gate that aborts before any phase that would exceed the measured free bytes.",
+    "1:1 AWS parity is NOT achievable here: census.md records 440 service crates, 7114 stub files, 5355 open in-repo fidelity documents with 111 CRITICAL and 3888 HIGH, and 572 GitHub issues. Mitigation: a declared OperationSet with real engines, honest scaffold 501 elsewhere, and an explicit no-parity statement in every user-facing document.",
+    "linkedin-post.txt shows a lenient emulator hides bugs: presigned PUT content-type mismatch, invalid SigV4, public function URL without lambda:InvokeFunctionUrl, EventBridge to SQS without a queue policy, and a DynamoDB table before ACTIVE. Mitigation: these five are named live witness tests in the StrictnessSuite and gate every release.",
+    "tokio-rustls-acme 0.10.0 ACME requires a public DNS name and inbound port 80 or 443. Mitigation: local deployments use emulator_server::TlsCertificateAuthority and AWS_CA_BUNDLE; ACME is opt-in behind a configured domain and a DNS-01 or HTTP-01 verification step using n0_dns_resolver::lookup_txt.",
+    "iroh::dns::DnsResolver from iroh-dns 1.5.0 is a DIFFERENT type from n0_dns_resolver::DnsResolver (iroh-dns internally maps its FallbackMode to n0_dns_resolver::FallbackMode). Mitigation: pass iroh::dns::DnsResolver to Builder::dns_resolver and use n0_dns_resolver directly for our own TXT, SRV and HTTPS lookups; never pass one where the other is expected.",
+    "HLC and lease expiry depend on bounded clock skew. Mitigation: max_clock_skew_ms is measured into PhysicsBudget, leases expire by that bound, and FencingTable makes a stale lease harmless even if clocks are wrong.",
+    "SignedUrlRequest and MAX_SIGNED_URL_EXPIRY cap presigned URL validity, and presign_url returns None for an unsignable target. Mitigation: the None case is propagated as FabricError::Modeled, never converted into a hand-written URL."
+  ],
+  "build_and_witness": "CITATIONS ACTUALLY READ (absolute paths). Checkout: /Users/dylanwong/projects/aws0-2026-11-19/aws0/AGENTS.md; /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/engine/src/lib.rs; /Users/dylanwong/projects/aws0-2026-11-19/aws0/core/embedded/src/lib.rs; /Users/dylanwong/projects/aws0-2026-11-19/aws0/core/router/src/lib.rs; /Users/dylanwong/projects/aws0-2026-11-19/aws0/README.md; /Users/dylanwong/projects/aws0-2026-11-19/aws0/Cargo.toml (read only); /Users/dylanwong/projects/aws0-2026-11-19/aws0/core/router/Cargo.toml; /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/Cargo.toml; /Users/dylanwong/projects/aws0-2026-11-19/aws0/.emulator/license-header (contents are exactly '// SPDX-License-Identifier: CC0-1.0', adopted for uniform style in every new .rs file); /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server/src/listeners.rs; /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server/src/request_authentication.rs; /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server/src/credential_store.rs; /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server/src/lib.rs; /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-server-runtime/src/signed_url.rs; /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-server-runtime/src/multi_service_router.rs; /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-server-runtime/src/endpoint.rs. Research: /Users/dylanwong/projects/aws0-research-2026-11-19/census.md; /Users/dylanwong/projects/aws0-research-2026-11-19/linkedin-post.txt. Registry sources: /Users/dylanwong/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/iroh-docs-0.101.0/src/{api.rs, heads.rs, engine.rs, sync.rs, store.rs, keys.rs, ticket.rs, api/protocol.rs, Cargo.toml}; /Users/dylanwong/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/iroh-blobs-0.103.1/src/{hash.rs, store/fs.rs, api.rs, net_protocol.rs}; /Users/dylanwong/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/iroh-gossip-0.101.0/src/{lib.rs, api.rs, net.rs}; /Users/dylanwong/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/n0-dns-resolver-0.1.1/src/resolver.rs; /Users/dylanwong/projects/aws0-research-2026-11-19/_iroh-src-1.5.0/iroh/src/{lib.rs, endpoint.rs, protocol.rs, address_lookup.rs}; /Users/dylanwong/projects/aws0-research-2026-11-19/quic-rpc-src-v0.20.0/{Cargo.toml, src/lib.rs, src/transport/mod.rs}; /Users/dylanwong/projects/aws0-research-2026-11-19/_src/tokio-rustls-acme-v0.10.0/src/config.rs. Network sources read: crates.io API for iroh-dag-sync, quic-rpc, sendme, iroh-smol-kv, iroh-roq, n0-dns-resolver, tokio-rustls-acme and iroh-docs dependencies; docs.rs for iroh-smol-kv 0.5.0 and iroh-roq 0.1.0; github.com/samyfodil/laboon README, go.mod, options.go, docs/permissions-and-limits.md, cmd/laboon/main.go and the v0.1.0 release checksums.txt; github.com/ministackorg/ministack README; github.com/n0-computer/sendme README; api.github.com/repos/n0-computer/net-tools/contents. Live probes executed: /tmp/aws0-crdt-probe-20261119/Cargo.lock and /tmp/aws0-crdt-probe2-20261119/Cargo.lock via cargo generate-lockfile (444 and 633 packages, duplicate versions proven); /tmp/aws0-pathdep-probe-20261119 via cargo metadata --no-deps (separate workspace path dependency into vendored server succeeds). IMPLEMENTATION ORDER (strictly sequential, each phase gated by its witness before the next). S0: df -h and rustc --version and go version; assert free disk above the PhysicsBudget reserve; create the sibling workspace at /Users/dylanwong/projects/aws0-2026-11-19/aws0-fabric-crdt/ with Cargo.toml, rustfmt.toml, clippy lint set and the CC0-1.0 license header policy. Witness: cargo metadata --no-deps succeeds and git diff --stat in /Users/dylanwong/projects/aws0-2026-11-19/aws0 is empty. S1: pin the coherent dependency family and run cargo generate-lockfile, then cargo tree -d. Witness: exactly one iroh, one iroh-blobs (0.103.1), one iroh-gossip (0.101.0) and one irpc (0.17.0) in the state plane; the 0.105.0, 0.103.0, 1.0.0 and 0.33.0 families exist only in isolated sidecar lockfiles. S2: fabric-core and fabric-algebra, pure crates only. Witness: cargo clippy -p fabric-core -p fabric-algebra -- -D warnings; LawSuite asserts the four semilattice laws over 100000 randomized deltas; cargo tree -p fabric-algebra contains no tokio and no iroh. S3: fabric-dag with CausalDag, DagSync and IrohDagSyncAdapter. Witness: two different topological delivery orders of the same vertex set produce one StateHash; MissingParent is propagated on an injected gap; a cycle-detection property test finds zero cycles. S4: fabric-docs with Store::persistent, FsStore::load, DefaultAuthorStorage::Persistent, Engine::spawn, DocsApi::spawn, dot-keyed Doc::set_bytes and Doc::set_hash, ProtectCallbackHandler. Witness: two in-process nodes exchange a delta, the LiveEventSink observes InsertRemote, both folds agree, and a restart from the same data dir reproduces the same StateHash. S5: fabric-net with RouterBuilder ALPN registry, IrohRpcConnector and IrohRpcListener, DnsDiscovery and n0_dns_resolver lookups. Witness: an RpcClient round trip over iroh with relay mode; cargo tree shows iroh 0.35 is absent. S6: fabric-consensus with LeaseAuthority, QuorumCertificate and FencingTable. Witness: inject f Byzantine voters with double votes, stale epochs and forged signatures; assert zero split-brain and a grow-only RevocationSet entry. S7: fabric-scheduler and fabric-state. Witness: two-order replay yields identical PlacementPlan; ConsistencyToken barrier returns StaleReplica rather than a stale value when the Dvv is unreachable; 1 to 64 node benchmark has flat per-key lease retries. S8: tools/preinstall with laboon v0.1.0 and sendme v0.37.1 checksum verification, plus the netwatch and portmapper binaries. Witness: a deliberately corrupted archive is rejected before chmod; laboon -version prints the pinned version; -no-net guest cannot reach an external host; a mounted AF_UNIX socket is reachable from the guest, otherwise the gate refuses to report ACTIVE. S9: fabric-runtime and fabric-dataplane with the core-owned Listeners and NativeHandler bridges. Witness: psql executes select version() against a real postgres:16-alpine guest; redis-cli PING returns PONG; ResourceListener::url and authority are the only endpoint sources; rg for a format! of host and port returns zero. S10: fabric-authz and fabric-gateway with the closed OperationSet, SigV4Authenticator, UrlSigner and TlsCertificateAuthority. Witness: the five linkedin-post.txt strictness checks pass as named live tests; a forged doc entry and a forged lease vote are rejected; no key material appears in any log line. S11: fabric-smartops with smartops/1, SmartOpsSpec and ProtocolActivation. Witness: applying one spec twice emits zero additional Effects; an older spec after a newer activation returns ProtocolMismatch; a Lambda bundle importing node:http, node:zlib and fetch succeeds. S12: aws0-node and aws0-cli. Witness: aws0 up prints the four AWS environment variables; unmodified AWS CLI and SDK commands work; rg for iroh, CRDT, quorum, lease, P2P and DAG in user-visible strings returns zero; aws0 join adds a second node with one short code. S13: sidecars/smol-kv, sidecars/roq and tools integration. Witness: each sidecar has its own Cargo.lock, no state-plane type crosses the process boundary, and disabling either sidecar leaves all authoritative operations working. S14: witness crucible at maximum measured load with 7 nodes across 3 regions and 10000 operations, node kill, partition, disk-full, clock skew, image corruption, duplicated entries and Byzantine equivocation. Witness: identical StateHash on all replicas, zero double-starts, zero lost acknowledged writes, p99 within PhysicsBudget.deadline_ms, and a ClaimLedger entry with id, hash and timestamp for every claim. BUILD DISCIPLINE: CARGO_TARGET_DIR is one directory on the volume with measured headroom, CARGO_BUILD_JOBS=2, CARGO_INCREMENTAL=0, debug = 0 in dev, lto = thin in release, one cargo build -p per phase, cargo clean -p between phases when the df gate requires it, and NEVER cargo build at /Users/dylanwong/projects/aws0-2026-11-19/aws0 because README.md demands at least 100 GB. NO ARTIFICIAL CAPS: there is no maximum job count and no credit or spend gate; admission uses only measured disk, memory, CPU and clock skew. NO STUBS: no TODO, FIXME, ellipsis comment, todo!(), unimplemented!() or panic!() anywhere; unimplemented AWS operations use the scaffold 501 channel as vendor/engine/src/lib.rs requires. PARITY STATEMENT: 1:1 AWS parity is not achieved and is not claimed at any phase; each phase publishes a fidelity table with the operations actually backed by a real engine."
+}

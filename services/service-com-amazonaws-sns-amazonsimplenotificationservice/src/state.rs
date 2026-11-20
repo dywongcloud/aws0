@@ -4890,16 +4890,19 @@ pub fn addresses_fifo_queue(arn: &str) -> bool {
 /// One page of `items` starting at `token`, plus the token of the page after it.
 ///
 /// `token` is the opaque `NextToken` a previous page returned — the index of the
-/// first item of this page, spelled exactly as this function mints it. `None` is
-/// returned for a token that is not one this function produced (another spelling of a
-/// number included, since the token is opaque and only this spelling is handed out),
-/// which each caller reports as its own modelled error.
+/// first item of this page, spelled exactly as this function mints it. An empty
+/// string is the same request as no token at all: AWS SNS accepts `NextToken=""`
+/// and answers the first page. `None` is returned for a token that is not one this
+/// function produced (another spelling of a number included, since the token is
+/// opaque and only this spelling is handed out), which each caller reports as its
+/// own modelled error.
 pub fn paginate<T>(
     items: Vec<T>,
     token: Option<&str>,
     page_size: usize,
 ) -> Option<(Vec<T>, Option<String>)> {
     let start: usize = match token {
+        Some("") => 0,
         Some(token) => {
             let start: usize = token.parse().ok()?;
             // A token this function minted reads back as the same text: a signed,
