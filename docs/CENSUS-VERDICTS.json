@@ -1,0 +1,643 @@
+{
+  "claims": [
+    {
+      "claim": "EF-01",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "EF-02",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "EF-03",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "EF-04",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "EF-05",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 3,
+      "survived": true,
+      "votes": {
+        "correctness": false,
+        "repro": false,
+        "spec": false
+      }
+    },
+    {
+      "claim": "EF-06",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 1,
+      "survived": false,
+      "votes": {
+        "correctness": false,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "EF-07",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "EF-08",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "EF-09",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "EF-10",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "EF-11",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "F-01",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 1,
+      "survived": false,
+      "votes": {
+        "correctness": false,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "F-02",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "F-03",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "F-04",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "F-05",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 3,
+      "survived": true,
+      "votes": {
+        "correctness": false,
+        "repro": false,
+        "spec": false
+      }
+    },
+    {
+      "claim": "F-06",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "F-07",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 1,
+      "survived": false,
+      "votes": {
+        "correctness": false,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "F-08",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 1,
+      "survived": false,
+      "votes": {
+        "correctness": false,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "F-09",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "F-10",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "F-11",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "F-12",
+      "complete": false,
+      "decided": 2,
+      "not_refuted": 2,
+      "survived": false,
+      "votes": {
+        "correctness": false,
+        "repro": false,
+        "spec": null
+      }
+    },
+    {
+      "claim": "F-13",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "F-14",
+      "complete": false,
+      "decided": 2,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": null,
+        "spec": true
+      }
+    },
+    {
+      "claim": "F-15",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "F-16",
+      "complete": false,
+      "decided": 1,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": null,
+        "repro": true,
+        "spec": null
+      }
+    },
+    {
+      "claim": "F-17",
+      "complete": false,
+      "decided": 2,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": null,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "L5-01",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "L5-02",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "L5-03",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "L5-04",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "L5-05",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "L5-06",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 1,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": false,
+        "spec": true
+      }
+    },
+    {
+      "claim": "L5-07",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "L5-08",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "L5-09",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "L5-10",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "L5-11",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "L5-12",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "LR-01",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "LR-02",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "LR-03",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "LR-04",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "LR-05",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "LR-06",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "LR-07",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "LR-08",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "LR-09",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "LR-10",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "LR-11",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    },
+    {
+      "claim": "LR-12",
+      "complete": true,
+      "decided": 3,
+      "not_refuted": 0,
+      "survived": false,
+      "votes": {
+        "correctness": true,
+        "repro": true,
+        "spec": true
+      }
+    }
+  ],
+  "claims_complete": 48,
+  "claims_pending": 4,
+  "claims_seen": 52,
+  "failed_keys": 7,
+  "journal_rows": 527,
+  "not_refuted_votes": 18,
+  "refuted_votes": 194,
+  "schema": "aws0/census-verdicts/v1",
+  "survivors": [
+    "EF-05",
+    "F-05"
+  ],
+  "synthesis_pending": true,
+  "unique_verdict_keys": 212,
+  "workflow": "wf_b49262e6-0ba"
+}
