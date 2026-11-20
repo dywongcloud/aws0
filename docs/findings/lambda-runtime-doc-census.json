@@ -1,0 +1,3661 @@
+{
+  "docs_scanned": 23026,
+  "lambda_code_execution_core_set": {
+    "count": 260,
+    "files": [
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261024T150703Z-apigateway-dynamodb-lambda-logs-a-dynamodb-streams-event.md",
+        "hits": [
+          "lambda runtime",
+          "handler"
+        ],
+        "severity": "",
+        "title": "apigateway__dynamodb__lambda__logs: a DynamoDB-Streams event source mapping with ParallelizationFactor never processes any shard records (1 cause)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261024T150703Z-cloudformation-cloudwatch-lambda-logs-sq-cloudformation-cloudwatch-lambda-logs-sqs-ssm-the-change.md",
+        "hits": [
+          "lambda runtime",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cloudformation__cloudwatch__lambda__logs__sqs__ssm: the change-set queue-worker update workflow never completes \u2014 the SQS-triggered Lambda worker is never executed (1 cause)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261024T150703Z-lambda-logs-sqs-a-cloudwatch-logs-subscription-filter.md",
+        "hits": [
+          "lambda runtime"
+        ],
+        "severity": "",
+        "title": "lambda__logs__sqs: a CloudWatch Logs subscription filter with a Lambda destination delivers nothing (1 cause)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261025T182751Z-cognito-idp-kms-lambda-sqs-the-email-otp.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response"
+        ],
+        "severity": "",
+        "title": "cognito-idp__kms__lambda__sqs: the EMAIL_OTP session-expiry scenario never gets a real code \u2014 the CustomEmailSender trigger is never invoked, so no KMS-encrypted code is delivered and AuthSessionValidity cannot be exercised"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261027T180000Z-lambda-invokewithresponsestream-refuses-every-real-streaming-invocation.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response",
+          "handler",
+          "InvalidRuntimeException"
+        ],
+        "severity": "",
+        "title": "lambda: InvokeWithResponseStream refuses every real streaming invocation with NotImplemented instead of streaming the function's response"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261028T081611Z-cloudfront-the-unqualified-lambda-edge-arn-rejection-check.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cloudfront: the unqualified-Lambda@Edge-ARN rejection check never completes \u2014 the distribution's edge domain answers nothing, so the post-rejection positive control exhausts the whole budget"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261029T023500Z-apigatewayv2-lambda-logs-apigatewayv2-the-rfc-6455-upgrade-to-a-deployed.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "apigatewayv2: the RFC 6455 upgrade to a deployed WEBSOCKET prod stage answers 404 UnknownService instead of 101 Switching Protocols (1 cause)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261029T175759Z-cognito-idp-kms-lambda-sqs-three-more-real.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Request"
+        ],
+        "severity": "",
+        "title": "cognito-idp__kms__lambda__sqs: three more real-verification-code flows never get a code \u2014 the CustomEmailSender trigger produces nothing, so sign-up confirmation and the wrong-code refusals are ungraded (1 cause)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261102T111455Z-lambda-runtimeversionarn-carries-a-short-non-aws-identifier.md",
+        "hits": [
+          "lambda runtime",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda RuntimeVersionArn carries a short non-AWS identifier"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T081139Z-lambda-rds-secretsmanager-2-net-new-root-causes-e2a51e.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__rds__secretsmanager: 2 net-new root causes \u2014 the in-process Lambda Python runtime provides no AWS SDK (boto3) and no CPython stdlib extension modules (_socket), so every function-driven RDS/Secrets Manager flow fails Runtime.ImportModuleError"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T081644Z-events-lambda-sqs-stepfunctions-the-lambda-python-runtime.md",
+        "hits": [
+          "Request",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "events__lambda__sqs__stepfunctions: the Lambda Python runtime ships no AWS SDK, so an SDK-calling handler returns an import error instead of its result document (1 cause)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T081644Z-lambda-s3-stepfunctions-the-lambda-python-runtime-ships.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__s3__stepfunctions: the Lambda Python runtime ships no AWS SDK, and a Lambda Task whose function raises still SUCCEEDS so Catch never fires (2 causes)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T082918Z-batch-ecr-lambda-logs-lambda-invoke-of-a.md",
+        "hits": [
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "batch__ecr__lambda__logs: lambda Invoke of a python3.12 wrapper that submits a Batch job answers 200 with FunctionError set, so the handler's jobId document is never produced"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T083215Z-ec2-lambda-logs-route53resolver-the-lambda-python-runtime-has-a-crippled-stdlib.md",
+        "hits": [
+          "Request",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "The Lambda Python runtime has a crippled stdlib (os.register_at_fork missing), so every in-VPC DNS probe handler dies with Runtime.ImportModuleError and all 9 Route 53 Resolver DNS-firewall checks are blocked"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T083215Z-ec2-lambda-route53-the-lambda-python-runtime-has-no-socket-extension.md",
+        "hits": [
+          "Request",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "The Lambda Python runtime has no _socket extension module, so the in-VPC DNS vantage-point handler dies with Runtime.ImportModuleError and no private-hosted-zone resolution can be observed"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T085348Z-cloudformation-iam-lambda-s3-2-net-new-root.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "cloudformation__iam__lambda__s3: 2 net-new root causes \u2014 the Lambda python runtime has no AWS SDK, and UpdateFunctionCode's response omits CodeSha256"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T085348Z-iam-lambda-sts-the-function-s-own-identity.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "iam__lambda__sts: the function's own identity is unobservable \u2014 the Lambda python runtime has no AWS SDK, so no handler can call STS or IAM"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T090541Z-elasticache-logs-the-slow-log-delivery-check-cannot.md",
+        "hits": [
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "elasticache__logs: the slow-log delivery check cannot run \u2014 the Lambda Python runtime's os module lacks register_at_fork, so the in-VPC RESP probe dies with Runtime.ImportModuleError"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T093943Z-redshift-sqs-the-in-process-lambda-python-runtime.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "redshift__sqs: the in-process Lambda python runtime provides no AWS SDK, so the under-permissioned SQS relay dies with Runtime.ImportModuleError instead of an sqs:SendMessage AccessDenied"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T094842Z-cloudformation-lambda-s3-sqs-2-net-new-root-7fb457.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "cloudformation__lambda__s3__sqs: 2 net-new root causes \u2014 the Python Lambda runtime provides no AWS SDK (boto3), and a stack update that changes a Lambda Environment variable ends UPDATE_ROLLBACK_COMPLETE"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T111951Z-cognito-identity-lambda-the-vended-cognito-identity-never.md",
+        "hits": [
+          "lambda runtime",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cognito-identity__lambda: the vended Cognito identity never reaches the Lambda context"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T111951Z-lambda-opensearch-s3-the-lambda-python-runtime-has.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__opensearch__s3: the Lambda python runtime has no AWS SDK and its `os` module is incomplete (no os.stat_result)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T112044Z-cloudformation-lambda-s3-a-sam-cloudformation-deployed-layerversion.md",
+        "hits": [
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "cloudformation__lambda__s3: a SAM/CloudFormation-deployed LayerVersion is not mounted on the function's import path, so the function faults Runtime.ImportModuleError on the layer's module"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T112044Z-dynamodb-lambda-s3-the-lambda-python-runtime-provides.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "dynamodb__lambda__s3: the Lambda python runtime provides no AWS SDK, so every boto3-importing handler faults Runtime.ImportModuleError and the S3/DynamoDB permission pairs are unobservable"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T123334Z-route53resolver-every-in-vpc-dns-data-plane-check.md",
+        "hits": [
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "route53resolver: every in-VPC DNS data-plane check is blocked \u2014 the Lambda Python runtime's os module lacks register_at_fork, so the DNS probe handler dies with Runtime.ImportModuleError"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261105T154042Z-lambda-s3-stepfunctions-a-lambda-handler-s-stepfunctions.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__s3__stepfunctions: a Lambda handler's stepfunctions.StartExecution never returns an executionArn, so the grant/revoke/restore check never gets past its positive control"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261106T020303Z-cloudformation-3-net-new-root-causes-the-aws.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "cloudformation: 3 net-new root causes \u2014 the AWS::DynamoDB::Table provider refuses PointInTimeRecoverySpecification instead of applying it, the Lambda python runtime has no boto3, and ContinueUpdateRollback never converges"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261106T062901Z-lambda-logs-lambda-log-tail-a-nodejs-text-format-invoke.md",
+        "hits": [
+          "nodejs",
+          "Headers",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "Lambda log tail: a nodejs text-format invoke cannot be correlated because the Invoke response carries no request id"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261106T133436Z-events-lambda-sns-a-lambda-handler-s-events.md",
+        "hits": [
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "events__lambda__sns: a Lambda handler's events:PutEvents succeeds under an execution role that grants it nothing \u2014 no AccessDeniedException, and the event reaches the bus"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261106T225443Z-lambda-6-net-new-causes-layer-permission-preconditions.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Request",
+          "handler",
+          "bootstrap"
+        ],
+        "severity": "",
+        "title": "lambda: 6 net-new causes \u2014 layer-permission preconditions, event-source-mapping refusals, weighted aliases and SnapStart"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261107T091747Z-lambda-the-execution-environment-has-no-filesystem-or.md",
+        "hits": [
+          "Request",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda: the execution environment has no filesystem or process surface, a crippled stdlib, a 4-service botocore, is never reused, and enforces neither MemorySize nor the init/timeout split (7 net-new causes)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261107T135301Z-lambda-9-net-new-root-causes-in-durable.md",
+        "hits": [
+          "Headers",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda: 9 net-new root causes in durable executions, function URLs, response streaming, invocation logging and never-settling control-plane reads"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261107T135310Z-apigateway-dynamodb-lambda-logs-4-net-new-causes.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "apigateway__dynamodb__lambda__logs: 4 net-new causes \u2014 an HTTP-API AWS_PROXY integration invokes a Lambda with no resource-policy grant, the Lambda Python runtime has no _socket module, and in-function API Gateway / CloudWatch Logs calls are never IAM-denied"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261107T143733Z-events-lambda-sns-an-asynchronous-invoke-s-stdout.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "events__lambda__sns: an asynchronous Invoke's stdout never reaches /aws/lambda/<fn>, so the EventBridge fan-out negative-delivery check never reaches a verdict (1 cause)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261107T143806Z-lambda-logs-2-net-new-causes-delivered-log.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda__logs: 2 net-new causes \u2014 delivered log event messages drop their trailing newline, and the Node.js Text log format is not applied (no timestamp/request-id/level framing, multiline console.log split)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261107T205257Z-events-lambda-sns-sqs-the-lambda-runtime-s.md",
+        "hits": [
+          "lambda runtime",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "events__lambda__sns__sqs: the Lambda runtime's bundled SDK has no 'sns' client, so a handler's sns:Publish can never succeed"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261108T025233Z-cloudformation-iam-lambda-s3-deleting-a-function-s.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cloudformation__iam__lambda__s3: deleting a function's execution role has no effect on Invoke \u2014 the invocation still succeeds and the handler's in-function S3 write lands, where AWS fails the invocation"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261108T152921Z-elasticache-in-vpc-data-plane-unverifiable-the-emulator.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "ElastiCache in-VPC data plane unverifiable: the emulator's Lambda Python runtime has no _ssl module and a VPC-attached function has no host network (2 causes)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261108T193502Z-lambda-s3-an-s3-sourced-layer-is-not.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__s3: an S3-sourced layer is not mounted under /opt, a function cannot read its own /var/task files, and PublishLayerVersion's NoSuchVersion refusal names GetObject instead of GetObjectVersion (3 causes)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261109T065107Z-lambda-web-deleteresourcepolicy-stale-revision-conflictexception-serves-putresourcepolicy.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda-web DeleteResourcePolicy stale-revision ConflictException serves PutResourcePolicy's wording"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261109T141609Z-apigateway-ecr-lambda-a-get-through-a-deployed.md",
+        "hits": [
+          "Headers",
+          "Request",
+          "Response",
+          "handler",
+          "custom runtime"
+        ],
+        "severity": "",
+        "title": "apigateway__ecr__lambda: a GET through a deployed API Gateway stage backed by a container-image Lambda never returns, so the proxy-response contract cannot be graded"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261109T143515Z-lambda-logs-a-timed-out-invocation-s-platform-report-record.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "A timed-out invocation's platform.report record is never delivered at system log level WARN"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261109T152222Z-apigateway-lambda-function-urls-are-published-on-lambda.md",
+        "hits": [
+          "lambda runtime",
+          "Headers",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "apigateway__lambda: function URLs are published on *.lambda-url.on.aws, default gateway-response bodies are mis-serialized, and 5 more causes (7 causes)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261109T152638Z-lambda-invoke-error-payloads-and-the-runtimeversionarn-are.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "Lambda invoke error payloads and the RuntimeVersionArn are emulator-authored strings, not AWS's"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261109T171600Z-lambda-eventbridge-4-net-new-causes-no-aws.md",
+        "hits": [
+          "lambda runtime",
+          "handler"
+        ],
+        "severity": "",
+        "title": "Lambda/EventBridge: 4 net-new causes \u2014 no AWS/Events invocation metrics, non-Python runtimes never receive the matched event, SQS ESM does not extend visibility, and durable-execution status changes never reach the rule"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261109T172142Z-cloudwatch-dynamodb-lambda-7-net-new-causes-alarms.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "cloudwatch__dynamodb__lambda: 7 net-new causes \u2014 alarms never transition, AWS/Lambda and AWS/DynamoDB metrics never publish, PutMetricData is not IAM-gated, the Python runtime lacks botocore.config, and reserved-concurrency invocations time out"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261109T172142Z-dynamodb-lambda-sqs-dynamodb-stream-records-never-reach-net-java-or.md",
+        "hits": [
+          "lambda runtime",
+          "handler"
+        ],
+        "severity": "",
+        "title": "DynamoDB stream records never reach .NET, Java or Ruby managed-runtime handlers"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261109T172143Z-lambda-a-handler-on-a-compiled-native-runtime-is-never-run.md",
+        "hits": [
+          "nodejs",
+          "bundle",
+          "handler",
+          "provided.al2023",
+          "InvalidRuntimeException",
+          "bootstrap"
+        ],
+        "severity": "",
+        "title": "lambda: a handler on a compiled native runtime (Go on `provided.al2`) is never run, so no stream record reaches it"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261109T185037Z-lambda-s3-sqs-2-net-new-causes-s3-presigned-urls-are.md",
+        "hits": [
+          "lambda runtime",
+          "fetch",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "2 net-new causes: S3 presigned URLs are published on the real s3.<region>.amazonaws.com host, and dotnet/java/ruby handlers never run"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261109T185037Z-lambda-sqs-3-net-new-causes-dotnet-go-java-ruby.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "provided.al2023",
+          "InvalidRuntimeException",
+          "bootstrap"
+        ],
+        "severity": "",
+        "title": "3 net-new causes: dotnet/go/java/ruby functions never run, Node async destination records are never delivered, and a FIFO SQS mapping accepts MaximumBatchingWindowInSeconds"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261109T210043Z-lambda-stepfunctions-8-net-new-causes-step-functions-ignores-task.md",
+        "hits": [
+          "Request",
+          "Response",
+          "handler",
+          "provided.al2023",
+          "InvalidRuntimeException",
+          "bootstrap"
+        ],
+        "severity": "",
+        "title": "8 net-new causes: Step Functions ignores Task Credentials, never runs activities inside Map/Parallel, and mis-words its runtime causes"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261109T220008Z-lambda-s3-2-net-new-causes-getlayerversion-publishes.md",
+        "hits": [
+          "nodejs",
+          "fetch",
+          "Headers",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda__s3: 2 net-new causes \u2014 GetLayerVersion publishes a Content.Location on awslambda-<region>-layers.s3.amazonaws.com that the emulator does not serve, and the nodejs22.x runtime has no global fetch"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261109T235356Z-docdb-data-plane-check-cannot-run-the-emulator.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "docdb data-plane check cannot run: the emulator's python3.12 Lambda runtime has no _ssl module, so any handler importing ssl fails with Runtime.ImportModuleError"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261110T121649Z-lambda-7-net-new-causes-invokewithresponsestream-delivers-no.md",
+        "hits": [
+          "nodejs",
+          "node:",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda: 7 net-new causes \u2014 InvokeWithResponseStream delivers no chunks, GetDurableExecutionState answers NotImplemented, two durable-execution refusal messages are emulator-authored, and three Node.js runtime behaviours diverge"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261110T174333Z-efs-lambda-2-net-new-causes-an-efs.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "efs__lambda: 2 net-new causes \u2014 an EFS access point is never mounted in the Lambda execution environment (every handler filesystem/POSIX call raises OSError), and CreateFunction accepts FileSystemConfigs with no VpcConfig"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261110T185149Z-appconfig-iam-lambda-a-lambda-handler-whose-execution.md",
+        "hits": [
+          "lambda runtime",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "appconfig__iam__lambda: a Lambda handler whose execution role lacks AppConfig actions never produces a verdict \u2014 the under-privileged-handler check never completes (1 cause)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261111T004529Z-cloudwatch-glue-lambda-logs-s3-stepfunct-cloudwatch-glue-lambda-logs-s3-stepfunctions-the-lambda.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "bundle",
+          "bundled",
+          "handler",
+          "bootstrap"
+        ],
+        "severity": "",
+        "title": "cloudwatch__glue__lambda__logs__s3__stepfunctions: the Lambda runtime's bundled AWS SDK resolves no 'glue' client, and the CDK-declared alarm is not echoed as declared (2 net-new causes)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261111T020136Z-apigateway-ecr-lambda-createfunction-refuses-a-container-image.md",
+        "hits": [
+          "Response",
+          "handler",
+          "custom runtime"
+        ],
+        "severity": "",
+        "title": "apigateway__ecr__lambda: CreateFunction refuses a container image that the emulator's own ECR published and holds, with InvalidParameterValueException \"is not valid. Provide a valid source image.\""
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261111T040849Z-lambda-s3-the-lambda-node-js-runtime-s-bundled-sdk.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "node:",
+          "node:http",
+          "node:https",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError",
+          "node_modules"
+        ],
+        "severity": "",
+        "title": "The Lambda Node.js runtime's bundled SDK and module resolution diverge: missing S3 operations, paginator, presigner, node builtins and Date timestamps"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261111T040849Z-lambda-s3-the-lambda-python-runtime-s-bundled-aws-sdk.md",
+        "hits": [
+          "lambda runtime",
+          "fetch",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "The Lambda Python runtime's bundled AWS SDK is a stub: most S3 operations, paginators, resources, transfers, error types and timestamp types diverge"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261111T064629Z-cloudwatch-lambda-a-lambda-function-s-sdk-call-to-cloudwatch.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "A Lambda function's SDK call to cloudwatch GetOTelEnrichment is refused NotImplemented, although the same operation answers the external caller (1 cause)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261111T081112Z-lambda-managed-runtimes-are-stub-interpreters-10-node.md",
+        "hits": [
+          "nodejs",
+          "structuredClone",
+          "Request",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "core module",
+          "ImportModuleError",
+          "node_modules"
+        ],
+        "severity": "",
+        "title": "Lambda managed runtimes are stub interpreters: 10 Node.js/Python execution-environment causes"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261111T130919Z-apigateway-cloudformation-lambda-a-lambda-authorizer-that-calls.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "apigateway__cloudformation__lambda: a Lambda authorizer that calls cloudformation:DescribeStacks to read a stack's Tags always takes its failure branch, so the Allow decision is unreachable (1 cause)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261111T133800Z-lambda-web-a-signed-request-to-an-active.md",
+        "hits": [
+          "nodejs",
+          "Headers",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda-web: a signed request to an Active web function endpoint's domainName is answered 501, so the revision's handler response is never served (1 cause)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261111T142325Z-lambda-3-net-new-causes-the-python3-12.md",
+        "hits": [
+          "Request",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda: 3 net-new causes \u2014 the python3.12/3.13 runtime has no _signal so asyncio cannot be imported, a durable execution never reaches its wait_for_callback checkpoint, and a weighted-alias ladder never completes"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261111T142325Z-lambda-s3-the-python-runtime-s-bundled-sdk.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "bundled",
+          "handler",
+          "bootstrap"
+        ],
+        "severity": "",
+        "title": "lambda__s3: the Python runtime's bundled SDK binds no S3 ListBuckets/GetBucketLocation, so an in-handler boto3 S3 bucket call raises SdkCallNotMade instead of being sent"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261112T140000Z-cloudformation-hooks-are-never-enforced-and-a-lambda-backed-custom-resource-never-completes.md",
+        "hits": [
+          "lambda runtime",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "2 remaining causes: CloudFormation hooks are never enforced, and a Lambda-backed custom resource never completes"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261112T212615Z-lambda-sqs-stepfunctions-a-waitfortasktoken-execution-resumed-by.md",
+        "hits": [
+          "lambda runtime",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda__sqs__stepfunctions: a waitForTaskToken execution resumed by a heartbeating worker reports a 0.5 s startDate/stopDate window although the task waited ~17 s for its token (1 cause)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261113T060617Z-lambda-invoke-refuses-every-managed-runtime-family-other-than.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Headers",
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "provided.al2023",
+          "InvalidRuntimeException",
+          "custom runtime",
+          "bootstrap"
+        ],
+        "severity": "",
+        "title": "Invoke refuses every managed runtime family other than Python and Node.js with 502 InvalidRuntimeException, so provided.al2023, Java, Ruby and .NET functions can never run"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261113T195355Z-cloudwatch-events-lambda-logs-s3-ses-the-in-lambda-aws-sdk-has-no-ses.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "The in-Lambda AWS SDK has no 'ses' client, so a handler calling SES SendEmail fails with UnknownServiceError instead of sending"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261114T020920Z-dynamodb-lambda-rekognition-s3-the-rekognition-s3-trigger--r2.md",
+        "hits": [
+          "nodejs",
+          "handler"
+        ],
+        "severity": "",
+        "title": "dynamodb__lambda__rekognition__s3: the Rekognition S3-trigger lifecycle scenario still reaches no verdict \u2014 the run hangs in a poll to the harness cap with no stack verdict and no notification delivery"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261114T102203Z-cloudfront-events-a-createinvalidation-response-never-propagates-from.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cloudfront__events: a CreateInvalidation response never propagates from a rule-invoked Lambda through PutEvents into SQS \u2014 the data-format check exhausts the run budget with no downstream message"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261114T170500Z-lambda-extensions-and-telemetry-api-are-not-served.md",
+        "hits": [
+          "Request",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "The Extensions and Telemetry API are not served on the runtime-API endpoint"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261114T170500Z-lambda-node-runtime-bundles-no-sts-client-commands.md",
+        "hits": [
+          "nodejs",
+          "bundle",
+          "bundled",
+          "handler",
+          "node_modules"
+        ],
+        "severity": "",
+        "title": "The Node runtime's bundled @aws-sdk/client-sts exports no commands"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261114T215119Z-lambda-logs-a-node-js-console-log-containing.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda__logs: a Node.js console.log containing embedded newlines is truncated at the first newline \u2014 only the first line reaches CloudWatch Logs, and the event loses its trailing newline"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261115T013003Z-lambda-4-net-new-causes-response-stream-function.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Headers",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda: 4 net-new causes \u2014 RESPONSE_STREAM function URLs answer buffered with Content-Length, a timed-out invoke's REPORT omits Status: timeout, and the runtime API's restore/next and Telemetry Subscribe routes are absent (404)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261115T013003Z-lambda-s3-a-presigned-s3-url-the-emulator.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda__s3: a presigned S3 URL the emulator itself issued is unreachable from inside a function \u2014 node https.get fails ENOTFOUND because the in-sandbox router does not recognise path-style S3 addressing"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261115T051545Z-iam-lambda-sts-a-python3-12-function-s.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "iam__lambda__sts: a python3.12 function's environment carries no AWS_ACCESS_KEY_ID, so the execution role's credentials are never injected into the sandbox"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261115T090642Z-kinesis-lambda-2-net-new-causes-a-kinesis.md",
+        "hits": [
+          "nodejs",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "kinesis__lambda: 2 net-new causes \u2014 a Kinesis ESM ignores MaximumBatchingWindowInSeconds (one record per invoke) and ignores TumblingWindowInSeconds (no window/state/isFinalInvokeForWindow in the event, no closing invocation)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261115T120000Z-lambda-microvms-the-microvm-endpoint-runs-no-python-guest.md",
+        "hits": [
+          "Headers",
+          "Request",
+          "Response",
+          "rquickjs",
+          "quickjs"
+        ],
+        "severity": "",
+        "title": "lambda-microvms the MicroVM endpoint runs no PYTHON guest: an image whose code artifact is a Python program answers HTTP 502 for every path, because the emulator's guest engine runs JavaScript only"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261115T181534Z-appconfig-iam-lambda-a-lambda-handler-that-reads-29b7ca.md",
+        "hits": [
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "appconfig__iam__lambda: a Lambda handler that reads the AppConfig data plane in-process never produces an answer, so all four AppConfig-handler scenarios burn the whole harness deadline without reaching a verdict"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261116T024510Z-lambda-3-net-new-causes-in-request-validation.md",
+        "hits": [
+          "nodejs",
+          "Headers",
+          "Request",
+          "Response",
+          "handler",
+          "provided.al2023",
+          "bootstrap"
+        ],
+        "severity": "",
+        "title": "lambda: 3 net-new causes in request validation \u2014 CreateFunction accepts an unassumable execution role, and the layer-list CompatibleRuntime refusal enumerates the wrong runtime value set"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261116T201949Z-batch-ecr-lambda-logs-the-in-lambda-aws.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "batch__ecr__lambda__logs: the in-Lambda AWS SDK has no 'batch' client, so a handler calling SubmitJob dies with UnknownServiceError and Invoke answers 200 with FunctionError='Unhandled'"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261116T222947Z-lambda-s3-s3control-the-access-point-permission-chain.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "bundle"
+        ],
+        "severity": "",
+        "title": "lambda__s3__s3control: the access-point permission-chain check cannot create its access point \u2014 the modeled s3control {AccountId}. host prefix is unserved (1 cause)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261116T234316Z-kafka-msk-native-data-plane-the-concurrent-producer-check.md",
+        "hits": [
+          "lambda runtime",
+          "fetch",
+          "Request",
+          "Response",
+          "handler",
+          "bootstrap"
+        ],
+        "severity": "",
+        "title": "MSK native data plane: the concurrent-producer check never clears SASL/IAM bring-up, and the in-VPC Lambda executor has no network route so the transactional-isolation check measures nothing (2 causes)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261117T084815Z-lambda-8-net-new-causes-in-the-json.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda: 8 net-new causes in the JSON-LogFormat log pipeline \u2014 no platform.init* records, SystemLogLevel never filters platform records, Node/Python JSON error records malformed, AWS_LAMBDA_LOG_FORMAT set under Text"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261117T084815Z-lambda-logs-2-net-new-causes-systemloglevel-debug.md",
+        "hits": [
+          "lambda runtime",
+          "Request"
+        ],
+        "severity": "",
+        "title": "lambda__logs: 2 net-new causes \u2014 SystemLogLevel=DEBUG delivers no platform.init* records to CloudWatch Logs, and SystemLogLevel=WARN still delivers platform.start"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261117T120720Z-iam-kms-lambda-web-s3-lambda-web-createwebfunctionrevision-accepts-a-disabled-customer-kms.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda-web CreateWebFunctionRevision accepts a DISABLED customer KMS key \u2014 no key-state check, so the revision is created instead of refused ValidationException \"<key-arn> is disabled.\""
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261117T134237Z-iam-lambda-3-causes-getfunctioncodesigningconfig-answers-200-with-a-functionname.md",
+        "hits": [
+          "nodejs",
+          "node:",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "3 causes: GetFunctionCodeSigningConfig answers 200 with a FunctionName when no config is attached, the Node.js 24 WebCrypto SubtleCrypto surface is missing, and a malformed DeadLetterConfig.TargetArn is refused ResourceConflictException instead of a validation error"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261117T134237Z-lambda-10-net-new-causes-in-the-lambda-control.md",
+        "hits": [
+          "nodejs",
+          "node:",
+          "node:module",
+          "WebAssembly",
+          "wasm",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "createRequire",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "10 net-new causes in the lambda control plane and execution environment: no out-of-memory REPORT, missing Node.js WebAssembly and node:module, four refusals that never happen or use the wrong wording, durable-execution KMS enforcement, and GetDurableExecutionState NotImplemented"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261118T013032Z-bedrock-agent-runtime-lambda-s3vectors-the-python-lambda--r2.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "bedrock-agent-runtime__lambda__s3vectors: the Python Lambda runtime provides none of the AWS SDK's dependency packages (s3transfer), so even a handler that bundles boto3+botocore in its own zip dies with Runtime.ImportModuleError and every in-function s3vectors call is unreachable"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261118T101500Z-lambda-a-layers-native-file-is-not-loaded-or-run-and-a-large.md",
+        "hits": [
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda: a layer's native file is not loaded or run, and a mount entry past one invocation's read budget is held truncated (3 causes)"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261118T120000Z-lambda-cross-region-store-isolation-response-streaming-extensions-and-the-exec-wrapper.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "provided.al2023",
+          "InvalidRuntimeException",
+          "custom runtime",
+          "bootstrap"
+        ],
+        "severity": "",
+        "title": "lambda: 5 of the parent report's 8 causes are still open \u2014 the function store is not partitioned by Region, a custom runtime's package is never executed, a response stream is buffered by the core router, and nothing runs an extension or an exec wrapper"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261118T165433Z-lambda-9-causes-invoke-s-not-found-message.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Request",
+          "Response",
+          "handler",
+          "bootstrap"
+        ],
+        "severity": "",
+        "title": "lambda: 9 causes \u2014 Invoke's not-found message drops ':$LATEST', no INIT_START record precedes START, the init limit is never enforced, the tenant-isolation refusal is misworded, the REPORT line's field layout is wrong, one warm environment opens a new log stream per invoke, the [ERROR] record omits the traceback, an MSK ESM for an unreachable cluster is accepted, and 30 concurrent invokes share 4 environments"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261119T000000Z-lambda-7-of-the-parent-reports-10-causes-remain-the-sandbox-filesystem-the-runtime-library-environment-reuse-memory-and-the-runtime-identity.md",
+        "hits": [
+          "nodejs",
+          "node:",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda: 7 of the parent report's 10 causes are still open \u2014 no sandbox filesystem, an incomplete runtime standard library, no environment reuse under load, MemorySize unenforced, the runtime identity not following the configured Runtime, the response serializer refusing values AWS passes through, and the node exit envelope"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261119T062349Z-cloudformation-iam-lambda-s3-3-net-new-causes.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cloudformation__iam__lambda__s3: 3 net-new causes \u2014 the Lambda runtime SDK has no `iam` service, CreateStack never authorizes iam:PassRole on RoleARN, and S3 PutObjectTagging is served without identity-policy authorization"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261119T075657Z-lambda-s3-the-bundled-in-runtime-aws-sdk.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Request",
+          "bundled",
+          "handler",
+          "node_modules"
+        ],
+        "severity": "",
+        "title": "lambda__s3: the bundled in-runtime AWS SDK binds no S3 CreateBucket/DeleteBucket in either the Python or the Node.js runtime, so an in-handler bucket lifecycle always fails"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261119T081201Z-lambda-5-net-new-causes-putruntimemanagementconfig-accepts-a.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda: 5 net-new causes \u2014 PutRuntimeManagementConfig accepts a foreign runtime's version ARN, INIT_START names the runtime identifier instead of the runtime build, the Event-invoke not-found message appends ':$LATEST', ApplicationLogLevel is applied to the invoke log tail, and a Python log record's extra= keys are dropped"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261119T204102Z-lambda-8-net-new-causes-layer-content-is.md",
+        "hits": [
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda: 8 net-new causes \u2014 layer content is not extracted usably (non-executable bin/, 8 MiB file truncation), the Python runtime's error payloads carry no/partial stackTrace, package handlers cannot be imported, and three refusal messages diverge"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261119T232925Z-ec2-lambda-logs-route53resolver-the-vpc-route-53-resolver-answers-nothing-from.md",
+        "hits": [
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "The VPC Route 53 Resolver answers nothing from inside the VPC: a public name comes back SERVFAIL with no answers and private-hosted-zone records never become visible, so all 9 DNS-firewall data-plane checks are blocked"
+      },
+      {
+        "bucket": "open",
+        "file": "issues/things-that-do-not-work/20261119T234314Z-sqs-awsquerycompatible-error-carriers-do-not-reach-an.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "AWS SDK for JavaScript"
+        ],
+        "severity": "",
+        "title": "SQS awsQueryCompatible error carriers do not reach an in-Lambda JS v3 client: an unmodeled refusal (DelaySeconds=901) is reported as 'InvalidParameterValueException' instead of the legacy 'InvalidParameterValue'"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261023T140640Z-cloudfront-events-3-of-the-4-causes-remain-open.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cloudfront/events: 3 of the 4 causes remain open \u2014 CloudFront emits no events of its own, a target's resource-based policy is never evaluated, CloudFormation registers no Lambda function, and nothing runs a function's code"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261025T015335Z-cognito-idp-kms-lambda-sqs-the-customemailsender-lambda.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cognito-idp__kms__lambda__sqs: the CustomEmailSender Lambda trigger is never invoked, so no verification/OTP code is ever produced and all seven real-code checks hang to the 60 s cap (1 cause)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261025T022656Z-lambda-ten-control-plane-writes-are-accepted-that.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda: ten control-plane writes are accepted that AWS refuses (validation and conflict checks missing)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261025T192150Z-lambda-invokewithresponsestream-refused-notimplemented-updatealias-putresourcepolicy-refusal-messages.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "InvalidRuntimeException",
+          "bootstrap"
+        ],
+        "severity": "",
+        "title": "lambda: UpdateAlias/PutResourcePolicy refusal messages diverge and DeleteEventSourceMapping is accepted mid-Updating (causes 2, 3 and 4 of 5; causes 1 and 5 re-filed)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261027T070029Z-lambda-six-net-new-root-causes-layer-region.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response"
+        ],
+        "severity": "",
+        "title": "lambda: six net-new root causes \u2014 layer region/duplicate-version validation missing, layers not region-scoped, and three refusal messages diverge from AWS"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261027T122319Z-lambda-mq-a-cloudformation-stack-declaring-aws-amazonmq.md",
+        "hits": [
+          "nodejs"
+        ],
+        "severity": "",
+        "title": "lambda__mq: a CloudFormation stack declaring AWS::AmazonMQ::Broker with a Lambda consumer and a RabbitMQ event source mapping never reaches CREATE_COMPLETE \u2014 it rolls back (1 cause)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261028T214304Z-dynamodb-lambda-rekognition-s3-the-rekognition-s3-trigger.md",
+        "hits": [
+          "nodejs",
+          "handler"
+        ],
+        "severity": "",
+        "title": "dynamodb__lambda__rekognition__s3: the Rekognition/S3-trigger stack now ends ROLLBACK_COMPLETE instead of CREATE_COMPLETE, so the whole deploy phase fails at phase 1 of 6"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261029T070719Z-apigatewayv2-lambda-a-request-authorizer-gated-route-never-serves.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle"
+        ],
+        "severity": "",
+        "title": "apigatewayv2, lambda: an HTTP-API route gated by a REQUEST authorizer never serves, so the authorizer result cache cannot be keyed at all (1 cause)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261029T211043Z-lambda-control-plane-accepts-eight-classes-of-request.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "Lambda control plane accepts eight classes of request AWS refuses, and its refusal codes/messages diverge (8 causes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261029T233239Z-lambda-runtime-management-config-is-not-persisted-and.md",
+        "hits": [
+          "lambda runtime",
+          "Headers",
+          "handler"
+        ],
+        "severity": "",
+        "title": "Lambda runtime management config is not persisted and its in-progress conflict is not raised"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261103T165236Z-lambda-layer-publish-and-list-operations-skip-validation.md",
+        "hits": [
+          "nodejs",
+          "Headers",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "Lambda layer publish and list operations skip validation"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261103T220031Z-lambda-microvms-6-net-new-root-causes-deletemicrovmimage.md",
+        "hits": [
+          "node:",
+          "Request",
+          "Response",
+          "handler",
+          "bootstrap"
+        ],
+        "severity": "",
+        "title": "lambda-microvms: 6 net-new root causes \u2014 DeleteMicrovmImage has no running-MicroVM guard, CreateMicrovmAuthToken has no 60-minute expiry cap, the published endpoint is a URL not a host, the endpoint never serves the guest (501), idlePolicy never auto-suspends, and a broken build still settles SUCCESSFUL"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261104T160229Z-lambda-web-createwebfunction-refuses-any-request-carrying-endpointconfig.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda-web CreateWebFunction refuses any request carrying endpointConfig with 501 NotImplemented, so no web function can be created through the documented create path (1 cause)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261104T164411Z-lambda-5-net-new-causes-deletefunction-answers-404.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda: 5 net-new causes \u2014 DeleteFunction answers 404 for an existing version, and refusal messages plus layer size metadata diverge"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261104T221123Z-events-lambda-s3-stepfunctions-a-lambda-invoking-task.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "events__lambda__s3__stepfunctions: a Lambda-invoking Task state never runs the function (States.Runtime \"'Invoke' ... is not implemented\") and the execution role's trust policy is never checked (2 causes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T080515Z-dynamodb-lambda-rekognition-s3-lambda-invoke-refuses-a-nodejs22-x-function-with.md",
+        "hits": [
+          "nodejs",
+          "Headers",
+          "Request",
+          "handler",
+          "InvalidRuntimeException"
+        ],
+        "severity": "",
+        "title": "lambda Invoke refuses a nodejs22.x function with 502 InvalidRuntimeException (\"not supported by this emulator, which runs the Python runtimes\") after CreateFunction accepted the runtime and the function reached Active"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T080633Z-lambda-sesv2-the-emulator-s-python-lambda-runtime.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__sesv2: the emulator's python Lambda runtime has no boto3/botocore, so every SES v2 handler dies with Runtime.ImportModuleError and 57 interop checks fail"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T081139Z-dynamodb-lambda-s3-secretsmanager-the-in-process-lambda.md",
+        "hits": [
+          "fetch",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "dynamodb__lambda__s3__secretsmanager: the in-process Lambda Python runtime has no AWS SDK, so every handler that imports boto3 fails Runtime.ImportModuleError and 20 secret/S3/DynamoDB flows never run"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T081139Z-lambda-secretsmanager-sqs-the-in-process-lambda-python.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__secretsmanager__sqs: the in-process Lambda Python runtime has no AWS SDK, so every Lambda-driven Secrets Manager -> SQS flow answers Runtime.ImportModuleError instead of running the handler"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T081225Z-events-lambda-ssm-the-lambda-python-runtime-has.md",
+        "hits": [
+          "Request",
+          "Response",
+          "handler",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "events__lambda__ssm: the Lambda python runtime has no boto3, so every handler that imports the AWS SDK faults Runtime.ImportModuleError and no Lambda-driven integration can run"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T081225Z-kms-lambda-ssm-a-handler-reading-a-cmk.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "kms__lambda__ssm: a handler reading a CMK-encrypted SecureString parameter faults Runtime.ImportModuleError \u2014 boto3 is absent from the Lambda python runtime"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T081644Z-events-lambda-s3-stepfunctions-the-lambda-python-runtime.md",
+        "hits": [
+          "Request",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "events__lambda__s3__stepfunctions: the Lambda Python runtime ships no AWS SDK, the execution role's trust is never enforced, Lambda Task history events are missing, and waitForTaskToken never resumes (4 causes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T081644Z-lambda-sqs-stepfunctions-no-aws-sdk-in-the.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__sqs__stepfunctions: no AWS SDK in the Lambda Python runtime, Lambda Task failures/timeouts/role denials never fail the Task, task tokens never resume, and the output-size refusal is misworded (6 causes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T081727Z-cloudwatch-lambda-logs-sns-sqs-a-lambda-invocation.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cloudwatch__lambda__logs__sns__sqs: a Lambda invocation's output never reaches /aws/lambda/<function>, so the log-metric-filter \u2192 alarm \u2192 SNS \u2192 SQS chain produces no datapoint and never settles"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T081727Z-events-lambda-sns-an-invoked-function-writes-nothing.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "events__lambda__sns: an invoked function writes nothing to its own /aws/lambda log group (no START/END/REPORT line), and a handler that imports boto3 cannot call EventBridge at all"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T081727Z-events-lambda-sns-sqs-a-lambda-handler-cannot.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "events__lambda__sns__sqs: a Lambda handler cannot call SNS, SQS or EventBridge \u2014 `import boto3` fails with Runtime.ImportModuleError, so no in-function Publish/SendMessage/PutEvents is ever made"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T081727Z-lambda-sns-sqs-the-emulator-s-python-lambda.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "InvalidRuntimeException",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__sns__sqs: the emulator's Python Lambda runtime ships no AWS SDK, so every handler that imports boto3 fails with Runtime.ImportModuleError and no in-function SNS/SQS call ever happens"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T085348Z-appconfig-iam-lambda-the-in-process-lambda-python.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "appconfig__iam__lambda: the in-process Lambda python runtime ships no AWS SDK, so every AppConfig handler faults Runtime.ImportModuleError instead of returning its result"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T085348Z-cloudformation-dynamodb-iam-lambda-s3-the-sam-policies.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "cloudformation__dynamodb__iam__lambda__s3: the SAM policies-shorthand probe function cannot call any AWS service \u2014 the Lambda python runtime has no boto3"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T085348Z-iam-lambda-2-net-new-root-causes-invokefunction.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "iam__lambda: 2 net-new root causes \u2014 InvokeFunction is never refused for a principal no policy grants, and the Lambda python runtime has no AWS SDK"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T085348Z-iam-lambda-s3-2-net-new-root-causes.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "iam__lambda__s3: 2 net-new root causes \u2014 the Lambda python runtime ships no AWS SDK, and its `os` module is incomplete (no os.stat_result)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T085348Z-iam-lambda-s3-sts-a-lambda-handler-cannot.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "iam__lambda__s3__sts: a Lambda handler cannot call STS or S3 \u2014 the in-process python runtime has no AWS SDK, so the assume-role scenarios never run"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T090020Z-bedrock-agent-runtime-lambda-s3vectors-the-python-lambda.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "bedrock-agent-runtime__lambda__s3vectors: the Python Lambda runtime provides no AWS SDK, so a handler that calls RetrieveAndGenerate dies with Runtime.ImportModuleError (1 cause)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T090541Z-elasticache-every-in-vpc-data-plane-check-is.md",
+        "hits": [
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "elasticache: every in-VPC data-plane check is blocked \u2014 the Lambda Python runtime's os module lacks register_at_fork, so the RESP probe handler dies with Runtime.ImportModuleError"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T094343Z-cloudformation-dynamodb-events-lambda-the-lambda-python-runtime.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "cloudformation__dynamodb__events__lambda: the Lambda python runtime provides no AWS SDK, so a handler that imports boto3 faults Runtime.ImportModuleError and the CFN-status-event chain never runs"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T094343Z-cloudfront-events-the-lambda-python-runtime-provides-no.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "cloudfront__events: the Lambda python runtime provides no AWS SDK, so every invalidation/eventing handler faults Runtime.ImportModuleError and 8 CloudFront-EventBridge checks never observe their effect"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T094343Z-dynamodb-events-lambda-the-lambda-python-runtime-provides.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "dynamodb__events__lambda: the Lambda python runtime provides no AWS SDK, so every boto3-importing handler faults Runtime.ImportModuleError and 16 in-function DynamoDB/EventBridge checks fail"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T094343Z-events-lambda-s3-the-lambda-python-runtime-provides.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "events__lambda__s3: the Lambda python runtime provides no AWS SDK, so a handler that imports boto3 returns an import error instead of its S3/PutEvents result"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T094343Z-events-lambda-sqs-the-lambda-python-runtime-provides.md",
+        "hits": [
+          "Headers",
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "events__lambda__sqs: the Lambda python runtime provides no AWS SDK, so no handler can call SQS or EventBridge \u2014 15 checks get Runtime.ImportModuleError instead of a result"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T094842Z-cloudwatch-lambda-logs-sns-sqs-the-log-metric.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cloudwatch__lambda__logs__sns__sqs: the log-metric-filter \u2192 alarm \u2192 SNS \u2192 SQS chain never settles, so the removed-subscription arm is never reached"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T094842Z-lambda-pipes-sqs-the-python-lambda-runtime-provides.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__pipes__sqs: the Python Lambda runtime provides no AWS SDK, so a handler cannot call EventBridge Pipes or SQS \u2014 every invocation faults Runtime.ImportModuleError"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T094842Z-lambda-s3-sqs-the-python-lambda-runtime-provides.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__s3__sqs: the Python Lambda runtime provides no AWS SDK, so no handler can call S3 or SQS \u2014 every invocation faults Runtime.ImportModuleError"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T094842Z-lambda-sqs-a-handler-s-permitted-sendmessage-never.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__sqs: a handler's permitted SendMessage never runs \u2014 the Python Lambda runtime provides no AWS SDK, so the invocation faults Runtime.ImportModuleError instead of returning the SDK's verdict"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T095706Z-lambda-xray-the-lambda-python-runtime-has-no.md",
+        "hits": [
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__xray: the Lambda Python runtime has no _socket extension module, so every UDP X-Ray daemon datagram handler dies with Runtime.ImportModuleError and the AWS_XRAY_DAEMON_ADDRESS data plane is unobservable"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T101629Z-kafka-every-native-msk-data-plane-check-is.md",
+        "hits": [
+          "lambda runtime",
+          "fetch",
+          "Request",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "kafka: every native MSK data-plane check is blocked \u2014 the Lambda Python runtime's `os` module lacks register_at_fork, so the in-VPC probe handler dies with Runtime.ImportModuleError"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T101629Z-kafka-logs-s3-the-msk-broker-log-delivery.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "kafka__logs__s3: the MSK broker-log delivery check cannot run \u2014 the Lambda Python runtime's `os` module lacks register_at_fork, so the in-VPC probe handler dies with Runtime.ImportModuleError"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T105400Z-bedrock-agent-runtime-lambda-s3vectors-2-net-new.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "bedrock-agent-runtime__lambda__s3vectors: 2 net-new root causes \u2014 the Python Lambda runtime provides no AWS SDK (boto3), and its CPython stdlib has no _socket extension so even a vendored SDK cannot do network I/O (29 checks blocked)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T111951Z-apigateway-cloudformation-lambda-the-lambda-python-runtime-has.md",
+        "hits": [
+          "lambda runtime",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "apigateway__cloudformation__lambda: the Lambda python runtime has no AWS SDK, and the CFN Lambda-role trust check never completes"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T111951Z-apigateway-cognito-idp-lambda-the-lambda-python-runtime.md",
+        "hits": [
+          "lambda runtime",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "apigateway__cognito-idp__lambda: the Lambda python runtime has no AWS SDK, so every in-function API Gateway/Cognito call and every Cognito trigger fails at init"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T111951Z-apigateway-dynamodb-lambda-every-scenario-s-bootstrap-lambda.md",
+        "hits": [
+          "lambda runtime",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "apigateway__dynamodb__lambda: every scenario's bootstrap Lambda faults at init because the python runtime has no AWS SDK"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T111951Z-apigateway-dynamodb-lambda-logs-the-lambda-python-runtime.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "apigateway__dynamodb__lambda__logs: the Lambda python runtime has no AWS SDK, and an invocation writes nothing to its CloudWatch log group"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T111951Z-bedrock-agent-lambda-opensearchserverles-bedrock-agent-lambda-opensearchserverless-the-lambda-python-runtime.md",
+        "hits": [
+          "lambda runtime",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "bedrock-agent__lambda__opensearchserverless: the Lambda python runtime has no AWS SDK, so no handler can reach Bedrock Agent or OpenSearch Serverless"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T111951Z-cloudwatch-dynamodb-lambda-the-lambda-python-runtime-has.md",
+        "hits": [
+          "lambda runtime",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "cloudwatch__dynamodb__lambda: the Lambda python runtime has no AWS SDK, and invocation logs and metrics never reach CloudWatch"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T111951Z-cloudwatch-lambda-logs-5-net-new-root-causes.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "cloudwatch__lambda__logs: 5 net-new root causes \u2014 no AWS SDK in the Lambda runtime, no request id on Invoke, no log delivery, reworded metric-filter refusals, and PutSubscriptionFilter never refused"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T111951Z-dynamodb-kinesis-lambda-the-lambda-python-runtime-has.md",
+        "hits": [
+          "lambda runtime",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "dynamodb__kinesis__lambda: the Lambda python runtime has no AWS SDK, so no handler can reach DynamoDB or Kinesis"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T111951Z-dynamodb-lambda-s3-the-lambda-python-runtime-has.md",
+        "hits": [
+          "lambda runtime",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "dynamodb__lambda__s3: the Lambda python runtime has no AWS SDK, so no handler can reach DynamoDB or S3"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T111951Z-dynamodb-lambda-the-lambda-python-runtime-has-no.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "dynamodb__lambda: the Lambda python runtime has no AWS SDK, and reserved-concurrency admission never settles"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T111951Z-lambda-10-net-new-root-causes-in-the.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Headers",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda: 10 net-new root causes in the Invoke data plane and the Python execution environment"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T111951Z-lambda-8-more-net-new-root-causes-refusals.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response",
+          "handler",
+          "provided.al2023",
+          "InvalidRuntimeException"
+        ],
+        "severity": "",
+        "title": "lambda: 8 more net-new root causes \u2014 refusals that never happen, refusal messages that differ from AWS, and invocations that never actually run"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T111951Z-lambda-s3-the-lambda-python-runtime-has-no.md",
+        "hits": [
+          "lambda runtime",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__s3: the Lambda python runtime has no AWS SDK, so no handler can read or write S3"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T112044Z-kms-lambda-s3-the-lambda-python-runtime-provides.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "kms__lambda__s3: the Lambda python runtime provides no AWS SDK, so the SSE-KMS read handler faults Runtime.ImportModuleError and a key-policy denial is never observed"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T112044Z-lambda-opensearch-s3-the-lambda-python-runtime-ships.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__opensearch__s3: the Lambda python runtime ships no AWS SDK and a crippled stdlib, so every SDK-calling handler faults Runtime.ImportModuleError and 20 checks never observe an OpenSearch/S3 call"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T112044Z-lambda-s3-3-net-new-root-causes-the.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__s3: 3 net-new root causes \u2014 the python runtime has no boto3, its stdlib is missing os.stat_result, and a layer version's Content omits CodeSha256"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T112044Z-lambda-s3-stepfunctions-the-under-permissioned-startexecution-from.md",
+        "hits": [
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__s3__stepfunctions: the under-permissioned StartExecution-from-Lambda negative never converges and is killed at its 60s deadline"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T114920Z-cloudfront-dynamodb-lambda-all-eight-deep-cloudfront-3.md",
+        "hits": [
+          "lambda runtime",
+          "Headers",
+          "Request",
+          "Response"
+        ],
+        "severity": "",
+        "title": "cloudfront__dynamodb__lambda: all eight deep-cloudfront-3 origin-behavior checks never complete \u2014 a distribution over a Lambda function-URL origin never becomes usable at its edge domain"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T114938Z-iot-lambda-the-python-lambda-runtime-provides-no.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "InvalidRuntimeException",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "iot__lambda: the python Lambda runtime provides no AWS SDK (boto3), so every handler that calls IoT dies with Runtime.ImportModuleError and all 9 Lambda->IoT interop checks are unobservable"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T115717Z-lambda-sesv2-invoke-of-a-python3-12-zipfile.md",
+        "hits": [
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__sesv2: Invoke of a python3.12 ZipFile handler never returns the handler's own payload, so checks that retry invoke until FunctionError clears never converge (2 checks exhaust their budget)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T122629Z-route53profiles-the-lambda-python-runtime-s-os-module.md",
+        "hits": [
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "route53profiles: the Lambda Python runtime's os module lacks register_at_fork, so the in-VPC DNS querier dies with Runtime.ImportModuleError and the Profile DNS-firewall data-plane check can never be observed"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T131255Z-events-lambda-sns-a-lambda-handler-cannot-call.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "events__lambda__sns: a Lambda handler cannot call EventBridge \u2014 the python runtime provides no AWS SDK, so the events:PutEvents permission-boundary differential never resolves and the check exhausts its budget"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T132157Z-cloudformation-8-net-new-root-causes-in-the-684719.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "cloudformation: 8 net-new root causes in the provisioning and rollback path \u2014 over-long AWS::Lambda::Permission StatementId fails every CDK REST-API deploy, Rule assertion text re-worded, reserved Lambda env key not refused, no boto3 in the Lambda runtime, RetainExceptOnCreate deletes on stack delete, rollback events and their timestamps diverge"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T153010Z-apigateway-cloudformation-lambda-3-net-new-causes-a.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "apigateway__cloudformation__lambda: 3 net-new causes \u2014 a Lambda-backed Custom:: resource never settles so every stack carrying one rolls back, the rollback of one ends ROLLBACK_FAILED, a denied provider's CREATE_FAILED reason does not name lambda:InvokeFunction, and a sibling resource's CREATE_COMPLETE event is lost on rollback"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T175821Z-events-lambda-sns-a-python-lambda-handler-that.md",
+        "hits": [
+          "Request",
+          "Response",
+          "handler",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "events__lambda__sns: a python Lambda handler that imports the AWS SDK and calls EventBridge PutEvents never runs \u2014 Invoke answers FunctionError=Unhandled/Runtime.ImportModuleError, so the role-denied PutEvents path is never reached"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T202027Z-cloudfront-events-an-eventbridge-rule-whose-lambda-target-3df0ce.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cloudfront__events: an EventBridge rule whose Lambda target carries a DeadLetterConfig produces none of the three effects AWS guarantees \u2014 no delivery to a permitted target, no NO_PERMISSIONS dead-letter record, and no handler log output"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T204906Z-cloudformation-4-net-new-root-causes-in-the.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "core module",
+          "core_modules",
+          "CORE_MODULES"
+        ],
+        "severity": "",
+        "title": "cloudformation: 4 net-new root causes in the custom-resource and rollback path \u2014 a Lambda-backed Custom:: resource is refused with ResourceConflict because its provider function is left Pending, an SNS-backed custom resource's request is never published so the stack never settles, DescribeStacks Outputs omit OutputValue, and an update AWS refuses is accepted instead of rolled back"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261105T223150Z-iot-lambda-2-net-new-causes-the-managed.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "iot__lambda: 2 net-new causes \u2014 the managed python Lambda runtime ships no boto3 so every IoT handler dies Runtime.ImportModuleError, and a stack whose IoT Thing is created by a Lambda-backed custom resource rolls back"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T020303Z-cloudformation-dynamodb-iam-lambda-s3-executing-the-sam.md",
+        "hits": [
+          "Request",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "cloudformation__dynamodb__iam__lambda__s3: executing the SAM (AUTO_EXPAND) change set rolls the stack back, so the Policies-shorthand stack never deploys"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T020303Z-cloudformation-dynamodb-lambda-logs-s3-the-cdk-deployed.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "cloudformation__dynamodb__lambda__logs__s3: the CDK-deployed writer function faults Runtime.ImportModuleError \u2014 the Lambda python runtime provides no boto3"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T020303Z-cloudformation-dynamodb-lambda-the-sam-transformed-writer-function.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "cloudformation__dynamodb__lambda: the SAM-transformed writer function cannot import boto3, so the Lambda python runtime ships no AWS SDK"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T031525Z-dynamodb-lambda-rekognition-s3-the-rekognition-s3-trigger-1933c4.md",
+        "hits": [
+          "nodejs",
+          "handler"
+        ],
+        "severity": "",
+        "title": "dynamodb__lambda__rekognition__s3: the Rekognition S3-trigger scenario never reaches a verdict \u2014 the run hangs in a poll until the harness cap instead of settling (stack terminal status / S3 ObjectCreated -> Lambda delivery)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T035624Z-dynamodb-lambda-rekognition-s3-2-net-new-causes.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "dynamodb__lambda__rekognition__s3: 2 net-new causes \u2014 a nodejs22.x handler's first Invoke faults FunctionError='Unhandled' where AWS completes cleanly, and the LogType=Tail LogResult carries neither handler stdout nor the error record"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T055424Z-stepfunctions-an-unhandled-lambda-handler-exception-leaves-the.md",
+        "hits": [
+          "nodejs",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "stepfunctions: an unhandled Lambda handler exception leaves the lambda:invoke Task SUCCEEDED, so no TaskFailed/ExecutionFailed carries the thrown errorType or the JSON error document (1 cause)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T062901Z-dynamodb-lambda-lambda-python-runtime-has-no-boto3-so-the.md",
+        "hits": [
+          "Request",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "Lambda python runtime has no boto3, so the DynamoDB env-var repoint lifecycle fails at its first phase"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T062901Z-lambda-data-plane-8-net-new-causes-invoke.md",
+        "hits": [
+          "nodejs",
+          "Headers",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "Lambda data plane: 8 net-new causes (Invoke response carries no request id, response streaming is not progressive, no DurableExecutionArn, two weighted-alias/reserved-concurrency checks hang, node error classification)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T062901Z-lambda-nodejs-runtime-8-net-new-execution-fidelity.md",
+        "hits": [
+          "nodejs",
+          "node:",
+          "node:crypto",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "process.versions",
+          "AWS SDK for JavaScript",
+          "core module",
+          "ImportModuleError",
+          "node_modules"
+        ],
+        "severity": "",
+        "title": "Lambda nodejs runtime: 8 net-new execution-fidelity causes (no core modules, no bundled SDK v3, no node_modules resolution, missing globals, wrong error payload, callback/context API, unreported failures, ESM/NODE_OPTIONS)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T071701Z-dynamodb-4-net-new-root-causes-createtable-with.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "node:",
+          "node:http",
+          "Request",
+          "Response",
+          "handler",
+          "bootstrap",
+          "AWS SDK for JavaScript"
+        ],
+        "severity": "",
+        "title": "dynamodb: 4 net-new root causes \u2014 CreateTable with SSESpecification still answers NotImplemented, the Node.js Lambda runtime cannot resolve node: built-in modules, CFN tables carrying StreamSpecification/TimeToLiveSpecification roll the stack back, and DeleteStack leaves the table behind"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T072814Z-dynamodb-lambda-s3-secretsmanager-a-cloudformation-deployed-lambda.md",
+        "hits": [
+          "fetch",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "dynamodb__lambda__s3__secretsmanager: a CloudFormation-deployed Lambda whose role withholds secretsmanager:GetSecretValue never returns the handler's AccessDeniedException verdict, so the permission-boundary negative is unobservable"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T122042Z-sqs-the-nodejs22-x-lambda-runtime-resolves-no.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Request",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "AWS SDK for JavaScript",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "sqs: the nodejs22.x Lambda runtime resolves no bundled AWS SDK for JavaScript v3, so a JS v3 consumer cannot observe SQS's awsQueryCompatible error carriers"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T131020Z-bedrock-agent-runtime-lambda-s3vectors-the-lambda-python.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "bedrock-agent-runtime__lambda__s3vectors: the Lambda python runtime's bundled botocore ships a 4-service data catalog, so boto3.client(\"s3vectors\") / boto3.client(\"bedrock-agent-runtime\") raise UnknownServiceError inside every handler (11 checks)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T133436Z-lambda-sns-sqs-in-function-aws-sdk-calls.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__sns__sqs: in-function AWS SDK calls are never authorized against the execution role, and the guest SDK resolves no `sns` client (2 net-new causes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T134622Z-events-lambda-sqs-stepfunctions-the-in-process-lambda.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "events__lambda__sqs__stepfunctions: the in-process Lambda runtime's SDK has no Step Functions client, so a granted states:StartExecution is reported DENIED (1 cause)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T134622Z-lambda-secretsmanager-sqs-the-in-lambda-sdk-reports.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda__secretsmanager__sqs: the in-Lambda SDK reports SQS's error shape name instead of its wire error code, has no Secrets Manager client, skips IAM authorization, and two permission scenarios never settle (4 causes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T134622Z-lambda-sqs-stepfunctions-an-accessdenied-names-the-role.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda__sqs__stepfunctions: an AccessDenied names the role ARN instead of the assumed-role session ARN, an unpermitted in-function send succeeds, and the SQS error code is the shape name (3 causes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T140124Z-bedrock-agent-lambda-opensearchserverles-bedrock-agent-lambda-opensearchserverless-the-python-lambda-runtime.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "bedrock-agent__lambda__opensearchserverless: the python Lambda runtime's bundled botocore ships a 4-service data catalog, so boto3.client(\"bedrock-agent-runtime\") raises UnknownServiceError inside every handler (1 cause, 4 checks)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T140826Z-bedrock-agent-lambda-opensearchserverles-bedrock-agent-lambda-opensearchserverless-the-lambda-python-runtime-7f7260.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "bedrock-agent__lambda__opensearchserverless: the Lambda python runtime's bundled botocore has no bedrock-agent / bedrock-agent-runtime service data, so every in-function Bedrock Agent call dies as UnknownServiceError before it reaches the emulator"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T143106Z-kms-lambda-a-handler-s-boto3-client-kms.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "kms__lambda: a handler's boto3.client(\"kms\") dies with UnknownServiceError, so neither a KMS grant nor a key-policy Deny is ever exercised from inside an invocation"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T143106Z-kms-lambda-s3-an-in-function-s3-getobject.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "kms__lambda__s3: an in-function S3 GetObject of an SSE-KMS object never returns the handler's own report, so the key-policy-denial lifecycle is killed at the 60s cap"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T143312Z-apigateway-cognito-idp-lambda-an-api-gateway-sdk.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "apigateway__cognito-idp__lambda: an API Gateway SDK call made from inside a Lambda handler fails with a non-service exception (no Error.Code), so neither the success path nor the AccessDenied path can be observed"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T144610Z-appconfig-iam-lambda-a-lambda-handler-s-in.md",
+        "hits": [
+          "Request",
+          "handler",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "appconfig__iam__lambda: a Lambda handler's in-process AppConfig data-plane read never converges on a decidable answer, so all three handler-level AppConfig scenarios are killed at the harness cap"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T153504Z-lambda-secretsmanager-sqs-a-function-whose-role-grants.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__secretsmanager__sqs: a function whose role grants secretsmanager:GetSecretValue on its own secret never succeeds in reading it, so the resource-scoped deny check never reaches its verdict"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T181008Z-lambda-secretsmanager-sqs-the-secretsmanager-getsecretvalue-permission-scenario.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda__secretsmanager__sqs: the secretsmanager:GetSecretValue permission scenario never settles \u2014 the in-handler Secrets Manager read neither succeeds when granted nor is refused AccessDeniedException when the grant is removed, so the check is killed at 60 s"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T183643Z-kms-lambda-s3-an-in-function-s3-getobject-e3e659.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundle",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "kms__lambda__s3: an in-function S3 GetObject of an SSE-KMS object never returns the handler's report, so the key-policy-denial lifecycle hangs to the 60s cap (1 cause)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T194015Z-lambda-sesv2-the-cli-deployed-python3-12-function.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda__sesv2: the CLI-deployed python3.12 function's sesv2 SendEmail never returns ok, so the cli-roundtrip deploy-and-send check never reaches a verdict (hangs to the harness cap)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261106T233903Z-lambda-rds-secretsmanager-the-in-process-lambda-runtime.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda__rds__secretsmanager: the in-process Lambda runtime's bundled AWS SDK knows only sqs/events/eventbridge/dynamodb, so boto3.client(\"rds-data\") in a handler raises UnknownServiceError"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T015155Z-events-lambda-s3-stepfunctions-the-in-function-sdk.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "events__lambda__s3__stepfunctions: the in-function SDK has no Step Functions client so a waitForTaskToken callback fails with UnknownServiceError, and Lambda-Task / EventBridge-fanout executions never produce their effect or a terminal status (2 causes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T030408Z-lambda-nodejs-runtime-serializes-handler-exceptions-with-pre.md",
+        "hits": [
+          "nodejs",
+          "Response",
+          "bundled",
+          "handler",
+          "core module"
+        ],
+        "severity": "",
+        "title": "Lambda nodejs runtime serializes handler exceptions with pre-V8 wording and emulator-internal stack frames"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T033710Z-lambda-sesv2-the-cli-deployed-python3-12-function-0d8682.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "bootstrap"
+        ],
+        "severity": "",
+        "title": "lambda__sesv2: the CLI-deployed python3.12 function's in-handler SESv2 SendEmail never returns ok=True, so the cli-roundtrip deploy-and-send check never reaches a verdict"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T042814Z-cloudfront-events-the-in-lambda-aws-sdk-has.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "cloudfront__events: the in-Lambda AWS SDK has no CloudFront client (UnknownServiceError), and a CloudFront CloudTrail-derived event never reaches the us-east-1 default bus (2 causes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T070300Z-apigatewayv2-lambda-logs-http-api-access-log-records-are-never-delivered.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response",
+          "handler",
+          "AWS SDK for JavaScript"
+        ],
+        "severity": "",
+        "title": "HTTP API access-log records are never delivered, and a direct Lambda Invoke of the scenario handler reaches no verdict (2 causes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T081525Z-lambda-sqs-stepfunctions-3-net-new-causes-a.md",
+        "hits": [
+          "lambda runtime",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda__sqs__stepfunctions: 3 net-new causes \u2014 a Map state with MaxConcurrency fails the execution, the in-function SDK has no stepfunctions client (UnknownServiceError), and an SQS ESM never runs concurrent batches"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T082505Z-lambda-web-resource-not-found-and-reserved-tag.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda-web: resource-not-found and reserved-tag-key refusal messages are not AWS's wording (2 causes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T085452Z-apigateway-cloudformation-lambda-2-net-new-causes-testinvokemethod.md",
+        "hits": [
+          "lambda runtime",
+          "Headers",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "apigateway__cloudformation__lambda: 2 net-new causes \u2014 TestInvokeMethod invents the configuration-error log line for an unresolvable Lambda alias, and the CFN Lambda-role trust check never settles"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T091747Z-lambda-loggingconfig-is-ignored-by-the-invoke-log.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda: LoggingConfig is ignored by the invoke log pipeline \u2014 no level framing, no JSON LogFormat, no log-level filtering, init output misordered, and the LogType=Tail checks never complete (6 net-new causes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T095733Z-cloudwatch-dynamodb-lambda-3-net-new-causes-throttle.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cloudwatch__dynamodb__lambda: 3 net-new causes \u2014 throttle-refused invokes publish no AWS/Lambda Throttles datapoint, and two DynamoDB-stream\u2192Lambda\u2192CloudWatch checks never complete"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T125554Z-lambda-web-resource-policy-and-tag-refusals-diverge.md",
+        "hits": [
+          "nodejs",
+          "Headers",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda-web resource-policy and tag refusals diverge: validation order, an accepted bad policy, wrong wording and extra error members"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T135301Z-lambda-10-net-new-root-causes-in-the--r2.md",
+        "hits": [
+          "nodejs",
+          "node:",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda: 10 net-new root causes in the managed execution environment (no sandbox filesystem, no environment reuse, MemorySize unenforced, wrong runtime identity, context/error-envelope shapes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T143426Z-cloudformation-iam-lambda-s3-a-wildcard-resource-s3.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cloudformation__iam__lambda__s3: a wildcard-resource s3:* Lambda role never reaches a verdict \u2014 Invoke/in-function S3 path hangs until the check's 60 s budget expires"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T153110Z-iam-lambda-s3-the-deleted-role-bucket-policy.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "iam__lambda__s3: the deleted-role bucket-policy principal check never converges \u2014 PutBucketPolicy/Invoke round trip exhausts the whole 60s check budget"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T164117Z-lambda-sqs-stepfunctions-a-function-s-in-handler.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda__sqs__stepfunctions: a function's in-handler states:StartExecution never completes the grant\u2192revoke\u2192restore cycle, so the AccessDeniedException refusal is never produced"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T173512Z-cloudwatch-dynamodb-lambda-a-function-s-own-log.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cloudwatch__dynamodb__lambda: a function's own log output never reaches its CloudWatch log stream \u2014 only START/END/REPORT lines are delivered"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T173512Z-dynamodb-lambda-s3-secretsmanager-3-net-new-causes.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "dynamodb__lambda__s3__secretsmanager: 3 net-new causes \u2014 in-function AWS calls are never authorized (IAM, resource policy, tag condition and KMS denials all succeed), S3 ObjectCreated notifications never invoke their Lambda, and a rotation Lambda never writes its backup"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T182959Z-appconfig-iam-lambda-a-lambda-handler-s-in-990472.md",
+        "hits": [
+          "Request",
+          "handler",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "appconfig__iam__lambda: a Lambda handler's in-process AppConfig read still never converges, so neither the granted-role success nor the AccessDeniedException for a role with no appconfig: action is ever produced"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T184737Z-cloudformation-iam-lambda-s3-2-net-new-causes.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cloudformation__iam__lambda__s3: 2 net-new causes \u2014 the in-function AWS SDK has no S3 client (UnknownServiceError), and a custom-resource-driven create+update stack never settles"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T185434Z-iot-lambda-the-iot-rules-engine-never-dispatches.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "iot__lambda: the IoT rules engine never dispatches a lambda/republish action, errorAction never fires, SQL projection is unobservable, CFN-deployed rules and in-Lambda iot SDK calls both fail (7 causes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T185637Z-events-lambda-s3-stepfunctions-2-net-new-causes-eventbridge-fan-out-never.md",
+        "hits": [
+          "lambda runtime",
+          "bundled"
+        ],
+        "severity": "",
+        "title": "2 net-new causes: EventBridge fan-out never invokes the Lambda target, and Lambda-run code cannot build s3/stepfunctions clients"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T185637Z-iam-lambda-s3-the-in-process-lambda-runtime-s-bundled-sdk.md",
+        "hits": [
+          "lambda runtime",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "The in-process Lambda runtime's bundled SDK has no s3 client, so a bucket-policy principal check cannot be exercised"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T185637Z-kms-lambda-s3-the-in-process-lambda-runtime-s-bundled-sdk.md",
+        "hits": [
+          "lambda runtime",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "The in-process Lambda runtime's bundled SDK has no s3 client, so an SSE-KMS key-policy denial cannot be exercised"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T185637Z-lambda-s3-stepfunctions-2-net-new-causes-s3-objectcreated-notifications-never.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "2 net-new causes: S3 ObjectCreated notifications never invoke the function, and the Lambda runtime's bundled SDK has no s3/stepfunctions client"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T185637Z-lambda-s3-the-in-process-lambda-runtime-s-bundled-sdk.md",
+        "hits": [
+          "lambda runtime",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "The in-process Lambda runtime's bundled SDK has no s3 client, so a bucket-policy Deny vs identity Allow cannot be exercised"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T194121Z-cognito-idp-kms-lambda-sqs-a-user-pool.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cognito-idp__kms__lambda__sqs: a user pool's CustomEmailSender Lambda trigger is never invoked, so no real verification code is ever issued and every code-dependent flow (sign-up, forgot-password, attribute verification, EMAIL_OTP) is unreachable (1 cause)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T205257Z-events-lambda-ssm-the-cloudformation-deployed-eventbridge-lambda.md",
+        "hits": [
+          "lambda runtime",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "events__lambda__ssm: the CloudFormation-deployed EventBridge->Lambda->SSM pipeline never updates the parameter (the runtime SDK has no 'ssm' client)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T212447Z-lambda-sesv2-2-net-new-causes-the-lambda-runtime-s.md",
+        "hits": [
+          "lambda runtime",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "2 net-new causes: the Lambda runtime's bundled botocore knows no 'sesv2' client, and SESv2 events never reach EventBridge"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T212447Z-lambda-sqs-stepfunctions-2-net-new-causes-the-lambda-runtime-s.md",
+        "hits": [
+          "lambda runtime",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "2 net-new causes: the Lambda runtime's bundled botocore knows no 'stepfunctions' client, and the SQS ESM never scales with queue depth"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T225844Z-apigatewayv2-lambda-logs-the-malformed-connection-id-fan-6255ed.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "apigatewayv2__lambda__logs: the malformed-connection-id fan-out check now reaches no verdict at all \u2014 the deployed WEBSOCKET stage neither completes nor refuses the RFC 6455 upgrade, so the check hangs to the harness cap"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T233020Z-cloudfront-dynamodb-lambda-s3-stepfuncti-cloudfront-dynamodb-lambda-s3-stepfunctions-the-setup-phase.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cloudfront__dynamodb__lambda__s3__stepfunctions: the setup phase's workflow fails with UnknownServiceError \u2014 the Lambda runtime's bundled botocore knows no 's3' client"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261107T233020Z-dynamodb-lambda-s3-stepfunctions-the-lambda-runtime-s.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "dynamodb__lambda__s3__stepfunctions: the Lambda runtime's bundled botocore knows no 's3' client, so every tenant-provisioning workflow fails with UnknownServiceError"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261108T015132Z-appconfig-iam-lambda-a-lambda-handler-s-in-1c3e49.md",
+        "hits": [
+          "Headers",
+          "Request",
+          "handler",
+          "bootstrap",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "appconfig__iam__lambda: a Lambda handler's in-process AppConfig read never converges, so the in-place identifier-repair lifecycle (broken -> partially fixed -> fully fixed) never produces any of its three answers"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261108T021537Z-cloudwatch-dynamodb-lambda-a-handler-s-own-log.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "cloudwatch__dynamodb__lambda: a handler's own log output never reaches /aws/lambda/<fn> \u2014 the AccessDenied boundary check sees only START/END/REPORT"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261108T031654Z-events-lambda-s3-stepfunctions-an-in-function-events.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "events__lambda__s3__stepfunctions: an in-function events:PutEvents succeeds although the execution role does not grant it"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261108T072100Z-bedrock-agent-lambda-opensearchserverles-bedrock-agent-lambda-opensearchserverless-the-lambda-python-runtime-60d1ec.md",
+        "hits": [
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "bedrock-agent__lambda__opensearchserverless: the Lambda python runtime's bundled botocore still has no 'opensearchserverless' (aoss) service model, so boto3.client(\"opensearchserverless\") raises UnknownServiceError inside every handler (1 cause, 6 checks)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261108T074808Z-lambda-xray-aws-xray-daemon-address-is-absent.md",
+        "hits": [
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "lambda__xray: AWS_XRAY_DAEMON_ADDRESS is absent from the Lambda invocation environment, so no handler can address the X-Ray daemon over UDP (1 cause)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261108T144822Z-cognito-idp-kms-lambda-sqs-reopens-every-real.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "node_modules"
+        ],
+        "severity": "",
+        "title": "cognito-idp__kms__lambda__sqs: REOPENS \u2014 every real-verification-code flow is now refused 400 UserLambdaValidationException: the nodejs runtime's bundled @aws-sdk/client-kms exports no DecryptCommand (1 cause)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261108T144822Z-cognito-idp-reopens-the-customemailsender-trigger-is-now.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Request",
+          "Response",
+          "bundled",
+          "handler",
+          "node_modules"
+        ],
+        "severity": "",
+        "title": "cognito-idp: REOPENS \u2014 the CustomEmailSender trigger is now invoked but dies at module load, so UpdateUserAttributes is refused 400 UserLambdaValidationException instead of issuing a code (1 cause)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261108T202701Z-bedrock-agent-lambda-opensearchserverles-bedrock-agent-lambda-opensearchserverless-retrieve-answers-501-notimplemented.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "bedrock-agent__lambda__opensearchserverless: Retrieve answers 501 NotImplemented, and the python Lambda runtime's botocore has no bedrock-agent-runtime model so handlers die with UnknownServiceError (2 causes, 4 checks)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261108T203853Z-bedrock-agent-lambda-opensearchserverles-bedrock-agent-lambda-opensearchserverless-5-net-new-causes.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "bedrock-agent__lambda__opensearchserverless: 5 net-new causes \u2014 Retrieve answers NotImplemented, the Lambda runtime's botocore has no 'bedrock-agent-runtime' client, CreateKnowledgeBase accepts a storage config with no AOSS data-access grant, and a COMPLETE ingestion job writes no documents into the collection"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261109T041005Z-lambda-web-deleteresourcepolicy-s-stale-revision-conflictexception-reports.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda-web DeleteResourcePolicy's stale-revision ConflictException reports PutResourcePolicy's sentence from a shared constant, not its own wording (1 cause)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261109T143515Z-dynamodb-iam-lambda-logs-sts-the-in-process-lambda-runtime-has-no-aws.md",
+        "hits": [
+          "lambda runtime",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "The in-process Lambda runtime has no aws_durable_execution_sdk_python module, so every durable-execution handler fails with Runtime.ImportModuleError"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261109T150907Z-lambda-web-enum-constraint-message-order-non-zip.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda-web: enum-constraint message order, non-zip revision builds never reach Failed, and endpoint domainName is unreachable (3 causes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261109T161036Z-lambda-scheduler-sqs-a-lambda-target-invocation-does.md",
+        "hits": [
+          "lambda runtime",
+          "handler"
+        ],
+        "severity": "",
+        "title": "lambda__scheduler__sqs: a Lambda-target invocation does not carry the invoking schedule's own Target.Input \u2014 the function receives another schedule's payload"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261109T172142Z-dynamodb-lambda-4-net-new-causes-esm-maximumrecordageinseconds.md",
+        "hits": [
+          "lambda runtime",
+          "fetch",
+          "Headers",
+          "Response",
+          "handler",
+          "InvalidRuntimeException"
+        ],
+        "severity": "",
+        "title": "dynamodb__lambda: 4 net-new causes \u2014 ESM MaximumRecordAgeInSeconds and tumbling windows are ignored, GetFunction publishes an unreachable Code.Location, and stream records never reach a Go handler"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261109T185037Z-cloudformation-lambda-s3-sqs-the-in-lambda-aws-sdk-binds-no-s3.md",
+        "hits": [
+          "lambda runtime",
+          "bundled"
+        ],
+        "severity": "",
+        "title": "The in-Lambda AWS SDK binds no S3 PutBucketNotificationConfiguration, so CDK's BucketNotifications custom resource always fails the deploy"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261109T210043Z-lambda-10-net-new-causes-lambda-publishes-unreachable-data.md",
+        "hits": [
+          "nodejs",
+          "fetch",
+          "Headers",
+          "Request",
+          "Response",
+          "bundle",
+          "bundled",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError",
+          "node_modules"
+        ],
+        "severity": "",
+        "title": "10 net-new causes: Lambda publishes unreachable data-plane endpoints and its runtime-API/durable-execution surfaces are inert"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261109T224859Z-iam-lambda-sts-a-nodejs22-x-function-s.md",
+        "hits": [
+          "lambda runtime",
+          "nodejs",
+          "Request",
+          "Response",
+          "handler"
+        ],
+        "severity": "",
+        "title": "iam__lambda__sts: a nodejs22.x function's handler environment carries no execution-role credentials \u2014 AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and AWS_SESSION_TOKEN are all unset"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261110T001859Z-elasticache-in-vpc-data-plane-still-unverifiable-the.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "ElastiCache in-VPC data plane still unverifiable: the emulator's Lambda python3.12 runtime has no _ssl module, so the RESP probe dies at import (1 cause, 2 unowned checks)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261110T080432Z-iam-kms-lambda-logs-sts-a-durable-execution-invoke-ends-status-failed-where.md",
+        "hits": [
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "A durable-execution invoke ends Status FAILED where AWS ends SUCCEEDED, so the disabled-CMK metadata-only contract is unreachable"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261110T132317Z-iot-lambda-the-in-function-iot-publish-permission.md",
+        "hits": [
+          "Request",
+          "Response",
+          "handler",
+          "Runtime.ImportModuleError",
+          "ImportModuleError"
+        ],
+        "severity": "",
+        "title": "iot__lambda: the in-function iot:Publish permission-boundary negative reaches no verdict \u2014 the Lambda->IoT invoke trajectory hangs to the 60 s harness cap instead of returning a Payload"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261111T015651Z-kafka-listkafkaversions-publishes-3-9-x-s-deprecated.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "Response",
+          "handler",
+          "bootstrap"
+        ],
+        "severity": "",
+        "title": "kafka: ListKafkaVersions publishes 3.9.x's DEPRECATED row last so every client reads the only offered standard-broker version as deprecated; UpdateClusterConfiguration's cluster-state refusal carries emulator prose; the Lambda python runtime has no `select` module so the in-VPC executor cannot import kafka-python (3 causes)"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261111T015651Z-kafka-logs-s3-the-msk-broker-log-delivery-7fe3ca.md",
+        "hits": [
+          "lambda runtime",
+          "bundled",
+          "handler"
+        ],
+        "severity": "",
+        "title": "kafka__logs__s3: the MSK broker-log delivery check measures nothing \u2014 the Lambda python runtime has no `select` module, so the in-VPC executor cannot import kafka-python"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/20261113T053027Z-iam-lambda-logs-scheduler-sqs-scheduler-universal-target-aws-sdk-lambda-invoke-delivers.md",
+        "hits": [
+          "lambda runtime",
+          "Request",
+          "handler"
+        ],
+        "severity": "",
+        "title": "scheduler universal target aws-sdk:lambda:invoke delivers Input.Payload to the function as a JSON STRING, so the handler's event is a str instead of the payload object"
+      },
+      {
+        "bucket": "fixed",
+        "file": "issues/things-that-now-work/human-lambda-invoke-must-run-nodejs20-x-and-nodejs22-x-handlers.md",
+        "hits": [
+          "nodejs",
+          "Request",
+          "Response",
+          "handler",
+          "core module"
+        ],
+        "severity": "",
+        "title": "Lambda Invoke must run nodejs20.x and nodejs22.x handlers"
+      }
+    ],
+    "fixed": 159,
+    "open": 101,
+    "rule": "lambda in filename or title AND any of the runtime markers above"
+  },
+  "method": "case-insensitive whole-file literal scan of all 23026 markdown docs (5355 open / 17671 fixed); single-word terms word-bounded; python3 -I",
+  "per_term": {
+    "AWS SDK for JavaScript": 7,
+    "CORE_MODULES": 1,
+    "Headers": 1877,
+    "ImportModuleError": 121,
+    "InvalidRuntimeException": 12,
+    "Request": 13463,
+    "Response": 14043,
+    "Runtime.ImportModuleError": 121,
+    "WebAssembly": 1,
+    "bootstrap": 2211,
+    "bundle": 897,
+    "bundled": 436,
+    "core module": 5,
+    "core_modules": 1,
+    "createRequire": 1,
+    "custom runtime": 4,
+    "fetch": 350,
+    "handler": 18696,
+    "lambda runtime": 154,
+    "node:": 38,
+    "node:crypto": 1,
+    "node:http": 9,
+    "node:http2": 7,
+    "node:https": 1,
+    "node:module": 1,
+    "node_modules": 8,
+    "nodejs": 86,
+    "process.versions": 1,
+    "provided.al2023": 7,
+    "quickjs": 2,
+    "rquickjs": 2,
+    "structuredClone": 1,
+    "wasm": 2
+  },
+  "per_term_by_bucket": {
+    "fixed|AWS SDK for JavaScript": 5,
+    "fixed|CORE_MODULES": 1,
+    "fixed|Headers": 1337,
+    "fixed|ImportModuleError": 84,
+    "fixed|InvalidRuntimeException": 6,
+    "fixed|Request": 9725,
+    "fixed|Response": 10947,
+    "fixed|Runtime.ImportModuleError": 84,
+    "fixed|bootstrap": 1647,
+    "fixed|bundle": 648,
+    "fixed|bundled": 297,
+    "fixed|core module": 4,
+    "fixed|core_modules": 1,
+    "fixed|fetch": 222,
+    "fixed|handler": 14903,
+    "fixed|lambda runtime": 97,
+    "fixed|node:": 25,
+    "fixed|node:crypto": 1,
+    "fixed|node:http": 4,
+    "fixed|node:http2": 3,
+    "fixed|node_modules": 4,
+    "fixed|nodejs": 45,
+    "fixed|process.versions": 1,
+    "fixed|provided.al2023": 1,
+    "open|AWS SDK for JavaScript": 2,
+    "open|Headers": 540,
+    "open|ImportModuleError": 37,
+    "open|InvalidRuntimeException": 6,
+    "open|Request": 3738,
+    "open|Response": 3096,
+    "open|Runtime.ImportModuleError": 37,
+    "open|WebAssembly": 1,
+    "open|bootstrap": 564,
+    "open|bundle": 249,
+    "open|bundled": 139,
+    "open|core module": 1,
+    "open|createRequire": 1,
+    "open|custom runtime": 4,
+    "open|fetch": 128,
+    "open|handler": 3793,
+    "open|lambda runtime": 57,
+    "open|node:": 13,
+    "open|node:http": 5,
+    "open|node:http2": 4,
+    "open|node:https": 1,
+    "open|node:module": 1,
+    "open|node_modules": 4,
+    "open|nodejs": 41,
+    "open|provided.al2023": 6,
+    "open|quickjs": 2,
+    "open|rquickjs": 2,
+    "open|structuredClone": 1,
+    "open|wasm": 2
+  },
+  "term_filenames": {
+    "AWS SDK for JavaScript": [
+      "issues/things-that-do-not-work/20261119T104646Z-dynamodb-9-net-new-causes-vector-index-projection.md",
+      "issues/things-that-do-not-work/20261119T234314Z-sqs-awsquerycompatible-error-carriers-do-not-reach-an.md",
+      "issues/things-that-now-work/20261106T062901Z-lambda-nodejs-runtime-8-net-new-execution-fidelity.md",
+      "issues/things-that-now-work/20261106T071701Z-dynamodb-4-net-new-root-causes-createtable-with.md",
+      "issues/things-that-now-work/20261106T122042Z-sqs-the-nodejs22-x-lambda-runtime-resolves-no.md",
+      "issues/things-that-now-work/20261107T070300Z-apigatewayv2-lambda-logs-http-api-access-log-records-are-never-delivered.md",
+      "issues/things-that-now-work/20261108T233338Z-sqs-the-awsquerycompatible-x-amzn-query-error-response.md"
+    ],
+    "CORE_MODULES": [
+      "issues/things-that-now-work/20261105T204906Z-cloudformation-4-net-new-root-causes-in-the.md"
+    ],
+    "InvalidRuntimeException": [
+      "issues/things-that-do-not-work/20261027T180000Z-lambda-invokewithresponsestream-refuses-every-real-streaming-invocation.md",
+      "issues/things-that-do-not-work/20261109T172143Z-lambda-a-handler-on-a-compiled-native-runtime-is-never-run.md",
+      "issues/things-that-do-not-work/20261109T185037Z-lambda-sqs-3-net-new-causes-dotnet-go-java-ruby.md",
+      "issues/things-that-do-not-work/20261109T210043Z-lambda-stepfunctions-8-net-new-causes-step-functions-ignores-task.md",
+      "issues/things-that-do-not-work/20261113T060617Z-lambda-invoke-refuses-every-managed-runtime-family-other-than.md",
+      "issues/things-that-do-not-work/20261118T120000Z-lambda-cross-region-store-isolation-response-streaming-extensions-and-the-exec-wrapper.md",
+      "issues/things-that-now-work/20261025T192150Z-lambda-invokewithresponsestream-refused-notimplemented-updatealias-putresourcepolicy-refusal-messages.md",
+      "issues/things-that-now-work/20261105T080515Z-dynamodb-lambda-rekognition-s3-lambda-invoke-refuses-a-nodejs22-x-function-with.md",
+      "issues/things-that-now-work/20261105T081727Z-lambda-sns-sqs-the-emulator-s-python-lambda.md",
+      "issues/things-that-now-work/20261105T111951Z-lambda-8-more-net-new-root-causes-refusals.md",
+      "issues/things-that-now-work/20261105T114938Z-iot-lambda-the-python-lambda-runtime-provides-no.md",
+      "issues/things-that-now-work/20261109T172142Z-dynamodb-lambda-4-net-new-causes-esm-maximumrecordageinseconds.md"
+    ],
+    "WebAssembly": [
+      "issues/things-that-do-not-work/20261117T134237Z-lambda-10-net-new-causes-in-the-lambda-control.md"
+    ],
+    "core module": [
+      "issues/things-that-do-not-work/20261111T081112Z-lambda-managed-runtimes-are-stub-interpreters-10-node.md",
+      "issues/things-that-now-work/20261105T204906Z-cloudformation-4-net-new-root-causes-in-the.md",
+      "issues/things-that-now-work/20261106T062901Z-lambda-nodejs-runtime-8-net-new-execution-fidelity.md",
+      "issues/things-that-now-work/20261107T030408Z-lambda-nodejs-runtime-serializes-handler-exceptions-with-pre.md",
+      "issues/things-that-now-work/human-lambda-invoke-must-run-nodejs20-x-and-nodejs22-x-handlers.md"
+    ],
+    "core_modules": [
+      "issues/things-that-now-work/20261105T204906Z-cloudformation-4-net-new-root-causes-in-the.md"
+    ],
+    "createRequire": [
+      "issues/things-that-do-not-work/20261117T134237Z-lambda-10-net-new-causes-in-the-lambda-control.md"
+    ],
+    "custom runtime": [
+      "issues/things-that-do-not-work/20261109T141609Z-apigateway-ecr-lambda-a-get-through-a-deployed.md",
+      "issues/things-that-do-not-work/20261111T020136Z-apigateway-ecr-lambda-createfunction-refuses-a-container-image.md",
+      "issues/things-that-do-not-work/20261113T060617Z-lambda-invoke-refuses-every-managed-runtime-family-other-than.md",
+      "issues/things-that-do-not-work/20261118T120000Z-lambda-cross-region-store-isolation-response-streaming-extensions-and-the-exec-wrapper.md"
+    ],
+    "node:crypto": [
+      "issues/things-that-now-work/20261106T062901Z-lambda-nodejs-runtime-8-net-new-execution-fidelity.md"
+    ],
+    "node:http": [
+      "issues/things-that-do-not-work/20261103T071946Z-kinesis-4-net-new-root-causes-listchannels-misclassifies.md",
+      "issues/things-that-do-not-work/20261111T040849Z-lambda-s3-the-lambda-node-js-runtime-s-bundled-sdk.md",
+      "issues/things-that-do-not-work/20261115T203530Z-kinesis-the-https-front-door-still-refuses-h2.md",
+      "issues/things-that-do-not-work/20261118T165638Z-bedrock-runtime-the-https-front-door-refuses-h2.md",
+      "issues/things-that-do-not-work/20261119T135720Z-kinesis-the-https-front-door-still-refuses-h2-53fb9c.md",
+      "issues/things-that-now-work/20261103T091152Z-kinesis-4-net-new-root-causes-listchannels-classifies.md",
+      "issues/things-that-now-work/20261106T071701Z-dynamodb-4-net-new-root-causes-createtable-with.md",
+      "issues/things-that-now-work/20261109T214127Z-kinesis-4-net-new-causes-the-expirediteratorexception-message.md",
+      "issues/things-that-now-work/20261117T122047Z-bedrock-runtime-https-listener-never-negotiates-alpn-h2.md"
+    ],
+    "node:http2": [
+      "issues/things-that-do-not-work/20261103T071946Z-kinesis-4-net-new-root-causes-listchannels-misclassifies.md",
+      "issues/things-that-do-not-work/20261115T203530Z-kinesis-the-https-front-door-still-refuses-h2.md",
+      "issues/things-that-do-not-work/20261118T165638Z-bedrock-runtime-the-https-front-door-refuses-h2.md",
+      "issues/things-that-do-not-work/20261119T135720Z-kinesis-the-https-front-door-still-refuses-h2-53fb9c.md",
+      "issues/things-that-now-work/20261103T091152Z-kinesis-4-net-new-root-causes-listchannels-classifies.md",
+      "issues/things-that-now-work/20261109T214127Z-kinesis-4-net-new-causes-the-expirediteratorexception-message.md",
+      "issues/things-that-now-work/20261117T122047Z-bedrock-runtime-https-listener-never-negotiates-alpn-h2.md"
+    ],
+    "node:https": [
+      "issues/things-that-do-not-work/20261111T040849Z-lambda-s3-the-lambda-node-js-runtime-s-bundled-sdk.md"
+    ],
+    "node:module": [
+      "issues/things-that-do-not-work/20261117T134237Z-lambda-10-net-new-causes-in-the-lambda-control.md"
+    ],
+    "node_modules": [
+      "issues/things-that-do-not-work/20261111T040849Z-lambda-s3-the-lambda-node-js-runtime-s-bundled-sdk.md",
+      "issues/things-that-do-not-work/20261111T081112Z-lambda-managed-runtimes-are-stub-interpreters-10-node.md",
+      "issues/things-that-do-not-work/20261114T170500Z-lambda-node-runtime-bundles-no-sts-client-commands.md",
+      "issues/things-that-do-not-work/20261119T075657Z-lambda-s3-the-bundled-in-runtime-aws-sdk.md",
+      "issues/things-that-now-work/20261106T062901Z-lambda-nodejs-runtime-8-net-new-execution-fidelity.md",
+      "issues/things-that-now-work/20261108T144822Z-cognito-idp-kms-lambda-sqs-reopens-every-real.md",
+      "issues/things-that-now-work/20261108T144822Z-cognito-idp-reopens-the-customemailsender-trigger-is-now.md",
+      "issues/things-that-now-work/20261109T210043Z-lambda-10-net-new-causes-lambda-publishes-unreachable-data.md"
+    ],
+    "process.versions": [
+      "issues/things-that-now-work/20261106T062901Z-lambda-nodejs-runtime-8-net-new-execution-fidelity.md"
+    ],
+    "provided.al2023": [
+      "issues/things-that-do-not-work/20261109T172143Z-lambda-a-handler-on-a-compiled-native-runtime-is-never-run.md",
+      "issues/things-that-do-not-work/20261109T185037Z-lambda-sqs-3-net-new-causes-dotnet-go-java-ruby.md",
+      "issues/things-that-do-not-work/20261109T210043Z-lambda-stepfunctions-8-net-new-causes-step-functions-ignores-task.md",
+      "issues/things-that-do-not-work/20261113T060617Z-lambda-invoke-refuses-every-managed-runtime-family-other-than.md",
+      "issues/things-that-do-not-work/20261116T024510Z-lambda-3-net-new-causes-in-request-validation.md",
+      "issues/things-that-do-not-work/20261118T120000Z-lambda-cross-region-store-isolation-response-streaming-extensions-and-the-exec-wrapper.md",
+      "issues/things-that-now-work/20261105T111951Z-lambda-8-more-net-new-root-causes-refusals.md"
+    ],
+    "quickjs": [
+      "issues/things-that-do-not-work/20261115T090000Z-appsync-evaluatemappingtemplate-renders-no-velocity-template.md",
+      "issues/things-that-do-not-work/20261115T120000Z-lambda-microvms-the-microvm-endpoint-runs-no-python-guest.md"
+    ],
+    "rquickjs": [
+      "issues/things-that-do-not-work/20261115T090000Z-appsync-evaluatemappingtemplate-renders-no-velocity-template.md",
+      "issues/things-that-do-not-work/20261115T120000Z-lambda-microvms-the-microvm-endpoint-runs-no-python-guest.md"
+    ],
+    "structuredClone": [
+      "issues/things-that-do-not-work/20261111T081112Z-lambda-managed-runtimes-are-stub-interpreters-10-node.md"
+    ],
+    "wasm": [
+      "issues/things-that-do-not-work/20261029T004927Z-groundstation-createdataflowendpointgroup-maintainability.md",
+      "issues/things-that-do-not-work/20261117T134237Z-lambda-10-net-new-causes-in-the-lambda-control.md"
+    ]
+  }
+}

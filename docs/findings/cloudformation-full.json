@@ -1,0 +1,308 @@
+{
+  "coverage": "Ground-truth CloudFormation fidelity audit at fork head ec5f6fbab9238221b966379f06846c34e9d6a6f5. All bare src/... paths in findings are under /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/. Sources: /Users/dylanwong/projects/aws0-research-2026-11-19/census.json (58,279,979 bytes: 572 GitHub issues with bodies+comments, 5,355 open docs, 17,671 fixed-doc index rows, 7,114 stub rows, 440 service crates), /Users/dylanwong/projects/aws0-research-2026-11-19/claims.jsonl (47,613,399 bytes; exactly 13,041 rows = 572 gh_issue + 5,355 inrepo_open + 7,114 stub), /Users/dylanwong/projects/aws0-research-2026-11-19/census.md, /Users/dylanwong/projects/aws0-research-2026-11-19/linkedin-post.txt, /Users/dylanwong/projects/aws0-2026-11-19/aws0/issues/things-that-do-not-work/ (open docs), /Users/dylanwong/projects/aws0-2026-11-19/aws0/issues/things-that-now-work/ (fixed docs), and the 433 source files plus tests under /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/ (238 under src/state, 183 under src/ops, 7 under src/service, 5 at src root). Method: python3 -I streaming scans over ALL 13,041 claim rows (never a 58MB dump into context), python3 -I resolution of Rust const catalogues (AWS_RESOURCE_TYPES = 644 unique entries; IMPLEMENTED_RESOURCE_TYPES = 132; return_values match = 155 arms / 177 distinct types covering 167 catalogued types), exhaustive rg literal scans, and Read with line numbers. Counts per finding are exact over claims.jsonl with the regex stated in that finding's evidence; affected_claims is a count of claim rows, not of defects. verified = recorded AWS evidence AND a matching live code path; partially_verified = code path confirmed but part of the claim is stale, cross-crate, contradicted by newer code, or documentation-only; UNVERIFIED = no AWS ground truth or contradictory corpus evidence, and the word UNVERIFIED appears in the claim. No emulator was started, no Rust binary was built, and no live AWS API call was made; all AWS behavior comes from recorded corpus transcripts and GH issue comparisons. PARITY IS NOT CLAIMED: 85 CFN-family open docs (66 HIGH, 18 MEDIUM, 1 CRITICAL), 39 open CFN-family GH issues, 2 genuine CloudFormation 501 stubs, 356 corpus-named resource types absent from the admissibility catalogue, and hundreds of cross-family CFN-engine claims remain open at this checkout. An unabridged copy is at /Users/dylanwong/projects/aws0-research-2026-11-19/findings/cloudformation-full.json.",
+  "findings": [
+    {
+      "affected_claims": 210,
+      "aws_reference": "gh#554 successful AWS usage; gh#343 AWS SES ConfigurationSetEventDestination template reference (documentation-only)",
+      "claim": "Templates naming a type outside a static 644-entry catalogue are refused 400 'Unrecognized resource types: [...]' before creation; AWS accepts them. 211 claim rows carry the literal (205 open docs + 6 GH issues; gh#567 is a feature request, so 210 divergence rows), 194 name a still-absent type, 356 distinct types remain absent. UNVERIFIED subclaim: that all 356 are AWS-published rests on corpus annotations, not a live AWS call.",
+      "evidence": [
+        "gh#554 (AWS::Config::RemediationConfiguration; author successfully used it on AWS), gh#343 (AWS::SES::ConfigurationSetEventDestination), gh#377 (Lambda::ResourcePolicy + WAFv2::LoggingConfiguration), gh#538 (5 BedrockAgentCore types): all 8 still absent.",
+        "20261109T113448Z-cloudformation-network-security-manager-cloudformation-aws-networksecuritymanager-rule-template-policy-scope-are.md; 20261114T024343Z-cloudformation-iam-iot-s3-cloudformation-createstack-refuses-aws-iot-stream-and-aws.md; 20261119T151106Z-cloudformation-3-net-new-causes-aws-cloudformation-changeset.md; python3 -I claims.jsonl regex -> 211 rows / 369 names / 356 absent."
+      ],
+      "fixability": "fixable_in_crate for admissibility; cross_crate for a provisioner per type",
+      "id": "CFN-01",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/resource_types.rs:173-1029 static 644-entry AWS_RESOURCE_TYPES (608 literals + 36 consts); is_published :1035-1037 is contains(); is_recognized :1069-1077 admits only built-ins, Custom::* and catalogue members; refuse_unrecognized :1146-1152; /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state.rs:1050-1054 called by create_stack.rs:574, update_stack.rs:648, create_change_set.rs:448, validate_template.rs:248, create_stack_set.rs:331, update_stack_set.rs:367, create_stack_refactor.rs:224.",
+      "severity": "HIGH",
+      "surface": "CreateStack/UpdateStack/CreateChangeSet/ValidateTemplate/CreateStackSet/UpdateStackSet/CreateStackRefactor admissibility",
+      "verified": "verified"
+    },
+    {
+      "affected_claims": 0,
+      "aws_reference": "none recorded; only emulator module docs at resource_types.rs:9 and :45-46",
+      "claim": "UNVERIFIED (code-path observation only): is_recognized() never consults the account extension registry, so a private or third-party type registered with RegisterType or activated with ActivateType would still be refused. resource_types.rs:45-51 says those writers are still scaffold stubs, but RegisterType is implemented and writes the registry. No open doc or GH issue measures this against AWS; it is not a confirmed AWS divergence.",
+      "evidence": [
+        "resource_types.rs:1069-1077 exact code: 'if is_built_in(resource_type) || is_custom_resource(resource_type) { return true; } ... resource_type.starts_with(AWS_NAMESPACE_PREFIX) && is_published(resource_type)' - the registry is not named.",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/register_type.rs:394-402 mints the ARN, calls registry::record_extension and returns a token; /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/registry.rs:28-34 describes RegisterType/ActivateType as registry WRITERS, so the doc at resource_types.rs:47-51 is stale.",
+        "python3 -I scan of all 13,041 claim rows plus the 42 CFN-family GH issues found no AWS measurement; affected_claims = 0."
+      ],
+      "fixability": "fixable_in_crate: consult the registry for non-AWS namespaces in is_recognized",
+      "id": "CFN-02",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/resource_types.rs:1069-1077 checks only is_built_in, is_custom_resource and starts_with(AWS::) && is_published; exhaustive rg for is_recognized( callers found only :1091 and unit tests, no call into state/registry.rs. Module docs :9 and :45-46 say an activated or registered extension should be recognised.",
+      "severity": "LOW",
+      "surface": "CreateStack/UpdateStack admissibility of RegisterType/ActivateType extensions",
+      "verified": "UNVERIFIED"
+    },
+    {
+      "affected_claims": 26,
+      "aws_reference": "gh#503 recorded AWS CLI 2.40.2 us-west-2 run 2026-11-17; gh#202 cites the AWS CloudFront Distribution template reference",
+      "claim": "A catalogued type with no owner/provisioner reaches CREATE_COMPLETE with a synthesized physical id although no owning service was asked to create it; AWS creates the resource. gh#503 measured 363 such types on v1.0.484/485: 319 CREATE_COMPLETE with the service API missing the resource, 42 with 501/unemulated reads, 2 working, 0 failing. PARTIALLY VERIFIED: gh#202's five AWS::CloudFront::* types are now mapped to owners.",
+      "evidence": [
+        "gh#503: 'I listed the catalogued types for which I found no provisioner in v1.0.484 (363 types ...)'; table 319/42/2/0; AWS CLI 2.40.2 us-west-2 2026-11-17; an AWS::SSM::PatchBaseline with neither ApprovedPatches nor ApprovalRules reaches CREATE_COMPLETE where AWS refuses it.",
+        "gh#202: six CloudFront resources reach CREATE_COMPLETE but none exist in CloudFront; comments 1-2 record partial fixes in 1.0.471/1.0.492. /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioning/cloudfront_resources.rs:119-131 now maps those kinds to owners.",
+        "20261023T205437Z-cloudformation-reports-create-complete-for-resources-it-never.md; 20261109T171600Z-cloudformation-6-net-new-causes-aws-events-endpoint.md cause 2; python3 -I CFN-scoped regex declared-only|no provisioner|never provisioned = 26 rows."
+      ],
+      "fixability": "cross_crate: one owner_for arm plus create/delete pair per type",
+      "id": "CFN-03",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioning.rs:88-97 documents DECLARED-ONLY; owner_for :1291-1296 returns None; create loop :3205-3249 takes the None arm (:3236-3249), asks no service and pushes CREATE_IN_PROGRESS/CREATE_COMPLETE; merge_published_attributes :1962-1970 skips the owning-service read.",
+      "severity": "HIGH",
+      "surface": "CreateStack provisioning of catalogued-but-unowned resource types",
+      "verified": "partially_verified"
+    },
+    {
+      "affected_claims": 13,
+      "aws_reference": "gh#551 AWS CLI 2.40.2 us-west-2 run 2026-11-19; AWS CloudFormation stack failure options user guide",
+      "claim": "After a failed create with --disable-rollback whose template contains an AWS::RDS::DBInstance, ListStackResources and DescribeStackResources list only the failed AWS::IAM::ManagedPolicy although stack events have CREATE_COMPLETE for seven earlier resources; DescribeStackResource(Param0) answers 'Resource Param0 does not exist for stack ...'. AWS lists all eight. 9 of 9 emulator runs with a DB instance. gh#551's unconfirmed code hypothesis is confirmed.",
+      "evidence": [
+        "gh#551 (v1.0.517): with-db emulator ListStackResources only 'BadPolicy AWS::IAM::ManagedPolicy CREATE_FAILED', DescribeStackResource(Param0) 'Resource Param0 does not exist for stack emu-repro-lsr-with-db'; without-db all 3; AWS CLI 2.40.2 us-west-2 2026-11-19 all 8; 'The list does not come back over time ... 9 of 9 runs with a DB instance'.",
+        "Code reads at stack.rs:4039, :1360 and provisioning/deferred.rs:147 confirm the reporter's 'I have not confirmed this' hypothesis. 20261103T171935Z-cloudformation-resource-failures-never-surface-stacks-and-resources.md; python3 -I regex disable-rollback|DO_NOTHING|keep_failed_resources = 13 rows."
+      ],
+      "fixability": "fixable_in_crate: accumulate transitions across every walk of one operation",
+      "id": "CFN-04",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/stack.rs:3939-3968 snapshots walked_transitions() BEFORE flushing; keep_failed_resources :4013-4041 REPLACES self.resources with only resources having a transition in that ONE walk (:4039 'self.resources = installed;'); walked_transitions :4054-4070 reads only self.resource_timeline. schedule_resource_events :1327 and :1360 flush and REPLACE the timeline, and /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioning/deferred.rs:147 calls it from the later deferred pass an RDS DBInstance forces. reported_resources :3168-3177 feeds ops/list_stack_resources.rs:111-118,226-229 and ops/describe_stack_resources.rs:297.",
+      "severity": "HIGH",
+      "surface": "ListStackResources/DescribeStackResources after --disable-rollback (OnFailure=DO_NOTHING)",
+      "verified": "verified"
+    },
+    {
+      "affected_claims": 3,
+      "aws_reference": "gh#560 AWS CLI 2.40.2 us-west-2 run 2026-11-19; API_ResourceChangeDetail documentation",
+      "claim": "An UPDATE change set that modifies a resource IN PLACE (AWS::Lambda::Function tag) omits the Dynamic/ResourceAttribute details and the changes of resources reading its attributes with Fn::GetAtt. Emulator: 1 change / 1 detail (Function Tags, Static, DirectModification). AWS CLI 2.40.2 us-west-2 2026-11-19: 3 changes / 4 details - Rule Targets Dynamic/ResourceAttribute CausingEntity Function.Arn; Permission FunctionName and SourceArn Dynamic/ResourceAttribute with Replacement Conditional; Function Tags Static.",
+      "evidence": [
+        "gh#560: 'DescribeChangeSet returns one change: Function with Properties.Tags (Static, DirectModification). The rule and the permission are not in Changes'; AWS comparison 3 changes / 4 details; reporter's 'I have not confirmed this' code hypothesis is confirmed above.",
+        "20261029T171940Z-cloudformation-change-set-previews-operation-events-and-the.md; 20261106T020303Z-cloudformation-dynamodb-4-net-new-root-causes-unimplemented.md; python3 -I CFN-scoped regex Dynamic ... Fn::GetAtt|ResourceAttribute|DescribeChangeSet = 3 rows. AWS ref: API_ResourceChangeDetail."
+      ],
+      "fixability": "fixable_in_crate: propagate in-place modifications through Fn::GetAtt edges and emit Dynamic details",
+      "id": "CFN-05",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/change_plan.rs:508-512 states BEFORE/AFTER scopes resolve against the SAME deployed resources map, so Fn::GetAtt resolves identically on both sides; :522-543 build both Scopes from &deployed. :583-606 compare only declared resources; :617-640 build the recreated set solely from resources whose replacement_of(details) != False, then call propagate_recreations (:778-839), which emits only STATIC details and only for recreated referents. :1018-1096 emit Dynamic details only for a property whose own declared value changed; :1105-1119 attribute to a resource entity only when the property itself changed.",
+      "severity": "HIGH",
+      "surface": "CreateChangeSet/DescribeChangeSet Dynamic changes via Fn::GetAtt",
+      "verified": "verified"
+    },
+    {
+      "affected_claims": 4,
+      "aws_reference": "gh#19 AWS CloudFormation API_CreateChangeSet documentation (documentation-only)",
+      "claim": "A change set whose only difference is a condition flip adding/removing a resource, or an Outputs-only change, settles FAILED with 'The submitted information didn't contain changes'; recorded AWS behavior is an executable CREATE_COMPLETE change set. UNVERIFIED subclaim: gh#19 states 'Expected behavior comes from AWS documentation. This test did not call real AWS.' and the open doc says 'AWS: recorded behavior only'. No live AWS comparison in the corpus.",
+      "evidence": [
+        "gh#19: outputs-only parameter change produces a FAILED change set with an empty Changes list on three fresh stacks; comment 2: a parameter controlling a resource Condition also fails; body: 'This test did not call real AWS.'",
+        "20261117T184012Z-cloudformation-9-net-new-cloudformation-causes-change-sets-miss.md: 'Cause 1 of 9 ... AWS: recorded behavior only ... the change set reaches CREATE_COMPLETE'; 'Cause 2 of 9 ... an outputs-only diff is a real change'.",
+        "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/create_change_set.rs:1493-1498 'None if changes.is_empty() => (change_set_status::FAILED, execution_status::UNAVAILABLE, Some(crate::state::NO_CHANGES_REASON.to_string()))'. python3 -I regex condition-only|outputs-only|didn t contain changes = 4 rows."
+      ],
+      "fixability": "fixable_in_crate: evaluate Conditions and diff Outputs in the change-set differ",
+      "id": "CFN-06",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/change_plan.rs:382-412 changes_against compares a StackRevision built from resources and parameters only; :544-606 iterate submitted.resources with no per-resource Condition evaluation; :667-674 emit removals only for disappeared logical ids; Outputs is never diffed. /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/create_change_set.rs:1086-1101 calls changes_against and :1493-1500 turns an empty change list into FAILED with /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state.rs:1549-1551 NO_CHANGES_REASON.",
+      "severity": "HIGH",
+      "surface": "CreateChangeSet differ: condition-only and Outputs-only diffs",
+      "verified": "partially_verified"
+    },
+    {
+      "affected_claims": 1,
+      "aws_reference": "gh#558 AWS CLI 2.40.2 us-west-2 run 2026-11-19; API_DescribeStackResourceDrifts documentation",
+      "claim": "The drift-status filter is applied to ALL checked resources BEFORE pagination. With 150 AWS::Logs::LogGroup resources and one drifted at Lg120, the emulator's filtered page 1 has 1 drift and no NextToken; AWS returns 0 drifts plus NextToken on page 1 and Lg120 on page 2 (AWS filters within each page of 100). Unfiltered paging (100 then 50) matches AWS.",
+      "evidence": [
+        "gh#558 (v1.0.522): 'With StackResourceDriftStatusFilters MODIFIED and DELETED, the first page has Lg120 and no NextToken'; 'Without a filter, the emulator returns 100 drifts (Lg000 to Lg099) with a NextToken, then 50 ... This matches AWS'; AWS CLI 2.40.2 us-west-2 2026-11-19 -> filtered page 1 = 0 drifts + NextToken, page 2 = Lg120.",
+        "gh#558 body names describe_stack_resource_drifts.rs and says it 'passes the filtered list to paginate_in_at_most'; confirmed at :214-238. python3 -I literal StackResourceDriftStatusFilters = exactly 1 row. AWS ref: API_DescribeStackResourceDrifts."
+      ],
+      "fixability": "fixable_in_crate: paginate the checked list first, then apply the status filter within the page",
+      "id": "CFN-07",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/describe_stack_resource_drifts.rs:104-115 builds the full sorted checked list; :207-222 applies stack_resource_drift_status_filters to that WHOLE list and maps it to drifts; :231-238 then hands the FILTERED list to crate::state::paginate_in_at_most(PageOf::StackResourceDrifts, ..., drifts, next_token, max_results).",
+      "severity": "MEDIUM",
+      "surface": "DescribeStackResourceDrifts StackResourceDriftStatusFilters + NextToken",
+      "verified": "verified"
+    },
+    {
+      "affected_claims": 13,
+      "aws_reference": "open docs 20261114T035529Z cite Smithy cloudformation drift shapes and recorded AWS behavior",
+      "claim": "Out-of-band changes to template-declared properties are reported NOT_CHECKED / IN_SYNC / 'No drift detected' instead of DRIFTED/MODIFIED with a PropertyDifference (ExpectedValue/ActualValue/DifferenceType=NOT_EQUAL); AWS compares each declared property with the live resource. PARTIALLY VERIFIED: this head DOES implement a per-type read and difference walker for many types, so older blanket claims and the specific DynamoDB case may be stale. UNVERIFIED subclaim: which types remain NOT_CHECKED was not measured by running the emulator.",
+      "evidence": [
+        "20261114T035529Z-cloudformation-2-net-new-causes-an-out-of.md ('cdk drift --fail exits 0 ... No drift detected ... Number of resources with drift: 0 (1 unchecked)'); 20261114T035529Z-cloudformation-dynamodb-detectstackdrift-reports-in-sync-after-a.md ('StackDriftStatus IN_SYNC; no MODIFIED resource and no ExpectedValue/ActualValue pair is produced').",
+        "Contradicting newer code (DynamoDB half UNVERIFIED/stale): /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioning/dynamodb_table.rs:910-956 fills SUMMARISED_PROPERTIES (:879) including ProvisionedThroughput (:866); /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioner/reported_configuration.rs:19-40 implements Provisioner::actual_configuration for many types. /Users/dylanwong/projects/aws0-2026-11-19/aws0/issues/things-that-now-work/20261106T115216Z-cloudformation-drift-detection-reports-an-existing-out-of.md records a drift fix.",
+        "supports_drift_detection :101-103 excludes only BEDROCK_KNOWLEDGE_BASE; python3 -I CFN-scoped regex out-of-band|NOT_CHECKED|reports IN_SYNC after|No drift detected = 13 rows. AWS refs: Smithy cloudformation drift shapes quoted in the two docs."
+      ],
+      "fixability": "cross_crate: add actual_configuration reads per type plus declared-property comparison",
+      "id": "CFN-08",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/drift.rs:24-44 documents that resources with no owning-service read are NOT_CHECKED; :265-343 compares only when Some(provisioner) && resource.materialised && supports_drift_detection(type); ActualConfiguration::Unchecked -> NOT_CHECKED (:281-283), a 501 read -> NOT_CHECKED (:310-311), catch-all -> NOT_CHECKED (:336); :362-366 notes only properties BOTH sides name are compared. /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioning/owner.rs:1391-1562 has many 'return Ok(ActualConfiguration::Unchecked)' arms.",
+      "severity": "HIGH",
+      "surface": "DetectStackDrift classification and PropertyDifferences",
+      "verified": "partially_verified"
+    },
+    {
+      "affected_claims": 90,
+      "aws_reference": "gh#390/gh#361 template-reference return values; open docs cite Smithy cloudformation#Output",
+      "claim": "Output rows are serialized with OutputKey but WITHOUT OutputValue whenever the output evaluator could not resolve a value, so consumers raise KeyError: 'OutputValue'; AWS populates OutputValue for every output of a CREATE_COMPLETE stack. Reaches computed outputs, nested-stack Fn::GetAtt Child.Outputs.Key, exports, Ref on AWS::CloudFormation::Stack, and Fn::GetAtt attributes of types with no return-value arm. PARTIALLY VERIFIED: gh#407's StreamArn report is documentation-only and current code now emits StreamArn when a stream is enabled, so that instance is UNVERIFIED/stale.",
+      "evidence": [
+        "20261110T124641Z-cloudformation-a-nested-stack-s-parent-returns-outputs.md ('reading o[OutputValue] raises KeyError'); 20261111T070000Z-cloudformation-three-stacks-report-an-output-with-no-outputvalue.md; 20261107T085452Z-cloudformation-8-net-new-behavioral-causes-stack-outputs.md.",
+        "gh#390: AWS::CE::AnomalyMonitor has no MonitorArn; output has ExportName but no OutputValue and list-exports shows no Value; a second stack importing it rolls back. gh#361: Ref of AWS::SecretsManager::SecretTargetAttachment returns a synthesized name instead of the secret ARN. Both types are absent from the return_values match table.",
+        "gh#407: Fn::GetAtt Table.StreamArn empty on first create, 'I'm going by the documentation; I didn't run this template against AWS'. /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/template/return_values/ref_and_get_att.rs:712-733 now inserts StreamArn when stream_is_enabled(...) - UNVERIFIED without a live run.",
+        "python3 -I literal OutputValue = 90 rows (17 gh, 73 docs); Fn::GetAtt = 209 rows. AWS refs: CE::AnomalyMonitor and SecretsManager::SecretTargetAttachment template-reference return-values sections."
+      ],
+      "fixability": "fixable_in_crate: resolve output intrinsics and per-type return values; cross_crate where an owning service must publish an attribute",
+      "id": "CFN-09",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state.rs:1801-1814 defines StoredOutput.value: Option<String>; output_views :3814-3831 copies that Option into Output.output_value, omitting the member when None; /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/describe_stacks.rs:141 calls it. /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/template/return_values/outputs.rs:42-76 evaluate_outputs stores text(...) as Option; /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/template/return_values/ref_and_get_att.rs:14-16 documents that an uncatalogued type gets no attributes, and the fallback at :2783 is '_ => (name.to_string(), attributes)' with an EMPTY map. A resolved scan found 155 match arms naming 177 distinct types, covering only 167 of 644 catalogued types. /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioning/nested_stack.rs:573-603 publishes Outputs.Key ONLY from child outputs carrying OutputValue (:594-596).",
+      "severity": "HIGH",
+      "surface": "DescribeStacks Outputs / Fn::GetAtt / Ref / nested-stack Outputs.<Key>",
+      "verified": "partially_verified"
+    },
+    {
+      "affected_claims": 16,
+      "aws_reference": "gh#378/gh#462 expected behavior from the AWS CDK custom-resource provider contract; gh#378 comment 3 notes partial fixes; no live AWS run in this audit",
+      "claim": "CDK provider-framework custom resources (Custom::CrossRegionExportWriter/Reader, Custom::AWS, Custom::S3AutoDeleteObjects) stay CREATE_IN_PROGRESS until the wait expires and the stack times out or rolls back; AWS invokes the provider Lambda, which PUTs SUCCESS to the pre-signed ResponseURL, and the resource reaches CREATE_COMPLETE. PARTIALLY VERIFIED: the request/response plane is fully implemented here and gh#378 comment 3 says a Python provider, a Node.js provider and CrossRegionExportWriter/Reader now complete as of 1.0.471, while 8 Custom::AWS resources sharing one provider still fail intermittently. The exact remaining root cause was NOT isolated: UNVERIFIED.",
+      "evidence": [
+        "gh#378: '... was still CREATE_IN_PROGRESS when the wait for it to be created ran out'. Comment 3: partly fixed in 1.0.471 (Python provider SUCCESS, Node nodejs20.x provider for 8 resources, CrossRegionExportWriter/Reader); still failing 8 Custom::AWS sharing one provider, 'the failing resource changes from run to run'; comment 5: Custom::S3AutoDeleteObjects still hangs on 1.0.345.",
+        "gh#462: CDK autoDeleteObjects custom resource never completes, create times out; IAM refusals for CreateLogGroup/CreateLogStream/PutLogEvents on the provider function's log group. gh#254 comment 2: rollback with Custom::S3AutoDeleteObjects ends ROLLBACK_FAILED.",
+        "20261112T140000Z-cloudformation-hooks-are-never-enforced-and-a-lambda-backed-custom-resource-never-completes.md (CRITICAL); 20261108T043811Z-cloudformation-s3-a-lambda-backed-cloudformation-custom-resource-never-completes.md; 20261111T081112Z-cloudformation-lambda-s3-sqs-a-cdk-custom-s3autodeleteobjects-resource-never-leaves-create.md.",
+        "Stale-claim check: 20261109T223435Z-cloudformation-5-net-new-causes-custom-resource-responseurl.md cause 1 says the URL is on cloudformation-custom-resource-response.<region>.amazonaws.com, a host the emulator does not serve; custom_resource.rs:492-525 builds it from ctx.url_signer()/ctx.endpoint() and signed_url.rs:164-175 uses router.url_base, so that cause is contradicted by current code (UNVERIFIED at this head). /Users/dylanwong/projects/aws0-research-2026-11-19/linkedin-post.txt:20 is a third-party, UNVERIFIED claim only partly consistent with core_modules.rs:36-59.",
+        "python3 -I CFN-scoped regex (custom resource|Custom::|provider framework) ... never complete|never leaves CREATE_IN_PROGRESS|times out|did not receive a response = 16 rows."
+      ],
+      "fixability": "cross_crate: CFN provider plane plus Lambda Node runtime modules and concurrent provider invocations",
+      "id": "CFN-10",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioning/custom_resource.rs:474-525 mints a pre-signed ResponseURL on ctx.endpoint()/ctx.url_signer(); :781-870 dispatches SNS Publish or asynchronous Lambda Invoke (x-amz-invocation-type: Event); /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/service.rs:498-586 routes unsigned PUTs to /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/service/custom_resource_plane.rs; /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provider_responses.rs:8-27 holds the resource at *_IN_PROGRESS until the answer arrives. /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-server-runtime/src/signed_url.rs:114-123,164-175 signs for router.url_base (the emulator's own base URL), so the older AWS-host claim is stale. /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-lambda-awsgirapiservice/src/state/execution/node/core_modules.rs:36-59 lists emulated Node modules: http/https ARE present (:53-54), zlib and fetch absent.",
+      "severity": "CRITICAL",
+      "surface": "CreateStack/UpdateStack Lambda-backed custom resources (CDK provider framework)",
+      "verified": "partially_verified"
+    },
+    {
+      "affected_claims": 8,
+      "aws_reference": "gh#254 cites the AWS DependsOn attribute reference and the AWS CloudFormation custom resources user guide",
+      "claim": "On DeleteStack the emulator sends the provider's Delete and records DELETE_COMPLETE while the provider's answer is outstanding; the provider function and the resources it acts on must survive until that answer, and AWS deletes in reverse dependency order. PARTIALLY VERIFIED: current code defers dependent resources via a Stabilising wait and still_needed, but STILL pushes a DELETE_COMPLETE transition in the same pass, so the reported resource status is premature; gh#254's 1.0.343 observation is partly stale.",
+      "evidence": [
+        "gh#254: events 5 s after DeleteStack show 'Dependency DELETE_COMPLETE / DELETE_IN_PROGRESS, Probe DELETE_COMPLETE / DELETE_IN_PROGRESS, cr-probe3 DELETE_IN_PROGRESS'; sqs get-queue-attributes on the Dependency already returns NonExistentQueue; 'describe-stack-resource for the custom resource returned CREATE_COMPLETE rather than DELETE_IN_PROGRESS'. Cites the AWS DependsOn attribute reference and the custom-resource provider contract.",
+        "gh#254 comment 2: on v1.0.345 a rollback with CDK's Custom::S3AutoDeleteObjects records DELETE_IN_PROGRESS then DELETE_COMPLETE 83 ms later and ends ROLLBACK_FAILED 60 s later.",
+        "20261110T214500Z-cloudformation-a-custom-resources-delete-is-sent-and-its-provider-torn-down.md describes delete_pass pushing a Stabilising barrier and then CONTINUES the loop; at this checkout the same function also extends still_needed (:4531), so the 'provider torn down in the same pass' half is UNVERIFIED/stale, while the immediate DELETE_COMPLETE transition remains. python3 -I CFN-scoped regex = 8 rows."
+      ],
+      "fixability": "fixable_in_crate: delay the DELETE_COMPLETE transition until the provider barrier releases",
+      "id": "CFN-11",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioning.rs:4441-4471 sends custom_resource::send(Delete); :4497-4502 returns Removal::Pending(DELETE_IN_PROGRESS); :4514-4531 pushes a Stabilising barrier carrying provider_request (:4522) and extends still_needed with needed_by (:4531); but :4533-4539 immediately sets materialised=false and pushes ResourceTransition::finished(..., DELETE_COMPLETE, None) (:4535-4539). /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/rollback_stack.rs:330 schedules those transitions.",
+      "severity": "HIGH",
+      "surface": "DeleteStack/rollback teardown ordering for custom resources",
+      "verified": "partially_verified"
+    },
+    {
+      "affected_claims": 2,
+      "aws_reference": "open docs 20261112T140000Z and 20261111T053648Z cite Smithy hook shapes and recorded AWS behavior",
+      "claim": "Activated stack-level hooks are never evaluated. A FAIL-mode Guard hook rejecting an unencrypted AWS::SQS::Queue lets the stack reach CREATE_COMPLETE (AWS: ROLLBACK_COMPLETE), and a WARN-mode hook emits no HOOK_COMPLETE_FAILED event (AWS: exactly one). The hook-result store is always empty because nothing in this crate can invoke a hook.",
+      "evidence": [
+        "20261112T140000Z-cloudformation-hooks-are-never-enforced-and-a-lambda-backed-custom-resource-never-completes.md (CRITICAL): 'Under a FAIL hook a non-compliant stack ... ends CREATE_COMPLETE with StatusReason None instead of ROLLBACK_COMPLETE; under a WARN hook no HOOK_* stack event is emitted at all'; failing checks cloudformation.deep-cloudformation-1-cfn-enforce-fail-hook-blocks-unencrypted-queue-create and ...warn-hook-flags-but-allows-unencrypted-queue-create.",
+        "20261111T053648Z-cloudformation-lambda-sqs-an-aws-cloudformation-lambdahook-is.md: 'an AWS::CloudFormation::LambdaHook is created but never invoked - DescribeStackEvents carries no HOOK_IN_PROGRESS/HOOK_COMPLETE_* events ... so a FAIL-mode hook cannot veto anything'; cites Smithy HookStatus / HookInvocationPoint=PRE_PROVISION / HookFailureMode.",
+        "python3 -I CFN-scoped regex HOOK_COMPLETE_FAILED|hooks are never enforced|stack-level hooks|Guard hook|HOOK_IN_PROGRESS = exactly 2 rows; a looser 'FailureMode FAIL' pattern is contaminated by 'ValidationFailureMode FAIL' in unrelated docs and was rejected."
+      ],
+      "fixability": "fixable_in_crate: pre-create/pre-update hook evaluation plus hook stack events and hook-result records",
+      "id": "CFN-12",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/hook_results.rs:17-31 states 'Nothing in this emulator can invoke one ... no such handler exists here'; HookStatus constants :51-59 are defined but never written from a provisioning path. Exhaustive rg over all 433 files under /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src found no hook invocation or evaluation code. All event serializers hard-code hook members to None: /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/describe_stack_events.rs:96-101, /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/describe_events.rs:189-193, /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/describe_change_set.rs:177.",
+      "severity": "CRITICAL",
+      "surface": "CreateStack/UpdateStack Guard and Lambda hooks",
+      "verified": "verified"
+    },
+    {
+      "affected_claims": 8,
+      "aws_reference": "gh#555/gh#556 recorded AWS CLI 2.40.2 us-west-2 2026-11-19 runs; AWS::SSM::Parameter and AWS::Route53::HostedZone template references",
+      "claim": "Tag-only updates are silently dropped or refused. An AWS::SSM::Parameter Tags change reports UPDATE_COMPLETE but the parameter keeps Owner=v1, and each tags-only update bumps the parameter version (AWS: tags follow the template, version stays 1 until Value changes). An AWS::Route53::HostedZone HostedZoneTags-only update fails 'NotImplemented: this emulator does not change the properties of an existing AWS::Route53::HostedZone in place ...' and rolls the stack back. AWS::StepFunctions::Activity and AWS::AppConfig resources show the same two symptom families.",
+      "evidence": [
+        "gh#556 (AWS CLI 2.40.2 us-west-2 2026-11-19 AWS comparison): Tags Owner=v1 -> v2 -> {Owner:v2,Team:t1} -> {Team:t1} all end UPDATE_COMPLETE while ssm list-tags-for-resource still returns Owner=v1; each tags-only update adds a parameter version; direct ssm add-tags-to-resource works. AWS ref: AWS::SSM::Parameter template reference.",
+        "gh#555 (same AWS comparison): HostedZoneTags-only update -> UPDATE_ROLLBACK_COMPLETE with 'NotImplemented: this emulator does not change the properties of an existing AWS::Route53::HostedZone in place; the resource was left as it is.', tag stays v1; AWS -> UPDATE_COMPLETE, Owner=v2. AWS ref: AWS::Route53::HostedZone template reference.",
+        "gh#102: AWS::StepFunctions::Activity tag-only updates fail with the same NotImplemented refusal and roll back; gh#306: AppConfig tag-only updates ignore Application tags and replace Environment/ConfigurationProfile/DeploymentStrategy; gh#22 also matched; 20261115T084659Z-cloudformation-ecr-iam-s3-ssm-sts-cloudformation-a-stack-update-that-changes-a-stack.md (stack-level tag VALUE change).",
+        "python3 -I CFN-scoped regex HostedZoneTags|Tags of an AWS::SSM::Parameter|tag-only update|tags-only update|stack-level tag VALUE = 8 rows (gh#556, gh#555, gh#306, gh#102, gh#22 + 3 open docs)."
+      ],
+      "fixability": "fixable_in_crate: add per-type retag/in-place update arms; cross_crate where the owning service exposes tag APIs",
+      "id": "CFN-13",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioner/network_and_delivery.rs:1008-1027 update_parameter sends PutParameter Overwrite=true with NO Tags; /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioner.rs:3150-3729 Provisioner::update has no Route53HostedZone arm and defaults to '_ => Ok(None)' (:3724-3727), which /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioning.rs:2765-2780 turns into UPDATE_FAILED with the NotImplemented sentence; Provisioner::retag :3749-3883 also defaults to '_ => Ok(())' (:3879-3882), so stack-level tag values are never re-applied; retag is invoked on update at provisioning.rs:2874.",
+      "severity": "HIGH",
+      "surface": "UpdateStack resource-declared and stack-level tag changes",
+      "verified": "verified"
+    },
+    {
+      "affected_claims": 5,
+      "aws_reference": "open doc 20261110T100112Z cites Smithy DescribeType and recorded AWS wire responses",
+      "claim": "DescribeType does not serve the public AWS resource-type registry: 1,939 recorded type lookups (Alexa::ASK::Skill, AWS::AccessAnalyzer::Analyzer, AWS::Amplify::*, AWS::ApiGateway::*, ...) answer 404 with no DescribeTypeResponse, and types that resolve return emulator-authored schemas/descriptions instead of AWS's published provider definitions. AWS answers 200 with Schema/Description/ProvisioningType/Visibility=PUBLIC for every AWS-published type.",
+      "evidence": [
+        "20261110T100112Z-cloudformation-describetype-does-not-serve-the-public-resource.md (HIGH, simparity-wire-aws-v1): 'Seven distinct root causes ... The replay clusters cover 2,029 recorded DescribeType steps'; 'Cause 1: status: expected 200, got 404; $.DescribeTypeResponse: missing ... 1,939 affected steps.' Causes 2-7 name mismatches for AWS::ACMPCA::Certificate, AWS::ApiGateway::Authorizer, AWS::CloudFormation::CustomResource and AWS::ElasticLoadBalancingV2::LoadBalancer.",
+        "state/registry.rs:1411-1414 'The set the emulator holds is aws_published_resource_types ... a name outside that set is not in this registry'; :1423-1427 'The description and the documentation URL are NOT known here, so they stay absent rather than invented' - directly explains the recorded mismatches.",
+        "20261029T214321Z-cloudformation-type-registry-testtype-s-publisher-gate-refuses.md; 20261117T174532Z-cloudformation-refusal-ordering-drift-status-and-registry-message.md; python3 -I regex DescribeType|public resource-type registry = 5 rows. AWS ref: Smithy DescribeType and TypeNotFoundException (404); API_DescribeType."
+      ],
+      "fixability": "fixable_in_crate: bundle and serve the public type catalogue with AWS schemas",
+      "id": "CFN-14",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/describe_type.rs:344-386 resolves only store.extension_by_arn/name plus registry::aws_published*, and :384-386 returns TypeNotFoundException when neither has a record. /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/registry.rs:1404-1465 defines aws_published() over two small catalogues: aws_published_resource_types() (:1456-1465) chains state/template.rs IMPLEMENTED_RESOURCE_TYPES and service_common::cfn_provisioning::NON_PROVISIONABLE_RESOURCE_TYPES; aws_published_record (:2102-2129) derives Schema from state/resource_schema.rs and omits Description/DocumentationUrl by design (:1423-1427). A resolved scan of /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/template.rs:2965-3129 counts 132 entries - far fewer than the 644 admissibility entries or the 1,939 recorded misses.",
+      "severity": "HIGH",
+      "surface": "DescribeType/ListTypes public resource-type registry",
+      "verified": "verified"
+    },
+    {
+      "affected_claims": 19,
+      "aws_reference": "open docs 20261116T174247Z, 20261112T044017Z, 20261115T004329Z and 20261113T163227Z cite recorded AWS event sequences and Smithy StackStatus",
+      "claim": "Several rollback and lifecycle semantics diverge: RollbackStack's opening event carries 'User Initiated' instead of AWS's 'User Initiated Rollback'; a resumed rollback emits no per-resource DELETE_IN_PROGRESS/DELETE_COMPLETE events; a root stack owning a nested AWS::CloudFormation::Stack ends DELETE_FAILED instead of DELETE_COMPLETE; and a successfully updated stack still reports CREATE_COMPLETE instead of UPDATE_COMPLETE. UNVERIFIED subclaims at this head: the no-per-resource-events and nested-delete halves appear implemented since the docs were written, so they must be re-measured before being treated as live defects.",
+      "evidence": [
+        "20261116T174247Z-cloudformation-rollbackstack-emits-no-per-resource-delete-events.md (MEDIUM): AWS rows '(stack, UPDATE_ROLLBACK_IN_PROGRESS, reason \"User Initiated Rollback\") ... one (logical id, DELETE_IN_PROGRESS) and one (logical id, DELETE_COMPLETE) for each resource the failed update had added'; emulator produces only three stack-level rows and the first reason is 'User Initiated'.",
+        "Stale-half counter-evidence: /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/rollback_stack.rs:330 and :377 call stack.schedule_resource_events(&deleted.transitions) / (&reverted.transitions), and /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioning.rs:4389,4537 show those transitions carry DELETE_IN_PROGRESS and DELETE_COMPLETE. UNVERIFIED: no emulator run confirmed the events are emitted.",
+        "20261112T044017Z-cloudformation-deletestack-on-a-root-stack-that-owns-a.md: parent delete settles DELETE_FAILED, AWS DELETE_COMPLETE. Counter-evidence: /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioning/nested_stack.rs:499-519 now issues the owning DeleteStack and /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioning/owner.rs:1285 dispatches it. UNVERIFIED at this head.",
+        "20261115T004329Z-cloudformation-ecr-iam-s3-ssm-sts-cloudformation-a-stack-updated-in-place-still-reports.md: 'after a successful in-place stack update ... DescribeStacks still reports ... CREATE_COMPLETE. AWS reports UPDATE_COMPLETE.' python3 -I literal RollbackStack = 8 docs; ContinueUpdateRollback = 11 docs; broader regex = 19 rows."
+      ],
+      "fixability": "fixable_in_crate: rollback-specific reason/status transitions; verify the two possibly-stale halves by running the emulator",
+      "id": "CFN-15",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state.rs:1531-1532 USER_INITIATED = 'User Initiated'; /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/stack.rs:2152-2186 begin_transition unconditionally writes that reason and records the IN_PROGRESS event with it (:2164, :2180-2186); begin_requested_rollback :4289-4351 calls begin_transition(:4338-4344) with no rollback-specific reason. There is no 'User Initiated Rollback' constant anywhere in the crate (exhaustive rg).",
+      "severity": "HIGH",
+      "surface": "RollbackStack/ContinueUpdateRollback/nested-stack DeleteStack and stack status after update",
+      "verified": "partially_verified"
+    },
+    {
+      "affected_claims": 11,
+      "aws_reference": "conflicting recorded wire corpora (simparity-wire-aws-v1 and simparity-behavioral-aws-v1) cited in the three docs above; Smithy ContinueUpdateRollback documents UPDATE_ROLLBACK_FAILED -> UPDATE_ROLLBACK_COMPLETE",
+      "claim": "UNVERIFIED (conflicting ground truth): the corpus contains OPPOSITE recorded AWS sentences for the same wrong-state refusal. The FIXED doc /Users/dylanwong/projects/aws0-2026-11-19/aws0/issues/things-that-now-work/20261109T061652Z-cloudformation-continueupdaterollback-s-wrong-state-refusal-names-rollbackupdatedstack-and.md demands 'ContinueUpdateRollback cannot be called from stack with <StackStatus> status.'; two OPEN docs demand the invariant 'RollbackUpdatedStack cannot be called from current stack status'. The code implements BOTH depending on stack status. Reconcile the recordings with AWS before changing the handler; no parity claim can be made.",
+      "evidence": [
+        "20261112T092815Z-cloudformation-continueupdaterollback-s-wrong-state-refusal-is-re-worded.md: recorded AWS message 'RollbackUpdatedStack cannot be called from current stack status'; emulator recorded 'ContinueUpdateRollback cannot be called ...'; four independent wire recordings from different blocking statuses including CREATE_IN_PROGRESS.",
+        "20261112T002904Z-cloudformation-2-net-new-causes-continueupdaterollback-s-wrong.md: 'IMPORTANT for the fixer, Cause 1: open WIRE issue 20261109T061652Z ... asks for the OPPOSITE wording ... which is EXACTLY what the emulator emits today. The two work items contradict each other and one of them is keyed to a stale expectation'; expected 'RollbackUpdatedStack cannot be called from current stack status', got 'ContinueUpdateRollback cannot be called from stack with CREATE_COMPLETE status.'",
+        "The opposite-expectation doc 20261109T061652Z is now in things-that-now-work (FIXED), not in things-that-do-not-work; its 'AWS: ... <OperationName> cannot be called from stack with <StackStatus> status.' claim conflicts with the two open docs. This contradicts a prior artifact's assertion that TWO OPEN docs demand contradictory messages - they do not; both open docs demand the invariant.",
+        "At this head state.rs:4355-4360 returns the invariant for CREATE_COMPLETE/CREATE_IN_PROGRESS and the interpolated sentence for UPDATE_FAILED, so the two open docs' recorded emulator text may itself be stale. UNVERIFIED without a run."
+      ],
+      "fixability": "blocked_on_ground_truth: re-record AWS for each blocking status, then choose one gate wording",
+      "id": "CFN-16",
+      "root_cause": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state.rs:4324-4361 defines UPDATE_ROLLBACK_RECOVERY_STATUSES = [UPDATE_ROLLBACK_FAILED, UPDATE_FAILED], CANNOT_CONTINUE_UPDATE_ROLLBACK = 'RollbackUpdatedStack cannot be called from current stack status', and cannot_continue_update_rollback(:4354-4361) returns the INTERPOLATED 'ContinueUpdateRollback cannot be called from stack with {status} status.' for those two statuses and the INVARIANT for every other status. /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/continue_update_rollback.rs:233-236 calls it for every status != UPDATE_ROLLBACK_FAILED.",
+      "severity": "LOW",
+      "surface": "ContinueUpdateRollback wrong-state refusal wording (contradictory corpus)",
+      "verified": "UNVERIFIED"
+    },
+    {
+      "affected_claims": 4,
+      "aws_reference": "not applicable: this is a census/measurement defect, not an AWS behavior claim",
+      "claim": "census.json lists 4 CloudFormation stub files, but only 2 are genuinely unimplemented: ExecuteStackRefactor and ListStackRefactors answer unconditional HTTP 501. SetTypeConfiguration and BatchDescribeTypeConfigurations are implemented handlers whose 501 exists only in the 'no shared in-memory engine' fallback; they are counted because a doc comment quotes the machine-readable marker text. Any parity estimate using the raw stub count is inflated.",
+      "evidence": [
+        "Unconditional 501s: /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/execute_stack_refactor.rs:160 'Err(crate::scaffolded::Scaffolded::not_implemented(\"ExecuteStackRefactor\"))' with marker at :4; /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/list_stack_refactors.rs:158 with marker at :4.",
+        "False positives: /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/set_type_configuration.rs:17 and :187 (501 only when service_state returns None; an implemented registry writer follows), and /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops/batch_describe_type_configurations.rs:18 and :160 (same fallback). Their :17/:18 marker text is inside a doc comment quoting the grep command, not a '//! SCAFFOLDED, NOT IMPLEMENTED:' line.",
+        "claims.jsonl stub rows: 4 rows with crate containing cloudformation (execute_stack_refactor, set_type_configuration, batch_describe_type_configurations, list_stack_refactors); census.family_stubs[cloudformation] = 4. 20261101T164248Z-cloudformation-liststackrefactors-stub.md and 20261102T023139Z-cloudformation-stack-refactor-execution-stackset-import-validation-and.md concern the two real stubs; 20261029T214321Z-cloudformation-type-registry-testtype-s-publisher-gate-refuses.md concerns the implemented handlers."
+      ],
+      "fixability": "fixable_in_census: anchor the marker scan to '^//! SCAFFOLDED, NOT IMPLEMENTED:' and exclude implemented fallbacks",
+      "id": "CFN-17",
+      "root_cause": "/Users/dylanwong/projects/aws0-research-2026-11-19/census.py:63-71 stub_census() classifies a file as a stub when the SUBSTRING 'SCAFFOLDED, NOT IMPLEMENTED:' appears anywhere in the first 3000 bytes, without anchoring to a line-start '//!' marker. An exhaustive python3 -I reproduction of that rule over /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/ops returns 4 files; a strict rg '^//! SCAFFOLDED, NOT IMPLEMENTED:' returns 2.",
+      "severity": "LOW",
+      "surface": "Census data quality: CloudFormation unimplemented-operation stubs",
+      "verified": "verified"
+    },
+    {
+      "affected_claims": 1,
+      "aws_reference": "gh#557 is an ECS issue with a recorded AWS comparison; no CloudFormation AWS claim is involved",
+      "claim": "The harness lists gh#557 among CloudFormation issues, but gh#557 is 'ECS: a BLUE_GREEN deployment runs as a rolling update' (state open, family ecs, zero occurrences of 'cloudformation' in its body); it is an ECS deployment-strategy divergence and must not be counted as a CloudFormation finding. GitHub issue state and census family are also not parity signals: gh#343 is CLOSED yet AWS::SES::ConfigurationSetEventDestination is still absent from the catalogue; gh#203 is OPEN yet AWS::CloudFront::KeyValueStore is catalogued; gh#33 is OPEN but its comment records a fix in 1.0.471; gh#202 is OPEN but its CloudFront resources now have provisioners.",
+      "evidence": [
+        "gh#557 body: 'I created a Fargate service whose deploymentConfiguration has strategy BLUE_GREEN (the blue/green deployment of the default ECS deployment controller, not CodeDeploy)'; AWS comparison run in us-west-2 2026-11-19; 1 comment. claims.jsonl row gh#557 has family None by the census prefix rule (title begins 'ECS:'), and python3 -I count of 'cloudformation' in the body = 0.",
+        "gh#343 [closed] vs resolved catalogue scan: AWS::SES::ConfigurationSetEventDestination ABSENT; gh#203 [open] vs resource_types.rs:95 CLOUDFRONT_KEY_VALUE_STORE PRESENT; gh#33 comment 1 'Fixed in 1.0.471. A 69,105-byte template ... passed by TemplateURL now works'; gh#202 comments 1-2 vs /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioning/cloudfront_resources.rs:119-131.",
+        "census.json: 572 GH issues (518 open, 54 closed), family_gh_issues[cloudformation] = 42 (39 open, 3 closed = gh#343, gh#501, gh#547), family_open_docs[cloudformation] = 85, family_stubs[cloudformation] = 4; 663 of 17,671 fixed docs mention CloudFormation. python3 -I scan: 93 GH issues mention CloudFormation in title+body; 31 of those have family _unclassified.",
+        "The harness's '60+ open docs' is a lower bound: the CFN-family open docs are exactly 85 (66 HIGH, 18 MEDIUM, 1 CRITICAL), plus hundreds of cross-family open docs whose CloudFormation cause is one of several in the file (205 open docs carry the unrecognized-type literal alone)."
+      ],
+      "fixability": "fixable_in_census: classify issues by a CloudFormation-operation regex, and re-verify issue state against code",
+      "id": "CFN-18",
+      "root_cause": "/Users/dylanwong/projects/aws0-research-2026-11-19/census.py:93-100 family_of() assigns a GH issue's family from the leading 'word:' of its title (or _unclassified when there is no colon) and an in-repo doc's family from the last segment of shape_id. Consequently census.json family_gh_issues[cloudformation]=42 while 93 GH issues mention CloudFormation in title/body and 31 of those are _unclassified - including the harness-named gh#554, gh#538 and gh#567. GH state is recorded verbatim from the API and is never re-checked against the code at fork head ec5f6fbab9238221b966379f06846c34e9d6a6f5.",
+      "severity": "LOW",
+      "surface": "Corpus/harness classification traps affecting a CloudFormation census",
+      "verified": "verified"
+    }
+  ],
+  "gaps": [
+    "gh#557 (named by the harness) is an ECS BLUE_GREEN deployment issue, not a CloudFormation divergence; excluded from CFN findings and reported as CFN-18.",
+    "GH issue state and census family are not parity signals: gh#343 is closed but its type is still missing; gh#203, gh#33 and gh#202 are open but partly or wholly fixed; gh#554, gh#538 and gh#567 are _unclassified by census.py's title-prefix rule.",
+    "Contradictory ContinueUpdateRollback wordings (CFN-16): a FIXED doc and two OPEN docs record opposite AWS sentences; state.rs:4354-4361 implements both depending on stack status. Re-record AWS before changing the handler.",
+    "Stale or contradicted doc claims found by code reads: 20261109T223435Z-cloudformation-5-net-new-causes-custom-resource-responseurl.md cause 1 (ResponseURL host) vs custom_resource.rs:492-525 + /Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-server-runtime/src/signed_url.rs:164-175; gh#407 StreamArn vs ref_and_get_att.rs:712-733; 20261116T174247Z-cloudformation-rollbackstack-emits-no-per-resource-delete-events.md per-resource half vs ops/rollback_stack.rs:330,377; 20261112T044017Z-cloudformation-deletestack-on-a-root-stack-that-owns-a.md vs state/provisioning/nested_stack.rs:499-519; 20261110T214500Z-cloudformation-a-custom-resources-delete-is-sent-and-its-provider-torn-down.md continues-the-loop half vs provisioning.rs:4531 (still_needed). Each is marked UNVERIFIED or partially_verified rather than asserted as live.",
+    "The exact remaining root cause of the intermittent Custom::AWS hangs in gh#378 comment 3 (shared provider Lambda, concurrent invocations, or a missing Node module) was not isolated. /Users/dylanwong/projects/aws0-research-2026-11-19/linkedin-post.txt:20 is a third-party social-media claim (UNVERIFIED) and is only partly consistent with /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-lambda-awsgirapiservice/src/state/execution/node/core_modules.rs:36-59 (node:http IS emulated; zlib and fetch are absent).",
+    "CFN-01's 356-type count is a resolved-catalogue scan over corpus-recorded bracketed refusals; the AWS-published status of every individual name was not independently verified against AWS, and some names may be synthetic corpus types. gh#343 and gh#407 explicitly state their AWS expectation is documentation-only; gh#19 states 'This test did not call real AWS'.",
+    "CFN-08's per-type drift NOT_CHECKED population was not measured by running the emulator; newer code (state/provisioning/dynamodb_table.rs:910-956, state/provisioner/reported_configuration.rs) may already close some of the recorded drift cases.",
+    "Module docs contradict code at /Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/resource_types.rs:59-66 (ValidateTemplate 'NOT held to the catalogue') vs ops/validate_template.rs:248, and at :47-51 (RegisterType/ActivateType 'still scaffold stubs') vs ops/register_type.rs:394-402.",
+    "/Users/dylanwong/projects/aws0-research-2026-11-19/census.py:63-71 stub detection is a substring test on the first 3000 bytes, so the global 7,114 stub count is an upper bound; CFN-17 quantifies two CloudFormation false positives.",
+    "Only files under the CloudFormation service crate (plus the Lambda Node core_modules.rs and the Smithy URL signer) were read in depth; the other 439 service crates and the 17,671 fixed docs were scanned for CloudFormation terms but not audited per file. No dynamic verification (cargo test, emulator replay, or live AWS call) was performed."
+  ]
+}
