@@ -101,4 +101,7 @@ corroborator). 462 files trip the size-to-line ratio heuristic alone; all are
 single-line minified JSON data with no escape-density corroboration, which is
 the documented benign case. `blockedCount` and `failCount` are both zero. The
 `filesScanned:0` behaviour of the served verb is reported as a tooling gap,
-not treated as a passed gate.
+not treated as a passed gate. Re-probed after the disk-full interruption with
+142 GiB free: `ok:true`, `filesScanned:0`, `failCount:0`, `blockedCount:0`,
+`nodeModulesPresent:false` (dispatch `1795216036293-375-e499b16ca95a5705`).
+The zero-file result is therefore persistent, not an ENOSPC artifact.
