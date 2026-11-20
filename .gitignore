@@ -34,5 +34,4 @@ __pycache__/
 .agentplug/
 
 # Transient research scratch written into the checkout by workflow agents
-fabric/*-results.txt
-fabric/*-hits.txt
+fabric/*.txt
