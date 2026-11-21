@@ -1,0 +1,117 @@
+{
+  "agent_removals_verified": [
+    {
+      "kib": 9497352,
+      "lsof": 0,
+      "path": "/Users/dylanwong/Library/Caches/laboon/build",
+      "ps_refs": 0
+    },
+    {
+      "kib": 495480,
+      "lsof": 0,
+      "path": "/private/tmp/fcp07_repro/target",
+      "ps_refs": 0
+    },
+    {
+      "kib": 16,
+      "lsof": 0,
+      "path": "/Users/dylanwong/projects/aws0-research-2026-11-19/_refute_f21_repro/target",
+      "ps_refs": 0
+    },
+    {
+      "kib": 16,
+      "lsof": 0,
+      "path": "/Users/dylanwong/projects/aws0-research-2026-11-19/_refute_f08_trailer_probe/target",
+      "ps_refs": 0
+    }
+  ],
+  "authority": "user standing approval 2026-11-13: regenerable build artifacts/caches + stale Chrome clones only",
+  "checks": "every removal gated on lsof +D <dir> == 0 open files AND zero ps cargo/rustc command-line references",
+  "df_after": "/dev/disk3s1   926Gi   870Gi    11Gi    99%    5.9M  114M    5%   /System/Volumes/Data",
+  "df_before": "/System/Volumes/Data 926Gi 880Gi 117Mi 100%",
+  "excluded": [
+    "session transcripts",
+    "*.output files",
+    "VM/container disk images",
+    "laboon OCI image cache",
+    "iroh blobs",
+    "git objects",
+    "user data",
+    "live targets with open files",
+    "any worktree with source edits"
+  ],
+  "free_bytes": {
+    "final": 11710221056,
+    "immediately_after": 10619162624,
+    "initial": 142376960
+  },
+  "freed_bytes_by_cleaner_task": 10230692736,
+  "note": "sizes are du -sk measurements taken before removal; free space fluctuates because other sessions run cargo builds concurrently",
+  "peer_consent": "none requested or granted; dylanwong-08's scoped find -delete commands were declined and not run by this session",
+  "processes_killed": 0,
+  "protected_paths_verified_present": [
+    "/Users/dylanwong/Library/Caches/laboon/images",
+    "/Users/dylanwong/projects/aws0-2026-11-19/aws0/target",
+    "/Users/dylanwong/projects/literbox/target",
+    "/private/tmp/literbox-bl04-probe/target"
+  ],
+  "removed": [
+    {
+      "approx_MiB": 32800,
+      "path": "/Users/dylanwong/projects/aws0-research-2026-11-19/_refute_f08_trailer_probe/target",
+      "verified_at": "16:31"
+    },
+    {
+      "approx_MiB": 22590,
+      "path": "/Users/dylanwong/projects/aws0-research-2026-11-19/_refute_f10_repro/target",
+      "verified_at": "16:31"
+    },
+    {
+      "approx_MiB": 12000,
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/target (earlier pass)",
+      "verified_at": "earlier"
+    },
+    {
+      "approx_MiB": 2713,
+      "path": "/Users/dylanwong/projects/aws0-research-2026-11-19/_refute_f10_repro/target (regrown)",
+      "verified_at": "18:42"
+    },
+    {
+      "approx_MiB": 959,
+      "path": "/Users/dylanwong/projects/aws0-research-2026-11-19/_refute_f18_verifier/target",
+      "verified_at": "18:42"
+    },
+    {
+      "approx_MiB": 111,
+      "path": "/Users/dylanwong/projects/aws0-research-2026-11-19/_refute_f17_probe/target",
+      "verified_at": "18:42"
+    },
+    {
+      "approx_MiB": 0,
+      "path": "/Users/dylanwong/projects/aws0-research-2026-11-19/claims.jsonl.tmp.* (failed Write temp files)",
+      "verified_at": "19:00"
+    }
+  ],
+  "schema": "aws0/disk-cleanup-manifest/v1",
+  "sha256_of_body": "ea90b3075add84486799371333edfdae059d0857bb6764d883ca7a569d67d22b",
+  "skipped_live": [
+    {
+      "approx_MiB": 16583,
+      "path": "/Users/dylanwong/projects/aws0-2026-11-19/aws0/target",
+      "reason": "337 open files / 4 cargo refs at 18:42; guarded sweep at 19:00 reported open=0 refs=4 and still skipped"
+    },
+    {
+      "approx_MiB": 2330,
+      "path": "/Users/dylanwong/projects/literbox/target",
+      "reason": "5 open files from VM service pid 68866; 39 dirty git entries"
+    },
+    {
+      "approx_MiB": 559,
+      "path": "/private/tmp/literbox-bl04-probe/target",
+      "reason": "1115 open files from VM service pid 68866"
+    }
+  ],
+  "ts": "2026-11-20T19:11:17",
+  "ts_updated": "2026-11-20T19:12:24",
+  "workflow_paused": "w43e9zr91 stopped with TaskStop at 18:42 to halt writers; journal retained, 290 results, 18 unfinished refuters, no Synthesize phase"
+}

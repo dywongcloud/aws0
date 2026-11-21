@@ -1,0 +1,273 @@
+{
+  "agents": 4,
+  "continuation": "synthesis-only; zero completed refuters re-run",
+  "critic": "{\"missing\":[\"live AWS wire/behavioral replay \u2014 the only 1:1 correctness baseline (docs/CRITIC.md:27-29; DEEP-RESEARCH.md:236; COMPL-11)\",\"live emulator/SigV4 HTTP execution \u2014 all 11 witness plans UNEXECUTED (parity-report.md:23; backlog.json:62,102,129,165,214,248,285,330,377,416,464)\",\"browser/visual UX and design modality (gm-continue.json:1 browser_arm_rows=0, design_decision_rows=0; post image at linkedin-raw.html:218 never fetched)\"],\"unverified\":[\"IC-01 zero votes and no repro lens; DDB-06/08/09/10 incomplete (census-ledger-final.json; journal.jsonl:609-640) \u2014 these carry ranked FIX-08/FIX-07\",\"F-12 contested, F-20 PLACEHOLDER at journal.jsonl:586, 7 conflicting (claim,lens) pairs, cross-HEAD votes at 7f6e71bba/366fefb3f vs ec5f6fbab\",\"every AWS-side comparator; LinkedIn 52/54 benchmark, five checks as AWS authority, 0/3 event flows, zero Lambda bundles (docs/findings/completeness.json gap 6; linkedin-5.json gaps 2,3,6)\",\"measurement caveats: service_crates=440 hardcoded at census.py:120, 7,114 vs 7,011 stubs, C-14 644 vs 615, 1,392 projected rows is a sum of overlapping sets\",\"never-read sources: 20 LinkedIn comments/first-comment links and the primary 52/54 report (linkedin-raw.html:218 comment:[]/commentCount:20, sign-in gate at :408/:422), real AWS, COMPL-11 external AWS docs, ADVERSARIAL-CENSUS.md (absent), docs/contracts/API-SHEET.md and scratch findings/*.json (absent from backlog.json:477 source_artifacts)\"],\"unaddressed\":[\"1:1 API/contracts: only 490/13,041 claim rows cross-cited, no AWS operation-inventory diff, no parity claim\",\"UX/DX: root README 'A true 1:1 AWS' incongruency unranked (DEEP-RESEARCH.md:56-70), DX-STATE-001/gh#20 unranked\",\"LinkedIn five: L5-01..05 refuted 3-0 (CENSUS-VERDICTS.md:48-52), no ranked fix maps to any check, L5-01/02/05/08 absent from backlog; ADVERSARIAL-REFUTATION.md:82-83 says documented, not all implemented\",\"event flow: 0/3 flows unnamed and comments login-gated (linkedin-5.json L5-07; event-flow.json gap 2), only EF-05/F-05 survive\",\"Lambda bundles: FIX-06 UNVERIFIED, LR-01..12 refuted (CENSUS-VERDICTS.md:60-71), no live Invoke or bundle load\"],\"verdict\":\"INCOMPLETE / NOT CLOSE. 1:1 AWS parity is NOT achieved; measured residual unchanged and open (5,355 open gap docs, 518 open GitHub issues, 7,011 true marker stubs, 440 service crates, 13,041 claim rows, 17,671 fixed docs). All 11 fixes ranked with zero executed witnesses and zero claim rows closed. Cost of interrupted launches: 19 started keys without verdicts (9 relaunched under new keys, 10 permanently lost), 5 incomplete claims, 2 zero-vote claims, F-12 contested, no Synthesize phase, ~1.01M input/326K output/27M cache-read tokens spent on lost tail agents; 18-vs-19 discrepancy UNVERIFIED. Cost of scan_deps filesScanned:0: ok:true/failCount:0 over zero files is a vacuous clean gate over 91,184 tracked paths, persistent after a 142 GiB re-probe, no dependency audit, no PRD row, so all supply-chain and the 36 substrate witnesses inherit an UNVERIFIED assurance gap (docs/ADVERSARIAL-REFUTATION.md:93-107). Full critic: /Users/dylanwong/projects/aws0-research-2026-11-19/critic.md\"}",
+  "deduped": 63,
+  "incomplete_claims": [
+    "DDB-06",
+    "DDB-08",
+    "DDB-09",
+    "DDB-10",
+    "IC-01"
+  ],
+  "journal_counts": {
+    "failed": 7,
+    "launched": 1,
+    "result": 290,
+    "started": 342
+  },
+  "journal_rows": 640,
+  "live_witness_receipt": {
+    "dispatch_id": "1795221958871-405-181105d615e63ff9",
+    "failed": 0,
+    "hash": "12072d024133461521ff4f7a311ca2d1f402b0a3d867402cf50076162f602762",
+    "passed": 36,
+    "suite": "aws0-fabric-live-witness",
+    "total": 36,
+    "ts_ms": 1795221916466
+  },
+  "refutation_votes": {
+    "not_refuted": 20,
+    "refuted": 255
+  },
+  "report": {
+    "coverage": "Synthesis-only continuation of wf_b49262e6-0ba; GROUND TRUTH ONLY. Read: 19 lens outputs under /Users/dylanwong/projects/aws0-2026-11-19/aws0/docs/findings/ (251 finding rows, 176 gap rows), /Users/dylanwong/projects/aws0-research-2026-11-19/census-ledger-final.json, /Users/dylanwong/projects/aws0-2026-11-19/aws0/docs/CENSUS-VERDICTS.json and .md, PARITY-REPORT.md, PARITY-CENSUS.md, LINKEDIN-POST.txt (verbatim source), ADVERSARIAL-REFUTATION.md, CRITIC.md, DEEP-RESEARCH.md, census.md, disk-cleanup-manifest.json, journal.jsonl (640 rows), census.json (58,278,979 bytes, read only via python3 -I line streaming, never loaded whole) and claims.jsonl (13,041 rows, streamed). Streamed generated_from: fork_head ec5f6fbab9238221b966379f06846c34e9d6a6f5, gh_open 518, gh_closed 54, inrepo_open_docs 5355, inrepo_fixed_docs 17671, stub_files 7114, service_crates 440; array element counts gh_issues 572, open_docs 5355, fixed_doc_index 17671, stubs 7114; claim kinds gh_issue 572 / inrepo_open 5355 / stub 7114; severities CRITICAL 111, HIGH 3888, MEDIUM 1238, LOW 118. Ranked backlog: 11 fixes, 118 pairwise-disjoint absolute file surfaces (asserted 0 overlaps, all exist), 1,392 projected claim rows in scope, 0 actually closed. NOT covered: docs/CRITIC.md records only 490/13,041 (3.76%) claim rows cited by another lens; 296/331 open-doc families, 43/63 GitHub families, 140/247 stub families have zero cited rows; 277/415 distinct family names (4,170 rows) zero-cited; all 17,671 fixed docs contribute zero claim rows; 2,649 open docs carry >1 Issue-Key; 2,232 open docs (41.7%) and 232 GitHub issues (40.6%) are _unclassified; 45 CRITICAL and 1,449 HIGH open docs are in zero-cited families. No live AWS replay of any family trace id exists (docs/CRITIC.md:27-29), so every AWS-side comparator is UNVERIFIED. Excluded from ranking as measurement-only / no code surface: COMPL-01..12, RG-01/03/04/06/07/08/09/10, PV-13/PV-14, STUB-CENSUS-OVERCOUNT, stubs-census-overcounts-103, stubs-no-single-shared-mechanism, CFN-17/18, lambda-runtime-doc-census.json (0 findings), L5-03/04/07/09/10/11/12. Independent baseline docs/DEEP-RESEARCH.md (99 agents, 17 primary/forum/blog sources, 13 confirmed findings, 12 refuted claims) confirms upstream disclaims full fidelity and that real AWS, not upstream, is the baseline; its finding 12 records exactly one live-witnessed upstream code fix in this fork (SNS empty NextToken, GH #479); finding 13 rates the LinkedIn post low confidence. docs/ADVERSARIAL-REFUTATION.md:61-78 keeps four substrate holes open and its 36/36 witnesses (docs/WITNESS-OUTPUT.json) witness the fabric substrate and a build, not AWS parity. Outputs written: /Users/dylanwong/projects/aws0-research-2026-11-19/parity-report.md (69,204 bytes) and /Users/dylanwong/projects/aws0-research-2026-11-19/backlog.json (71,185 bytes).",
+    "notes": "METHOD: synthesis-only; no refutation re-run, no subagents, no cargo build/test/check, no target/ creation, no repo-worktree modification. RANK RULE (declared convention, not a measured fact): score = claims_closed x severity_weight / surface_count; weights CRITICAL=4, HIGH=3, MEDIUM=2, LOW=1; severity is the MAX severity among merged findings; claims_closed is the MAX lens-reported affected_claims among merged semantic duplicates (never the sum, since those claim-row sets overlap); surface_count is the number of named disjoint absolute file edit surfaces; ties break on claims_closed then fix id. Ranked order: FIX-01 280.00, FIX-02 184.00, FIX-03 124.00, FIX-04 79.80, FIX-05 30.53, FIX-06 6.00, FIX-07 4.50, FIX-08 4.29, FIX-09 4.00, FIX-10 1.50, FIX-11 0.43. Ranking is projected leverage per surface, NOT a confidence ordering; UNVERIFIED fixes must not be scheduled until missing lenses complete and a live witness passes. Semantic duplicates merged: IC-01+EF-01+IC-02..11; F-01..F-07+C-13+C-17+C-20+RG-02+DX-CRED-001; C-02+C-03+C-14+PV-04+PV-08; PV-01+PV-02+PV-03; EF-05+EF-06+EF-07. Disjointness asserted in the generator over 118 absolute paths: 0 overlaps. WITNESS RULE: each fix names a boot of the real binary (cargo run -p aws-emulator-router) plus a real SigV4 HTTP request (curl --aws-sigv4 against https://127.0.0.1:9297, self-signed TLS documented at docs/UPSTREAM-README.md:53; CLI flags at vendor/server/src/cli.rs:54-71; credentials at ~/.emulator/9297/emulator_credentials per vendor/server/src/request_authentication.rs:600-615); NO test file on disk is proposed or cited as evidence (docs/ADVERSARIAL-REFUTATION.md:91). VERIFICATION STATUS: docs/CENSUS-VERDICTS.json is the earlier 527-row ledger (212 unique verdict keys, 194 refuted, 18 not refuted, 7 failed, 52 claims, 48 complete, 4 pending, survivors EF-05/F-05, synthesis_pending=true); census-ledger-final.json is the 640-row final tally (342 started, 290 result, 7 failed, 1 launched; 268 unique verdict keys, 248 refuted, 20 not-refuted, 63 complete, 5 incomplete, last-recorded-result-wins per (claim,lens)). Conservative survivors EF-05 and F-05; F-12 CONTESTED and UNVERIFIED; 5 incomplete claims DDB-06/DDB-08/DDB-09/DDB-10/IC-01; DDB-10 and IC-01 have ZERO votes and IC-01 never had a repro lens launched; F-20:correctness carries the literal reason \"PLACEHOLDER\" (journal.jsonl:586) and is UNVERIFIED; 7 (claim,lens) pairs conflict (EF-06, F-01, F-05, F-07, F-08, F-12 correctness, F-12 repro); 75 pairs have two verdict keys; 22 sweep result rows on 14 keys are coverage, not votes; later-wave votes quote fork HEADs 7f6e71bba/366fefb3f while census.json:3 pins ec5f6fbab, so cross-HEAD comparison is UNVERIFIED and unreconciled (docs/DEEP-RESEARCH.md:23 reports the fork six commits ahead at 2026-11-20T10:17Z). CONTRADICTION (UNVERIFIED, not resolved): docs/PARITY-REPORT.md:41-50 lists IC-01, EF-01, F-03, F-06, DDB-02, LR-05, LR-06 as \"verified root causes\", but the final vote ledger refutes EF-01, F-03, F-06, DDB-02, LR-05, LR-06 and gives IC-01 zero votes; docs/ADVERSARIAL-REFUTATION.md:82-83 says the LinkedIn post's five checks are documented, not all implemented (checks listed at docs/PARITY-REPORT.md:21). PROVENANCE SHA256 (docs/PARITY-REPORT.md:106-109): census.md 07deab7453739aeb74ab940d909ae2adfab15e4f5c01a11d3925cac7ca5da908; claims.jsonl 6a15b600b7a44a6f33601b8ce7d0d6ae7650de74a6ffeb716360d3e6f8167977; linkedin-post.txt 3a07f4c667808d453843cdad05eeeed5f037f5b8ca9bbee20a85ca000ac365da; contracts/API-SHEET.md 9b0cd6e4d735ac950174641410824579989175f567626d5c13b672b61b86c482. Full detail in /Users/dylanwong/projects/aws0-research-2026-11-19/parity-report.md and /Users/dylanwong/projects/aws0-research-2026-11-19/backlog.json.",
+    "ranked_fixes": [
+      {
+        "claim": "Templates naming a type outside the static 644-entry catalogue are refused 400 \"Unrecognized resource types: [...]\" before creation; 194 named types are still absent and 356 distinct types remain absent (docs/findings/cloudformation-full.json CFN-01; gh#554 AWS::Config::RemediationConfiguration, gh#343 AWS::SES::ConfigurationSetEventDestination, gh#377, gh#538, gh#567). Enforcement is at services/service-com-amazonaws-cloudformation-cloudformation/src/state/resource_types.rs:173, :1031-1036 and :1110; declared-only types reach src/state/provisioning/cloudfront_resources.rs:119-131 (CFN-03). Merged duplicates: CFN-03/04/05/07/08/09/10/11/13/14/15/17/18. UNVERIFIED: CFN-01 sub-claim that all 356 are AWS-published (corpus annotation, not a live check); CFN-02 and CFN-16 are labelled UNVERIFIED; CFN-03/06/08/09/10/11/15 are partially_verified.",
+        "claims_closed": 210,
+        "residual": "CFN-02/CFN-16 UNVERIFIED, CFN-10 CRITICAL partially_verified, CFN-01 AWS-publication sub-claim UNVERIFIED; no live AWS replay in corpus (docs/CRITIC.md:27-29). Exact residual unchanged: 5,355 open docs, 518 open GitHub issues, 7,011 true marker stubs, 440 service crates, 13,041 claim rows; zero rows closed by this synthesis.",
+        "surfaces": [
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/resource_types.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudformation-cloudformation/src/state/provisioning/cloudfront_resources.rs"
+        ],
+        "title": "CloudFormation: make the resource-type catalogue non-gating and wire declared types to provisioners",
+        "witness": "Boot the real binary: `cargo run -p aws-emulator-router -- -a on -p 9297 -t off` (docs/UPSTREAM-README.md:49-53; core/router/Cargo.toml:7-9; vendor/server/src/cli.rs:54-71); read the run keys from ~/.emulator/9297/emulator_credentials (vendor/server/src/request_authentication.rs:600-615; vendor/server/src/cli.rs:65-66). Then a real SigV4-signed HTTP request: `curl -sk --aws-sigv4 aws:amz:us-east-1:cloudformation -X POST https://127.0.0.1:9297/ -d 'Action=CreateStack&Version=2010-05-15&StackName=probe&TemplateBody={...AWS::Config::RemediationConfiguration...}'`, then `Action=DescribeStackResources`; compare the live response with the recorded AWS 200 in gh#554. No test file on disk is evidence."
+      },
+      {
+        "claim": "Every framework refusal uses a fixed two-member envelope (JSON {__type, lowercase message}, Query XML <Error><Type>Sender</Type><Code/><Message/></Error>, restXml, CBOR); Service::override_refusal can replace only a code and a sentence (C-03, 497 rows; services/service-com-amazonaws-synthetics-synthetics/src/service.rs:44-60). Constraint Violations store an already-elided rejected value and the refusal seam never receives the request (C-14, 644 rows; gh#312; 20261022T133000Z-gap-smithy-schema-server-constraint-violation-stores-only-the-elided-rejected-value.md). Generated member Schemas never carry @timestampFormat so ISO-8601 date-times serialize as epoch numbers (C-02, 154 rows; vendor/smithy-schema-server/src/json.rs:44-49; gh#248; 20261021T223000Z-scaffold-codegen-drops-timestampformat-from-member-schemas.md). Merged duplicates: C-04/C-05/C-06/C-08/C-10/C-11/C-15/C-16/C-18/C-21, PV-04/PV-08/PV-10/PV-11/PV-12, RG-05. UNVERIFIED: C-08/C-10/C-12/C-19 partially verified or unverified; AWS-side shapes are recorded traces, not a live AWS call; C-14 644 vs independently streamed exact-literal 615.",
+        "claims_closed": 644,
+        "residual": "C-08/C-10/C-12/C-19 and all AWS-side comparators UNVERIFIED (no live AWS replay; docs/CRITIC.md:27-29). C-14 644 vs streamed 615 exact-literal rows UNVERIFIED. 243 of 436 service.rs still leave override_refusal at default. Exact residual unchanged.",
+        "surfaces": [
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-server-runtime/src/operation.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-server-runtime/src/pre_dispatch.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-server-runtime/src/service.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-schema-server/src/json.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-schema-server/src/query.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-schema-server/src/constraints.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-schema-server/src/rest_json.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-schema-server/src/rest_xml.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-schema-server/src/http_binding.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-macros/src/lib.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/common/src/in_process_refusal.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/common/src/web_media_type.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-synthetics-synthetics/src/service.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-connectcampaigns-amazonconnectcampaignservice/src/service.rs"
+        ],
+        "title": "Framework wire contract: modeled error envelopes, validation wording, timestamps, 204 framing, media types",
+        "witness": "Boot: `cargo run -p aws-emulator-router -- -a on -p 9297 -t off` (docs/UPSTREAM-README.md:49-53; vendor/server/src/cli.rs:54-71). Real HTTP: `curl -sk --aws-sigv4 aws:amz:us-east-1:dynamodb -H 'X-Amz-Target: DynamoDB_20120810.PutItem' -H 'Content-Type: application/x-amz-json-1.0' -d '{\"TableName\":\"t\",\"Item\":{}}' https://127.0.0.1:9297/`; read the live ValidationException envelope and compare with the recorded AWS envelope in gh#312; repeat on a 204-returning operation and read Content-Length: 0 (C-04). No test file on disk is evidence."
+      },
+      {
+        "claim": "The shared token helper is opt-in and seals only the cursor: 28/438 crates use PageTokenKey, 377 mention next_token/NextToken, 350 do not, 54 define a local fn paginate (docs/findings/pagination-validation.json PV-01; services/common/src/lib.rs:670; services/common/src/page_tokens.rs:46-81; 20261115T074520Z-billing-listbusinesssupportsubscriptionhistory-pagination.md; 20261119T090643Z-trustedadvisor-listchecks-pagination.md). PV-02/PV-03 (13 + 16 docs) show tokens not bound to region/gateway/filter and forged/never-issued tokens accepted. Merged duplicates: PV-02/PV-03/PV-05/PV-06. UNVERIFIED: PV-13 ac=378 labelled UNVERIFIED; PV-14 ac=5355 is corpus drift, not a code fix; PV-06/PV-12 partially verified; PV-04/PV-08/PV-10/PV-11 error-wording rows merged into FIX-02.",
+        "claims_closed": 62,
+        "residual": "PV-13 (378) UNVERIFIED, PV-14 (5,355) corpus-hygiene not a fix, per-crate adoption in 350 crates unverified; streamed broad-literal 446 rows vs lens union 62 UNVERIFIED. Exact residual unchanged.",
+        "surfaces": [
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/common/src/lib.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/common/src/page_tokens.rs"
+        ],
+        "title": "Pagination: make the shared NextToken helper mandatory and bind tokens to the full request scope",
+        "witness": "Boot: `cargo run -p aws-emulator-router -- -a on -p 9297 -t off` (docs/UPSTREAM-README.md:49-53; vendor/server/src/cli.rs:54-71). Real HTTP: `curl -sk --aws-sigv4 aws:amz:us-east-1:dynamodb -H 'X-Amz-Target: DynamoDB_20120810.ListTables' -d '{\"Limit\":1}' https://127.0.0.1:9297/`, capture the live NextToken, replay it with a changed filter and with a tampered token; compare the live error code/message with 20261119T001456Z-rtbfabric-listrequestergateways-error-response.md. No test file on disk is evidence."
+      },
+      {
+        "claim": "There is no shared clock in core/ or vendor/: 22 hand-rolled drive_*clock tasks live in 21 service crates, each started by a request handler, 17 with explicit MAX_CLOCK_TICKS caps (docs/findings/ec2-autoscaling.json SHARED-SCHEDULING-TIMER-GAPS; services/service-com-amazonaws-autoscaling-autoscaling-2011-01-01/src/state/lifecycle_events.rs:122,130,139,406-421,819,840; services/service-com-amazonaws-eventbridge-awsevents/src/state/schedule.rs:3-41,74-80,440-450; gh#569). Merged duplicates: EC2ASG-SCHED-NEVER-RUN, EC2ASG-SCHED-CONTROL-DIVERGENCES, EC2ASG-SCHED-DELETE-501-STUBS, ECS-BLUE-GREEN-RUNS-AS-ROLLING, KMS-DISABLED-KEY-LAUNCH-SUCCEEDS, EC2-INSTANCE-STATECHANGE-EVENTS-MISSING. UNVERIFIED: those six siblings are labelled PARTIAL/UNVERIFIED; gh#569 runtime claim is UNVERIFIED in the lens; EF-08/EF-09 'missing shared emitter' claims were REFUTED 3-0 with counter-evidence at journal.jsonl:79.",
+        "claims_closed": 266,
+        "residual": "PARTIAL/UNVERIFIED sibling findings remain; no live AWS replay; 22 clock tasks outside the 10 named surfaces need per-crate migration; EF-08/EF-09 refuted. Exact residual unchanged.",
+        "surfaces": [
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-autoscaling-autoscaling-2011-01-01/src/state/lifecycle_events.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-autoscaling-autoscaling-2011-01-01/src/state/scheduled_actions.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-autoscaling-autoscaling-2011-01-01/src/state.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-autoscaling-autoscaling-2011-01-01/src/ops/put_scheduled_update_group_action.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-autoscaling-autoscaling-2011-01-01/src/ops/set_desired_capacity.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-eventbridge-awsevents/src/state/schedule.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-applicationautoscaling-anyscalefrontendservice/src/state.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-applicationautoscaling-anyscalefrontendservice/src/state/policy_execution.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-ecs-amazonec2containerservicev20141113/src/state/rolling_update.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-ec2-amazonec2/src/state/instances_and_filters.rs"
+        ],
+        "title": "Shared clock/scheduler: replace 22 request-started drive_*clock tasks with a real due-instant scheduler",
+        "witness": "Boot: `cargo run -p aws-emulator-router -- -a on -p 9297 -t off` (docs/UPSTREAM-README.md:49-53; vendor/server/src/cli.rs:54-71). Real HTTP: `curl -sk --aws-sigv4 aws:amz:us-east-1:autoscaling -X POST https://127.0.0.1:9297/ -d 'Action=PutScheduledUpdateGroupAction&Version=2011-01-01&AutoScalingGroupName=asg&ScheduledActionName=once&StartTime=<future ISO8601>&DesiredCapacity=2'`, then wait real wall-clock past StartTime with NO further API call and issue `Action=DescribeAutoScalingGroups`; live capacity must have changed (gh#569). No test file on disk is evidence."
+      },
+      {
+        "claim": "MultiServiceRouter::authenticate refuses every unsigned request before dispatch (vendor/smithy-server-runtime/src/multi_service_router.rs:341-362,416-429; vendor/server/src/request_authentication.rs:177-186; gh#438, gh#353, gh#51, gh#421, gh#500), and refuse_cross_site_browsers hardcodes RemoteOrigins::SameOriginOnly (multi_service_router.rs:258-267,365-390; vendor/server/src/listener_guard.rs:49-64,87-122; gh#26, gh#180, gh#72, gh#316). Advertised endpoint derives from dialable_host with region pinned us-east-1 (vendor/server/src/lib.rs:1261-1264,1371-1377,1403-1408; vendor/smithy-server-runtime/src/endpoint.rs:47-60,77-115; services/service-com-amazonaws-sqs-amazonsqs/src/state.rs:3456-3458; gh#25, gh#169, gh#418, gh#537; 20261109T191027Z-sqs-queue-url-addressing-diverges-from-aws-createqueue.md). Credentials/TLS minted per process (DX-CRED-001, DX-TLS-001; vendor/server/src/cli.rs:34-43). UNVERIFIED: F-01/F-07/F-08/F-20 conflicting lens votes (census-ledger-final.json conflicting_lens_votes); F-20:correctness reason is literal PLACEHOLDER (journal.jsonl:586); F-02/F-03/F-04/F-06 refuted; later-wave votes at HEADs 7f6e71bba/366fefb3f vs census.json:3 ec5f6fbab (cross-HEAD UNVERIFIED). DX-*/C-*/RG-02 verified static only, no live AWS replay.",
+        "claims_closed": 145,
+        "residual": "F-01/F-07/F-08/F-20 contested, F-20 PLACEHOLDER vote, cross-HEAD UNVERIFIED, F-02/F-03/F-04/F-06 refuted; full SigV4-authenticated front door still required for zero-trust (docs/ADVERSARIAL-REFUTATION.md:74-75); single-process InMemoryEngine has no data-dir/snapshot/replication (DX-STATE-001, gh#20); residual unchanged.",
+        "surfaces": [
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-server-runtime/src/multi_service_router.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server/src/request_authentication.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server/src/listener_guard.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server/src/credential_store.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server/src/cli.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server/src/lib.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server/src/listeners.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/server/src/tls_certificate_authority.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-server-runtime/src/endpoint.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/emulator-paths/src/lib.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/emulator-telemetry/src/config.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/core/embedded/src/lib.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/core/router/src/main.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/engine/src/lib.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-sqs-amazonsqs/src/state.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-codecommit-codecommit-20150413/src/state.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-elasticloadbalancingv2-elasticloadbalancing-v10/src/service/data_plane.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-grafana-awsgrafanacontrolplane/src/state.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-geomaps-mapsservice/src/ops/get_style_descriptor.rs"
+        ],
+        "title": "Shared front door: anonymous principal, SigV4 recognition/scope, Origin guard, advertised endpoint, credentials/TLS/state (UNVERIFIED: rests on contested/conflicting votes)",
+        "witness": "Boot: `cargo run -p aws-emulator-router -- -a on -p 9297 -t off` (docs/UPSTREAM-README.md:49-53; vendor/server/src/cli.rs:54-71). Real HTTP: unsigned `curl -sk -I https://127.0.0.1:9297/<bucket>` (expect 403 without x-amz-bucket-region, gh#353), repeat with `-a off` (expect 200), repeat with `-H 'Origin: https://app.example'` and read Access-Control-Allow-* on the live 403, then `curl -sk https://127.0.0.1:9297/__admin/health` (vendor/server/src/cli.rs:69-71) and read the published config endpoint_url; boot with `-b 0.0.0.0` and repeat from a second host (gh#25). No test file on disk is evidence."
+      },
+      {
+        "claim": "CORE_MODULES is a closed 19-entry table with no 'module' entry; coreName(\"node:module\") returns null and require/import raise MODULE_NOT_FOUND/Runtime.ImportModuleError (services/service-com-amazonaws-lambda-awsgirapiservice/src/state/execution/node/core_modules.rs:36-59,61-72; runtime.rs:241-244,357-383,1050-1087; gh#28; 20261117T134237Z-lambda-10-net-new-causes-in-the-lambda-control.md; LINKEDIN-POST.txt:20 'our bundles failed at load'). installGlobals has no fetch, Headers, Request, Response, structuredClone or WebAssembly (LR-06/07/08; gh#29; 20261111T081112Z-lambda-managed-runtimes-are-stub-interpreters-10-node.md). Merged: LR-05/06/07/08/09/12/13/15, L5-06. UNVERIFIED as AWS parity: LR-01..LR-12 all refuted 3-0 in census-ledger-final.json votes_by_claim (only narrow static observations survive); L5-06 correctness/spec refuted, repro not-refuted via live standalone harness (journal.jsonl:270); LR-12/13/14 partially verified/UNVERIFIED; L5-07/L5-10 UNVERIFIED; docs/DEEP-RESEARCH.md finding 13 rates the LinkedIn post low confidence.",
+        "claims_closed": 12,
+        "residual": "All LR AWS-parity claims refuted; a real Node/container runtime is required for full fidelity (docs/findings/linkedin-5.json L5-06; GH #3); Cargo.toml:236-250 pins rquickjs 0.14 without dyn-load; no live AWS replay. Exact residual unchanged.",
+        "surfaces": [
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-lambda-awsgirapiservice/src/state/execution/node/core_modules.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-lambda-awsgirapiservice/src/state/execution/node/runtime.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-lambda-awsgirapiservice/src/state/execution/node.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-lambda-awsgirapiservice/src/state/execution/runtime_api.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-lambda-awsgirapiservice/src/ops/invoke.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-lambda-awsgirapiservice/Cargo.toml"
+        ],
+        "title": "Lambda embedded JS runtime: add node:module/createRequire, fetch/Headers/Request/Response, WebAssembly, process.versions (UNVERIFIED as AWS-parity claim; static code absence verified)",
+        "witness": "Boot: `cargo run -p aws-emulator-router -- -a on -p 9297 -t off` (docs/UPSTREAM-README.md:49-53; vendor/server/src/cli.rs:54-71). Real HTTP: `curl -sk --aws-sigv4 aws:amz:us-east-1:lambda -X POST https://127.0.0.1:9297/2015-03-31/functions -H 'Content-Type: application/json' -d '{\"FunctionName\":\"bundle-probe\",\"Runtime\":\"nodejs22.x\",\"Handler\":\"index.handler\",\"Role\":\"arn:aws:iam::000000000000:role/r\",\"Code\":{\"ZipFile\":\"<base64 of a Bun ESM bundle>\"}}'`, then `POST /2015-03-31/functions/bundle-probe/invocations`; read the live response for Runtime.ImportModuleError and typeof fetch (real URIs from com-amazonaws-lambda-awsgirapiservice.json). No test file on disk is evidence."
+      },
+      {
+        "claim": "Query's GSI FilterExpression validator takes the union of the BASE table key schema and the queried index schema (services/service-com-amazonaws-dynamodb-dynamodb-20120810/src/ops/query.rs:562-583; state/table.rs:851-860; gh#372, duplicate gh#34). TransactWriteItems builds CancellationReasons only for condition failures, not runtime expression errors (ops/transact_write_items.rs:630-668; state/multi_item.rs:906; gh#6, gh#426). GSI ACTIVE uses a separate backfill clock (ops/create_table.rs:1208,1254,1485; state/index_backfill.rs) and DescribeLimits derives quotas from current provisioned capacity (state.rs:3461-3490; ops/describe_limits.rs:207-214; gh#335, gh#401). UNVERIFIED: DDB-06/08/09/10 are four of the five incomplete claims of census-ledger-final.json (DDB-06 spec-only, DDB-08 spec pending, DDB-09 spec+repro pending, DDB-10 ZERO votes); DDB-09 labelled UNVERIFIED at fork head; DDB-10 PARTIALLY VERIFIED; DDB-05 repro not-refuted but correctness/spec refuted; DDB-01/02/04/07 refuted 3-0.",
+        "claims_closed": 12,
+        "residual": "Five incomplete claims (DDB-06/08/09/10 plus IC-01), 2 zero-vote claims, 8 interrupted DDB refuter launches (journal.jsonl:609,613,623,629,631,633,635,637); DDB-09 root cause unresolved in its own corpus doc; no live AWS replay. Exact residual unchanged.",
+        "surfaces": [
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-dynamodb-dynamodb-20120810/src/ops/query.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-dynamodb-dynamodb-20120810/src/state/table.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-dynamodb-dynamodb-20120810/src/ops/transact_write_items.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-dynamodb-dynamodb-20120810/src/state/multi_item.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-dynamodb-dynamodb-20120810/src/ops/describe_limits.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-dynamodb-dynamodb-20120810/src/state.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-dynamodb-dynamodb-20120810/src/ops/create_table.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-dynamodb-dynamodb-20120810/src/state/index_backfill.rs"
+        ],
+        "title": "DynamoDB: GSI FilterExpression, per-item CancellationReasons, GSI ACTIVE, multi-attribute key (UNVERIFIED: four load-bearing claims incomplete in vote ledger)",
+        "witness": "Boot: `cargo run -p aws-emulator-router -- -a on -p 9297 -t off` (docs/UPSTREAM-README.md:49-53; vendor/server/src/cli.rs:54-71). Real HTTP: `curl -sk --aws-sigv4 aws:amz:us-east-1:dynamodb -H 'X-Amz-Target: DynamoDB_20120810.Query' -d '{\"TableName\":\"t\",\"IndexName\":\"gsi\",\"FilterExpression\":\"non_key = :v\"}' https://127.0.0.1:9297/`, then `TransactWriteItems` with a runtime update error to read per-item CancellationReasons, and `DescribeLimits` after a 40,001-RCU CreateTable (compare to the recorded 200/80,000 wire run in _refute_ddb05_quota_wire/run2.log). No test file on disk is evidence."
+      },
+      {
+        "claim": "services/common/src/iam_authorization.rs:66-71,1219-1225,1443-1446,1483-1499,1524 reads an unpublished Condition key as UNDECIDED and lets an undecidable Deny still refuse; no cross-service validator derives aws:SecureTransport from the transport, so the AWS-recommended enforceSSL Deny refuses TLS traffic (docs/findings/iam-conditions.json IC-01; 20261108T025233Z-iam-the-authorization-gate-publishes-no-request-context.md:29-35,46; GH #369, #409, #447, #451, #459). The SQS gate publishes the key at services/service-com-amazonaws-sqs-amazonsqs/src/state/authorization.rs:142-175,502-525; the eight duplicated validators are named in IC-01 evidence. Merged: IC-02..IC-11, EF-01/EF-02/EF-03, IC-04. UNVERIFIED: IC-01 has ZERO recorded votes and is one of the five incomplete claims; its correctness and spec lenses were interrupted launches (journal.jsonl:639,640) and no repro lens was ever launched; EF-01 refuted 3-0 (journal.jsonl:45-47); IC-08/IC-09 VERIFIED-PARTIAL; docs/PARITY-REPORT.md:41 still lists IC-01 as a 'verified root cause', which CONTRADICTS census-ledger-final.json and is not reconciled here.",
+        "claims_closed": 15,
+        "residual": "IC-01 zero votes, 2 interrupted IC-01 launches, EF-01 refuted, IC-09 partial; PARITY-REPORT.md:41 contradiction UNVERIFIED; changing fail-closed semantics affects ALL unmodelled keys and IAM simulator MissingContextValues reporting (IC-01 fixability); no live AWS replay. Exact residual unchanged.",
+        "surfaces": [
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/common/src/iam_authorization.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/common/src/iam_policy.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-sqs-amazonsqs/src/state/authorization.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-eventbridge-awsevents/src/state.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-eventbridge-awsevents/src/ops/put_events.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-eventbridge-awsevents/src/ops/put_events/queue_sends.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/src/state/notifications.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-lambda-awsgirapiservice/src/state/event_source_authorization.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudfront-cloudfront2020-05-31/src/service/origin_access.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-cloudtrail-cloudtrail-20131101/src/state/referenced_resources.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-ses-simpleemailservice/src/state/s3_action_authorization.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-dynamodb-dynamodb-20120810/src/state/authorization.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-kms-trentservice/src/state/authorization.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/src/service/authorization.rs"
+        ],
+        "title": "IAM condition context: publish aws:SecureTransport from the real transport and remove undecidable-Deny fail-closed (UNVERIFIED: incomplete claim, zero votes)",
+        "witness": "Boot: `cargo run -p aws-emulator-router -- -a on -p 9297 -t off` (docs/UPSTREAM-README.md:49-53; vendor/server/src/cli.rs:54-71). Real HTTP: `curl -sk --aws-sigv4 aws:amz:us-east-1:sqs -X POST https://127.0.0.1:9297/ -d 'Action=CreateQueue&Version=2012-11-05&QueueName=q'`, attach an enforceSSL Deny queue policy via SetQueueAttributes, then send `X-Amz-Target: AWSEvents.PutEvents` with an SQS target and read the live `Action=ReceiveMessage` result (GH #369/#409/#447/#451/#459). No test file on disk is evidence."
+      },
+      {
+        "claim": "Each of these 20 files carries the true '//! SCAFFOLDED, NOT IMPLEMENTED:' marker at :4, an intact '# Modeled contract for <Op>' header at :42 and an unconditional 501 (docs/findings/stubs.json stubs-top20-highest-value; gh#548, gh#505, gh#420, gh#338, gh#126, gh#125, gh#110, gh#103, gh#80, gh#544; 20261022T013648Z-xray-putresourcepolicy-stub.md). UNVERIFIED: stubs-top20-ranking-method is labelled 'ranking judgement UNVERIFIED'; stubs-modelled-contract-vs-aws-reference has no live AWS call; stubs-no-single-shared-mechanism (CRITICAL, verified static) says NO single shared mechanism can faithfully close a large class, so the 7,011-stub class is NOT closed by this or any single fix; 7,114 census stub rows include 103 false positives (census.py:63-70; docs/PARITY-REPORT.md:51; STUB-CENSUS-OVERCOUNT).",
+        "claims_closed": 20,
+        "residual": "6,991 true marker stubs remain after this bounded fix; ranking judgement UNVERIFIED; service_crates=440 is hardcoded in census.py:120 while the lens counts 438 service dirs / 436 with src/ops (UNVERIFIED); 103 stub false positives UNVERIFIED as a measurement correction; PV-07 counts 8,149 live not_implemented calls vs 7,114 census stub rows (UNVERIFIED discrepancy). Exact residual unchanged.",
+        "surfaces": [
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-appflow-sandstoneconfigurationservicelambda/src/ops/create_connector_profile.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-appflow-sandstoneconfigurationservicelambda/src/ops/describe_connector_profiles.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-licensemanager-awslicensemanager/src/ops/list_received_licenses.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-identitystore-awsidentitystore/src/ops/describe_identity_store.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-ec2-amazonec2/src/ops/unassign_private_ip_addresses.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-macie2-macie2/src/ops/describe_organization_configuration.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-macie2-macie2/src/ops/update_organization_configuration.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-costexplorer-awsinsightsindexservice/src/ops/get_cost_categories.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-codepipeline-codepipeline-20150709/src/ops/list_deploy_action_execution_targets.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-codebuild-codebuild-20161006/src/ops/list_curated_environment_images.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-resourceexplorer2-resourceexplorer/src/ops/list_supported_resource_types.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-iot-awsiotservice/src/ops/list_principal_things.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-xray-awsxray/src/ops/put_resource_policy.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-codecommit-codecommit-20150413/src/ops/batch_get_commits.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-glue-awsglue/src/ops/update_glossary_term.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-elasticloadbalancingv2-elasticloadbalancing-v10/src/ops/add_trust_store_revocations.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-elasticloadbalancingv2-elasticloadbalancing-v10/src/ops/get_trust_store_ca_certificates_bundle.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-ec2-amazonec2/src/ops/create_image.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-bedrockagentcore-amazonbedrockagentcore/src/ops/invoke_agent_runtime.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-autoscaling-autoscaling-2011-01-01/src/ops/get_predictive_scaling_forecast.rs"
+        ],
+        "title": "Stub closure, bounded: implement the 20 named highest-value scaffold operations with modeled contracts (VERIFIED-STATIC marker/contract; UNVERIFIED ranking judgement)",
+        "witness": "Boot: `cargo run -p aws-emulator-router -- -a on -p 9297 -t off` (docs/UPSTREAM-README.md:49-53; vendor/server/src/cli.rs:54-71). Real HTTP: `curl -sk --aws-sigv4 aws:amz:us-east-1:ec2 -X POST https://127.0.0.1:9297/ -d 'Action=CreateImage&Version=2016-11-15&InstanceId=i-00000000000000000&Name=probe'` for services/.../ec2.../src/ops/create_image.rs, then one real signed request per modeled operation for the other 19 named files (URIs from each crate smithy-model/*.json); each live response must be a modeled 200/4xx, never 501. No test file on disk is evidence."
+      },
+      {
+        "claim": "resolve_target/resolve_run hard-code a four-arm whitelist (SQS, event-bus, Lambda, Step Functions) and CreatePipe reports RUNNING for Kinesis (#504) and API-destination (#507) targets that never deliver (services/service-com-amazonaws-pipes-pipes/src/state/data_plane.rs:3719-3773,3498-3503,558-580; state/data_plane/event_bus.rs:42; ops/create_pipe.rs:306-324,411-422; state/bring_up.rs:78-115; docs/findings/event-flow.json EF-05). EF-05 is a conservative survivor (3 not-refuted lenses; journal.jsonl:63,65,73,398,406,408). Merged: EF-06 (empty-read NextShardIterator discarded at data_plane.rs:2278-2286 and dynamodbstreams get_records.rs:205-207), EF-07 (gh#571 stream cursor), EF-06 V2 subscriber delivery with no queue-policy pre-check at services/service-com-amazonaws-eventbridgev2-awseventsv2/src/state/subscriber_delivery.rs:100-125,340-356. UNVERIFIED: EF-06 conflicting votes (correctness not-refuted later, repro/spec refuted), EF-07 refuted 3-0, EF-01..EF-04/EF-08..EF-11 refuted 3-0 (journal.jsonl:45-47,66-71,79), later-wave EF-05 votes ran at HEAD 7f6e71bba vs census.json:3 ec5f6fbab (cross-HEAD UNVERIFIED).",
+        "claims_closed": 4,
+        "residual": "EF-06/EF-07 contested/refuted, cross-HEAD UNVERIFIED, gh#571 corpus has no maintainer confirmation and its own repro contradicts the stall (journal.jsonl:72); eventbridge/ops/put_events.rs and queue_sends.rs are owned by FIX-08 (cross-fix dependency, not a shared surface). Exact residual unchanged.",
+        "surfaces": [
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-pipes-pipes/src/state/data_plane.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-pipes-pipes/src/state/data_plane/event_bus.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-pipes-pipes/src/ops/create_pipe.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-pipes-pipes/src/state/bring_up.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-pipes-pipes/smithy-model/com-amazonaws-pipes-pipes.json",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-eventbridgev2-awseventsv2/src/state/subscriber_delivery.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-dynamodbstreams-dynamodbstreams-20120810/src/ops/get_records.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-dynamodbstreams-dynamodbstreams-20120810/src/state.rs"
+        ],
+        "title": "Event Pipes: remove the 4-target whitelist, restore stream iterators and V2 subscriber policy check (VERIFIED survivor with UNVERIFIED extensions)",
+        "witness": "Boot: `cargo run -p aws-emulator-router -- -a on -p 9297 -t off` (docs/UPSTREAM-README.md:49-53; vendor/server/src/cli.rs:54-71). Real HTTP: `curl -sk --aws-sigv4 aws:amz:us-east-1:pipes -X POST https://127.0.0.1:9297/v1/pipes -H 'Content-Type: application/json' -d '{\"Name\":\"pipe-kinesis\",\"Source\":\"<sqs queue ARN>\",\"Target\":\"arn:aws:kinesis:us-east-1:000000000000:stream/s\",\"RoleArn\":\"<role ARN>\"}'` (URI from com-amazonaws-pipes-pipes.json), then `GET /v1/pipes/pipe-kinesis` and `POST /v1/pipes/pipe-kinesis/start`; live response must be modeled delivery or a CREATE_FAILED StateReason, never RUNNING+Unserved (gh#504, gh#507). No test file on disk is evidence."
+      },
+      {
+        "claim": "Unsigned HeadBucket is answered 403 without x-amz-bucket-region, breaking AWS SDK Go v2 GetBucketRegion and Terraform 1.13.4 (gh#353; docs/findings/s3-auth.json F-05; services/service-com-amazonaws-s3-amazons3/src/ops/head_bucket.rs:250-274; src/service.rs:1952-1967; src/service/sigv4.rs:902-1021; src/service/wire.rs:3730-3806). F-05 is a conservative survivor (journal.jsonl:133,141,480,482,488, including live AWS HEAD probes). PutBucketCors accepts more than one wildcard in AllowedOrigin (src/state.rs:3705-3757; src/ops/put_bucket_cors.rs:225-259; 20261118T141719Z-s3-bucket-cors-plane-rule-validation-refuses-with.md:34-39,52,57; F-12). aws-chunked trailers are skipped, not verified (vendor/smithy-schema-server/src/aws_chunked.rs:26-38,125-179; src/service/chunked_upload.rs:132-152; F-08; 20261117T213222Z-s3-3-net-new-browser-edge-refusal-causes.md; 20261109T220008Z-s3-7-net-new-causes-cors-preflight-answers.md:63-68,95). UNVERIFIED: F-12 is CONTESTED (spec refuted, correctness/repro refuted earlier and not-refuted later; journal.jsonl:113,163,175,524,526), its spec refuter was an interrupted launch (journal.jsonl:156), later votes at HEAD 366fefb3f vs census ec5f6fbab (cross-HEAD UNVERIFIED); F-08 conflicting votes; F-09/F-13/F-14/F-16/F-18/F-19 UNVERIFIED/partially verified on AWS side; F-21/F-22 UNVERIFIED at HEAD.",
+        "claims_closed": 2,
+        "residual": "F-12 contested with an interrupted spec lens; F-08 conflicting votes; cross-HEAD UNVERIFIED; AWS-side wording corpus-recorded only; full anonymous-public parity also requires FIX-05 (cross-fix dependency, disjoint surfaces). Exact residual unchanged.",
+        "surfaces": [
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/src/service.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/src/service/sigv4.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/src/service/wire.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/src/ops/head_bucket.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/src/service/request_authorization.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/src/state/refusals.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/src/service/cors_preflight.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/src/state.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/src/ops/put_bucket_cors.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/src/ops/get_bucket_cors.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/src/service/post_object.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/src/ops/put_object.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/services/service-com-amazonaws-s3-amazons3/src/service/chunked_upload.rs",
+          "/Users/dylanwong/projects/aws0-2026-11-19/aws0/vendor/smithy-schema-server/src/aws_chunked.rs"
+        ],
+        "title": "S3 refusal renderer, CORS rule validation, and aws-chunked trailer integrity (UNVERIFIED: contested survivor F-12 and incomplete spec lens)",
+        "witness": "Boot: `cargo run -p aws-emulator-router -- -a on -p 9297 -t off` (docs/UPSTREAM-README.md:49-53; vendor/server/src/cli.rs:54-71). Real HTTP: `curl -sk --aws-sigv4 aws:amz:us-east-1:s3 -X PUT 'https://127.0.0.1:9297/<bucket>?cors' --data-binary '<CORSConfiguration><CORSRule><AllowedOrigin>https://*.*.example.com</AllowedOrigin><AllowedMethod>GET</AllowedMethod></CORSRule></CORSConfiguration>'` (expect AWS 400 InvalidRequest fixed sentence), a signed PUT with Content-Encoding: aws-chunked + x-amz-trailer + wrong CRC32 trailer (expect 400 and no stored object), and unsigned `curl -sk -I https://127.0.0.1:9297/<bucket>` (read x-amz-bucket-region on the live 403). No test file on disk is evidence."
+      }
+    ],
+    "residual": "1:1 AWS parity is NOT achieved and is NOT claimed; the measured residual is unchanged and open: 5,355 open in-repo gap documents, 518 open GitHub issues, 7,011 true marker stubs, 440 service crates, 13,041 census claim rows, plus 17,671 fixed documents (docs/PARITY-REPORT.md:63-71; docs/ADVERSARIAL-REFUTATION.md:79-83; census.json generated_from; streamed claims.jsonl = 13,041 rows). This synthesis applied NO fix, closed ZERO claim rows, executed NO cargo command, created NO target/ directory, modified NO file under the repo worktree /Users/dylanwong/projects/aws0-2026-11-19/aws0, re-ran NO refutation and spawned NO subagent; only the two named scratch output files were written. Every claims_closed value is a projected in-scope claim-row count from lens-reported affected_claims, not a verified closure; projected counts overlap across lenses and must NOT be summed as closures. All witness plans are UNEXECUTED in this pass: a full workspace build needs about 100 GiB for target/ (docs/PARITY-REPORT.md:83-85) while the host has ~11 GiB free (disk-cleanup-manifest.json df_after), so live witnesses are gated on disk provisioning or per-crate CARGO_PROFILE_DEV_DEBUG=0 CARGO_INCREMENTAL=0 builds. Interrupted launches: 19 started keys have no result and no failed row (journal.jsonl lines 156,170,178,180,184,189,192,194,196,609,613,623,629,631,633,635,637,639,640; labels refute:F-12:spec, refute:F-14:repro, refute:F-16:correctness, refute:F-16:spec, refute:F-17:correctness, refute:F-18:correctness, refute:F-18:spec, refute:F-18:repro, refute:F-19:correctness, refute:DDB-06:correctness, refute:DDB-06:repro, refute:DDB-08:spec, refute:DDB-09:spec, refute:DDB-09:repro, refute:DDB-10:correctness, refute:DDB-10:spec, refute:DDB-10:repro, refute:IC-01:correctness, refute:IC-01:spec); these are NEVER votes. Seven failed rows are disclosed as refutations-by-failure, never not-refuted votes: sweep:lambda-runtime (line 11), sweep:linkedin-5 (23), sweep:ec2-autoscaling (27), sweep:contracts (29), sweep:regressions (222), sweep:cloudformation (224), refute:F-11:repro (516, started 511); the six sweeps were re-launched and F-11:repro already has a refuted verdict at line 165. Disk-full interruption: df_before 117Mi free / 100%, df_after ~11Gi (disk-cleanup-manifest.json; docs/ADVERSARIAL-REFUTATION.md:104-107); workflow w43e9zr91 stopped with TaskStop at 18:42 with \"290 results, 18 unfinished refuters, no Synthesize phase\" (disk-cleanup-manifest.json:116) while the final ledger counts 19; the 18-vs-19 difference is UNVERIFIED and not reconciled. docs/CENSUS-VERDICTS.md:76 records the Synthesize/ranked-backlog receipt not on disk; ADVERSARIAL-CENSUS.md is absent from docs/ (checked), so this report supplies that receipt outside the repo worktree. UNVERIFIED measurement caveats (none reconciled): service_crates=440 hardcoded in census.py:120 while a lens counts 438 service dirs / 436 with src/ops; census stub_files=7114 includes 103 false positives (true anchored markers 7011); docs/DEEP-RESEARCH.md:90,274 count 5,356 do-not-work / 17,672 now-work entries vs 5,355/17,671 .md files; PV-07 counts 8,149 live not_implemented() calls vs 7,114 census stub rows; docs/findings/contracts.json C-14 reports 644 rows while an exact-literal stream finds 615; streamed case-insensitive \"Unrecognized resource types\" = 211 vs case-sensitive 210."
+  },
+  "residual_bound": {
+    "claim_rows": 13041,
+    "open_github_issues": 518,
+    "open_inrepo_docs": 5355,
+    "parity_claimed": false,
+    "service_crates": 440,
+    "true_marker_stubs": 7011
+  },
+  "schema": "aws0/adversarial-census/v1",
+  "survivors": 3,
+  "swept": 68,
+  "task_id": "w43e9zr91 / wpj3oq9l2",
+  "total_tokens": 1137878,
+  "total_tool_calls": 239,
+  "unfinished_refuters": 19,
+  "workflow": "wf_b49262e6-0ba"
+}
